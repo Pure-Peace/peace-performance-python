@@ -1,0 +1,50 @@
+[package]
+name = "peace-performance-python"
+version = "0.1.0"
+authors = ["Pure-Peace <940857703@qq.com>"]
+edition = "2018"
+
+[lib]
+name = "peace_performance_python"
+crate-type = ["cdylib"]
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+pyo3 = { version = "0.13", features = ["extension-module"] }
+pyo3-asyncio = { version = "0.13", features = ["tokio-runtime"] }
+tokio = "1.4"
+
+peace-performance = { version = "0.2.6", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main" }
+
+
+[build-dependencies]
+pyo3-build-config = "0.14.1"
+
+
+[package.metadata.maturin]
+classifier = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 0 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python",
+    "Programming Language :: Rust",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Windows",
+]
+
+# Don't optimize the release build (built by maturin / tox) for this module, as
+# it's a test module.
+# [profile.release]
+# debug = true
+# opt-level = 0
+
+
+# link-time-optimization
+# Enabling makes the compiled program size smaller and higher performance, 
+# but it will extend compilation time.
+[profile.release]
+lto = true
+codegen-units = 1
+opt-level = 3
