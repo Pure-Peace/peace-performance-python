@@ -11,8 +11,8 @@ crate-type = ["cdylib"]
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
-pyo3 = { version = "0.13", features = ["extension-module"] }
-pyo3-asyncio = { version = "0.13", features = ["tokio-runtime"] }
+pyo3 = { version = "0.14.1", features = ["extension-module"] }
+pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", features = ["tokio-runtime"] }
 tokio = "1.4"
 
 peace-performance = { version = "0.2.6", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main" }

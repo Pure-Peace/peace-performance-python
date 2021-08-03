@@ -1,4 +1,5 @@
 from ._peace_performance import functions
 
-def rust_sleep(): 
-    return functions.rust_sleep()
+
+async def rust_sleep(seconds: int) -> None:
+    return await functions.rust_sleep(seconds)
