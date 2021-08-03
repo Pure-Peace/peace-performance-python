@@ -1,21 +1,12 @@
-use pyo3::{prelude::*, wrap_pyfunction};
+use pyo3::{prelude::*, types::PyDict, wrap_pymodule};
 
-#[pyfunction]
-fn rust_sleep(py: Python) -> PyResult<PyObject> {
-    pyo3_asyncio::tokio::into_coroutine(py, async {
-        tokio::time::sleep(std::time::Duration::from_secs(1)).await;
-        Ok(Python::with_gil(|py| py.None()))
-    })
-}
+pub mod functions;
+
+use functions::*;
 
 #[pymodule]
-fn _peace_performance_python(py: Python, m: &PyModule) -> PyResult<()> {
-    pyo3_asyncio::try_init(py)?;
-    // Tokio needs explicit initialization before any pyo3-asyncio conversions.
-    // The module import is a prime place to do this.
-    pyo3_asyncio::tokio::init_multi_thread_once();
-
-    m.add_function(wrap_pyfunction!(rust_sleep, m)?)?;
+fn _peace_performance(py: Python, m: &PyModule) -> PyResult<()> {
+    m.add_wrapped(wrap_pymodule!(functions))?;
 
     Ok(())
 }

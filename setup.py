@@ -13,12 +13,12 @@ setup(
         "Programming Language :: Rust",
         "Operating System :: POSIX",
         "Operating System :: MacOS :: MacOS X",
-        "Operating System :: Windows",
+        "Operating System :: Microsoft :: Windows",
     ],
     packages=["peace_performance_python"],
     rust_extensions=[
         RustExtension(
-            "peace_performance_python._peace_performance_python",
+            "peace_performance_python._peace_performance",
             debug=False,
         ),
     ],
