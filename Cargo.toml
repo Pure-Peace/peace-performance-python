@@ -18,9 +18,6 @@ tokio = "1.4"
 peace-performance = { version = "0.2.6", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main" }
 
 
-[build-dependencies]
-pyo3-build-config = "0.14.1"
-
 
 [package.metadata.maturin]
 classifier = [
