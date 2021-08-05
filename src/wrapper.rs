@@ -1,5 +1,4 @@
-use futures::FutureExt;
-use std::{collections::HashMap, future::Future, path::PathBuf};
+use std::{collections::HashMap, path::PathBuf};
 
 use pyo3::{create_exception, exceptions::PyException, prelude::*, wrap_pyfunction};
 use tokio::fs::File;

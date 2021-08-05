@@ -13,8 +13,11 @@ init_logger()
 
 
 async def main():
-    await read_beatmap(join_beatmap('eae63c5e82313da9c08f7565f6b6505b.osu'))
-    a = Wrapper('gg')
+    a = await read_beatmap(join_beatmap('eae63c5e82313da9c08f7565f6b6505b.osu'))
+    # a = Wrapper('gg')
+    print(a, a.hello)
+    a.hello = 'qwer'
+    print(a, a.hello)
 
 
 if __name__ == '__main__':

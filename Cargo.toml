@@ -20,7 +20,6 @@ log = "0.4"
 timed = "0.2.1"
 pretty_env_logger = "0.4.0"
 
-
 peace-performance = { version = "0.2.7", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main", default-features = false, features = [
     "osu",
     "taiko",

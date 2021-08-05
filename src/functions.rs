@@ -25,7 +25,7 @@ pub fn init_logger() {
 }
 
 #[pymodule]
-pub fn functions(py: Python, m: &PyModule) -> PyResult<()> {
+pub fn functions(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_function(wrap_pyfunction!(rust_sleep, m)?)?;
     m.add_function(wrap_pyfunction!(set_log_level, m)?)?;
     m.add_function(wrap_pyfunction!(init_logger, m)?)?;

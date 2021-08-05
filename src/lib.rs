@@ -9,7 +9,7 @@ use functions::*;
 use wrapper::*;
 
 #[pymodule]
-fn _peace_performance(py: Python, m: &PyModule) -> PyResult<()> {
+fn _peace_performance(_py: Python, m: &PyModule) -> PyResult<()> {
     m.add_wrapped(wrap_pymodule!(functions))?;
     m.add_wrapped(wrap_pymodule!(wrapper))?;
     Ok(())
