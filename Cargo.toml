@@ -12,12 +12,24 @@ crate-type = ["cdylib"]
 
 [dependencies]
 pyo3 = { version = "0.14.1", features = ["extension-module"] }
-pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", features = ["tokio-runtime"] }
+pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", features = [
+    "tokio-runtime",
+] }
 tokio = "1.4"
+log = "0.4"
+timed = "0.2.1"
+pretty_env_logger = "0.4.0"
 
-peace-performance = { version = "0.2.6", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main" }
 
-
+peace-performance = { version = "0.2.7", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main", default-features = false, features = [
+    "osu",
+    "taiko",
+    "fruits",
+    "mania",
+    "no_sliders_no_leniency",
+    "async_tokio",
+    "peace_edition",
+] }
 
 [package.metadata.maturin]
 classifier = [
