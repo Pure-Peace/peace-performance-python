@@ -3,7 +3,7 @@ use std::{env, path::PathBuf};
 
 use crate::{
     methods::{common, pp},
-    objects::Beatmap,
+    objects::{Beatmap, Calculator},
 };
 
 #[pyfunction]
@@ -31,4 +31,9 @@ pub fn read_beatmap(py: Python, path: PathBuf) -> PyResult<&PyAny> {
         let beatmap = pp::async_parse_beatmap(file).await?;
         Python::with_gil(|py| Ok(Beatmap(beatmap).into_py(py)))
     })
+}
+
+#[pyfunction]
+pub fn new_calculator() -> Calculator {
+    Calculator::new()
 }

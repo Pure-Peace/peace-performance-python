@@ -29,19 +29,32 @@ pub struct Calculator {
     pub combo: Option<usize>,
     #[pyo3(get, set)]
     pub miss: Option<usize>,
-    #[pyo3(get, set)]
-    pub simple: Option<i32>,
-    #[pyo3(get, set)]
-    pub acc_list: Option<i32>,
-    #[pyo3(get, set)]
-    pub no_miss: Option<i32>,
 }
 
 #[pymethods]
 impl Calculator {
+    #[new]
+    pub fn new() -> Self {
+        Self::default()
+    }
+
     #[inline(always)]
     pub fn calculate(&self, beatmap: &Beatmap) -> CalcResult {
         CalcResult(self.calc(beatmap))
+    }
+
+    #[inline(always)]
+    pub fn reset(&mut self) {
+        self.mode = None;
+        self.mods = None;
+        self.n50 = None;
+        self.n100 = None;
+        self.n300 = None;
+        self.katu = None;
+        self.acc = None;
+        self.passed_obj = None;
+        self.combo = None;
+        self.miss = None;
     }
 }
 
