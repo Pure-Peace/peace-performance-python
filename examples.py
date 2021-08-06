@@ -1,23 +1,19 @@
 import asyncio
 import time
 
-from peace_performance_python.functions import init_logger, set_log_level
-from peace_performance_python.wrapper import read_beatmap, Wrapper
+from peace_performance_python.common import init_logger, set_log_level
+from peace_performance_python.beatmap import raw_read_beatmap
 
-from tests.config import join_beatmap
+from tests.config import join_beatmap, TEST_BEATMAP_FILE
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
-set_log_level('debug')
+set_log_level('trace')
 init_logger()
 
 
 async def main():
-    a = await read_beatmap(join_beatmap('eae63c5e82313da9c08f7565f6b6505b.osu'))
-    # a = Wrapper('gg')
-    print(a, a.hello)
-    a.hello = 'qwer'
-    print(a, a.hello)
+    raw_beatmap = await raw_read_beatmap(join_beatmap(TEST_BEATMAP_FILE))
 
 
 if __name__ == '__main__':
