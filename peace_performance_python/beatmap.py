@@ -1,4 +1,4 @@
-from typing import Any, Optional
+from typing import Optional
 from pathlib import Path
 
 from ._peace_performance import pp as _p
@@ -9,7 +9,7 @@ RawBeatmap = object
 
 class Beatmap:
     '''
-    The beatmap used to calculate the pp
+    The Beatmap used to calculate the pp, it contains the parsed .osu beatmap.
 
     ### Examples:
     ```
@@ -22,7 +22,7 @@ class Beatmap:
     await beatmap
     # or
     await beatmap.reload()
-    
+
     # We can load another .osu files as:
     await beatmap.async_init('path_to_another_osu_file')
 
@@ -30,6 +30,9 @@ class Beatmap:
     '''
     _raw: Optional['RawBeatmap']
     path: Path
+
+    def __repr__(self) -> str:
+        return f'<Beatmap object ({self.path})>'
 
     def __init__(self, osu_file_path: Path):
         '''Init async with .osu files'''
@@ -63,5 +66,5 @@ class Beatmap:
 
 
 async def raw_read_beatmap(osu_file_path: Path) -> RawBeatmap:
-    '''Read and parse .osu files from local'''
+    '''Read and parse .osu files from local, returns native beatmap object'''
     return await _p.read_beatmap(osu_file_path)

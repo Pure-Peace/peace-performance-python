@@ -3,6 +3,7 @@ import time
 
 from peace_performance_python.common import init_logger, set_log_level
 from peace_performance_python.beatmap import raw_read_beatmap, Beatmap
+from peace_performance_python.calculator import Calculator
 
 from tests.config import join_beatmap, TEST_BEATMAP_FILE
 
@@ -18,6 +19,11 @@ async def main():
     print(raw_beatmap)
     wrapped_beatmap = await Beatmap.create(beatmap_path)
     print(wrapped_beatmap.is_initialed)
+    calc = Calculator()
+    calc.set_n100(66)
+    print(calc.n100)
+    calc.del_n100()
+    print(calc.n100, calc.get_n100())
 
 if __name__ == '__main__':
     asyncio.run(main())
