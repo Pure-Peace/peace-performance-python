@@ -1,2 +1,2 @@
-from . import functions
-from . import wrapper
+from . import common
+from . import beatmap
