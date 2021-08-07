@@ -19,10 +19,15 @@ Cargo.lock
 # egg-info
 *.egg-info
 
-# .pyd
+# .lib
 *.pyd
+*.so
 
 # pycache
 __pycache__
 /.pytest_cache/
 /.benchmarks/
+
+# build
+/build/
+/dist/
