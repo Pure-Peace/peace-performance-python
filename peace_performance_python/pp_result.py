@@ -93,7 +93,7 @@ class RawStars:
     @classmethod
     def __init_property__(cls) -> None:
         def _getter_maker(attr):
-            def _fget(c: 'RawPP'): return getattr(c._raw, attr)
+            def _fget(c: 'RawStars'): return getattr(c._raw, attr)
             return _fget
         for attr in cls._raw_attrs:
             setattr(cls, attr, property(fget=_getter_maker(attr)))
@@ -242,7 +242,7 @@ class CalcResult:
     @classmethod
     def __init_property__(cls) -> None:
         def _getter_maker(attr):
-            def _fget(c: 'RawPP'): return getattr(c._raw, attr)
+            def _fget(c: 'CalcResult'): return getattr(c._raw, attr)
             return _fget
         for attr in cls._raw_attrs:
             setattr(cls, attr, property(fget=_getter_maker(attr)))
