@@ -63,7 +63,7 @@ class RawStars:
     n_circles: Optional[int]
     n_spinners: Optional[int]
 
-    def __new__(cls) -> 'RawStars':
+    def __new__(cls, *_) -> 'RawStars':
         cls.__init_property__()
         obj: 'RawStars' = super().__new__(cls)
         return obj
@@ -114,7 +114,7 @@ class RawPP:
     acc: Optional[float]
     total: Optional[float]
 
-    def __new__(cls) -> 'RawPP':
+    def __new__(cls, *_) -> 'RawPP':
         cls.__init_property__()
         obj: 'RawPP' = super().__new__(cls)
         return obj
@@ -167,7 +167,7 @@ class CalcResult:
     stars: float
     raw_stars: RawStars
 
-    def __new__(cls) -> 'CalcResult':
+    def __new__(cls, *_) -> 'CalcResult':
         cls.__init_property__()
         obj: 'CalcResult' = super().__new__(cls)
         return obj

@@ -44,7 +44,7 @@ class Calculator:
     def __repr__(self) -> str:
         return f'<Calculator object ({self.attrs})>'
 
-    def __new__(cls) -> 'Calculator':
+    def __new__(cls, *_) -> 'Calculator':
         cls.__init_property__()
         obj: 'Calculator' = super().__new__(cls)
         return obj
