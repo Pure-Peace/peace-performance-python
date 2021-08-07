@@ -1,10 +1,9 @@
-from typing import Optional
-from pathlib import Path
+from .types import NativeBeatmap
 
 from ._peace_performance import pp as _p
 
-
-NativeBeatmap = object
+from typing import Optional
+from pathlib import Path
 
 
 class Beatmap:
@@ -25,7 +24,7 @@ class Beatmap:
 
     # We can load another .osu files as:
     await beatmap.async_init('path_to_another_osu_file')
-    
+
     # Calculate PP
     c = Calculator()
     c.set_acc(98.8)
@@ -37,7 +36,9 @@ class Beatmap:
 
     ```
     '''
-    _raw: Optional['NativeBeatmap']
+    __slots__ = ('_raw', 'path')
+
+    _raw: Optional[NativeBeatmap]
     path: Path
 
     def __repr__(self) -> str:

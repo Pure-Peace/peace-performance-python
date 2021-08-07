@@ -1,11 +1,10 @@
-from peace_performance_python.pp_result import CalcResult
+from .types import NativeCalculator
+from .pp_result import CalcResult
 from .beatmap import Beatmap
-from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 from ._peace_performance import pp as _p
 
-
-NativeCalculator = object
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 
 class Calculator:

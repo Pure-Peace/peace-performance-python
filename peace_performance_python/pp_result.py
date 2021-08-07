@@ -1,4 +1,10 @@
-from typing import Any, Optional
+from .types import \
+    ModeResult, \
+    NativeRawCalcResult, \
+    NativeRawPP, \
+    NativeRawStars, \
+    OsuModeInt, \
+    OsuModeStr
 
 NativeRawStars = object
 NativeRawPP = object
