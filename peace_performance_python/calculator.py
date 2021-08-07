@@ -43,16 +43,17 @@ class Calculator:
     def __repr__(self) -> str:
         return f'<Calculator object ({self.attrs})>'
 
-    def __new__(cls, *_) -> 'Calculator':
+    def __new__(cls, *_, **__) -> 'Calculator':
         cls.__init_property__()
         obj: 'Calculator' = super().__new__(cls)
         return obj
 
-    def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None) -> 'Calculator':
+    def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None, **kwargs) -> 'Calculator':
         '''Create new Calculator'''
         self._raw = _p.Calculator()
-        if data:
-            self.set_with_dict(data)
+        set = data or kwargs
+        if set:
+            self.set_with_dict(set)
 
     @classmethod
     def __init_property__(cls) -> None:
