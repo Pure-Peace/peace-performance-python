@@ -1,6 +1,6 @@
 import asyncio
-
 import pytest
+
 from peace_performance_python.prelude import *
 
 from . import join_beatmap, HITORIGOTO

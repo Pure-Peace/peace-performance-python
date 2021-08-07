@@ -1,5 +1,5 @@
 from peace_performance_python.beatmap import Beatmap
-
+from .oppai_wrapper import OppaiWrapper
 
 BEATMAP_DIR = r'./test_beatmaps/'
 

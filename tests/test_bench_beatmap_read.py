@@ -1,8 +1,6 @@
 import asyncio
 import pytest
 
-from peace_performance_python.beatmap import Beatmap
-
 from . import read_beatmap as _rd, \
     PADORU, \
     HITORIGOTO, \
