@@ -25,7 +25,7 @@ class Calculator:
     ```
     '''
     _raw_attrs = ('mode', 'mods', 'n50', 'n100', 'n300',
-                   'katu', 'acc', 'passed_obj', 'combo', 'miss',)
+                  'katu', 'acc', 'passed_obj', 'combo', 'miss',)
     _extra_attrs = ('_raw', )
     __slots__ = _raw_attrs + _extra_attrs
 
@@ -121,7 +121,7 @@ class Calculator:
     def calculate(self, beatmap: 'Beatmap') -> 'CalcResult':
         '''
         Calculate pp with a Beatmap.
-        
+
         ### Examples:
         ```
         beatmap = await Beatmap('path_to_osu_file')
@@ -175,5 +175,7 @@ def new_raw_calculator() -> NativeCalculator:
     '''Create new native calculator'''
     return _p.new_calculator()
 
+
 def calculate_pp(beatmap: Beatmap, calculator: Calculator) -> CalcResult:
-    pass
+    '''Calculate PP with beatmap and calculator'''
+    return calculator.calculate(beatmap)
