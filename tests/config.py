@@ -1,7 +1,10 @@
+from peace_performance_python.beatmap import Beatmap
+
+
 BEATMAP_DIR = r'./test_beatmaps/'
 
 # Test beatmaps
-PADORU = r'padoru.osu' # super short - 5kb
+PADORU = r'padoru.osu'  # super short - 5kb
 HITORIGOTO = r'hitorigoto.osu'  # short - 15kb
 FREEDOM_DIVE = r'freedom_dive.osu'  # stream medium - 50kb
 SOTARKS = r'sotarks.osu'  # jump medium - 68kb
@@ -11,3 +14,11 @@ UNFORGIVING = r'unforgiving.osu'  # marathon - 238kb
 
 def join_beatmap(beatmap: str) -> str:
     return BEATMAP_DIR + beatmap
+
+
+def read_beatmap(path, loop):
+    p = join_beatmap(path)
+
+    def wrapper():
+        loop.run_until_complete(Beatmap(p))
+    return wrapper

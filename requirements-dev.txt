@@ -2,3 +2,4 @@ pytest
 setuptools_rust
 maturin
 pytest-benchmark
+pytest-benchmark[histogram]
