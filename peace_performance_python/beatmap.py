@@ -49,7 +49,7 @@ class Beatmap:
         self.path = osu_file_path
 
     def __await__(self):
-        return self.reload(self.path).__await__()
+        return self.reload().__await__()
 
     async def reload(self) -> 'Beatmap':
         '''Reload this .osu files'''
