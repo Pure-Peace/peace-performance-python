@@ -6,7 +6,7 @@
 
 Cross-platform support.
 
-*Faster than oppai-ng, see the **[benchmark](https://github.com/Pure-Peace/peace-performance-python#benchmarks)** for details.*
+*Faster than oppai-ng, see the **[benchmark](https://github.com/Pure-Peace/peace-performance-python#vs-oppai-ng)** for details.*
 
 **Note**: This library is not currently uploaded to PypI, you may need to download it locally for compilation and then import it in python.
 
