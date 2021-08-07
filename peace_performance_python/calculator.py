@@ -1,21 +1,35 @@
-from typing import Any, Callable, Optional, Tuple, Union
+from peace_performance_python.pp_result import CalcResult
+from .beatmap import Beatmap
+from typing import Any, Callable, Dict, Optional, Tuple, Union
+
 from ._peace_performance import pp as _p
 
 
-RawCalculator = object
+NativeCalculator = object
 
 
 class Calculator:
     '''
     Calculator for storing pp calculation configurations (mode, mods, combo, 300, miss, acc, etc.)
 
+    ### Examples:
+    ```
+    beatmap = await Beatmap('path_to_osu_file')
+    c = Calculator()
+    c.set_acc(98.8)
+    c.set_combo(727)
+    # or
+    c = Calculator({'acc': 98.8, 'combo': 727})
+    # then
+    result = c.calculate(beatmap)
+    ```
     '''
-    _calc_attrs = ('mode', 'mods', 'n50', 'n100', 'n300',
+    _raw_attrs = ('mode', 'mods', 'n50', 'n100', 'n300',
                    'katu', 'acc', 'passed_obj', 'combo', 'miss',)
-    _extra_attrs = ('_cal', )
-    __slots__ = _calc_attrs + _extra_attrs
+    _extra_attrs = ('_raw', )
+    __slots__ = _raw_attrs + _extra_attrs
 
-    _cal: RawCalculator
+    _raw: NativeCalculator
     mode: Optional[int]
     mods: Optional[int]
     n50: Optional[int]
@@ -35,14 +49,16 @@ class Calculator:
         obj: 'Calculator' = super().__new__(cls)
         return obj
 
-    def __init__(self) -> 'Calculator':
+    def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None) -> 'Calculator':
         '''Create new Calculator'''
-        self._cal = _p.Calculator()
+        self._raw = _p.Calculator()
+        if data:
+            self.set_with_dict(data)
 
     @classmethod
     def __init_property__(cls) -> None:
         '''Initial property and methods'''
-        for attr in cls._calc_attrs:
+        for attr in cls._raw_attrs:
             handlers = cls.__property_handlers__(attr)
             for prefix, handler in zip(('get_', 'set_', 'del_',), handlers):
                 setattr(cls, prefix + attr, handler)
@@ -64,23 +80,61 @@ class Calculator:
 
     def __clear_calc_attrs__(self) -> None:
         '''Clear all calc attr'''
-        for attr in self._calc_attrs:
+        for attr in self._raw_attrs:
             self.setattr(attr, None)
 
     def getattr(self, attr) -> Any:
-        return getattr(self._cal, attr)
+        return getattr(self._raw, attr)
 
     def setattr(self, attr, value) -> None:
-        return setattr(self._cal, attr, value)
+        return setattr(self._raw, attr, value)
 
     @property
     def attrs(self) -> str:
-        return ', '.join((f'{attr}: {self.getattr(attr)}' for attr in self._calc_attrs))
+        return ', '.join((f'{attr}: {self.getattr(attr)}' for attr in self._raw_attrs))
 
     def reset(self) -> None:
         '''Set self to the default state'''
-        self._cal.reset()
+        self._raw.reset()
         self.__clear_calc_attrs__()
+
+    def set_with_dict(self, data: Dict[str, Any]):
+        '''
+        Set data with a dict.
+
+        ### Examples:
+        ```
+        data = {
+            'mode': 0,
+            'n50': 66,
+            'n100': 666
+        }
+        c = Calculator()
+        c.set_with_dict(data)
+        # or
+        c = Calculator(data)
+        ```
+        '''
+        for attr, value in data.items():
+            self.setattr(attr, value)
+
+    def calculate(self, beatmap: 'Beatmap') -> 'CalcResult':
+        '''
+        Calculate pp with a Beatmap.
+        
+        ### Examples:
+        ```
+        beatmap = await Beatmap('path_to_osu_file')
+        c = Calculator()
+        c.set_acc(98.8)
+        c.set_combo(727)
+        # or
+        c = Calculator({'acc': 98.8, 'combo': 727})
+        # then
+        result = c.calculate(beatmap)
+        ```
+        '''
+        return CalcResult(self._raw.calculate(beatmap._raw))
 
     # Interfaces -----
     def set_mode(val: Optional[int]): ...
@@ -117,6 +171,9 @@ class Calculator:
     def get_miss(val: Optional[int]) -> Optional[int]: ...
 
 
-def new_raw_calculator() -> RawCalculator:
+def new_raw_calculator() -> NativeCalculator:
     '''Create new native calculator'''
     return _p.new_calculator()
+
+def calculate_pp(beatmap: Beatmap, calculator: Calculator) -> CalcResult:
+    pass

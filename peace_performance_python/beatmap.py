@@ -4,7 +4,7 @@ from pathlib import Path
 from ._peace_performance import pp as _p
 
 
-RawBeatmap = object
+NativeBeatmap = object
 
 
 class Beatmap:
@@ -25,10 +25,19 @@ class Beatmap:
 
     # We can load another .osu files as:
     await beatmap.async_init('path_to_another_osu_file')
+    
+    # Calculate PP
+    c = Calculator()
+    c.set_acc(98.8)
+    c.set_combo(727)
+    # or
+    c = Calculator({'acc': 98.8, 'combo': 727})
+    # then
+    result = c.calculate(beatmap)
 
     ```
     '''
-    _raw: Optional['RawBeatmap']
+    _raw: Optional['NativeBeatmap']
     path: Path
 
     def __repr__(self) -> str:
@@ -65,6 +74,6 @@ class Beatmap:
         return bool(self._raw)
 
 
-async def raw_read_beatmap(osu_file_path: Path) -> RawBeatmap:
+async def raw_read_beatmap(osu_file_path: Path) -> NativeBeatmap:
     '''Read and parse .osu files from local, returns native beatmap object'''
     return await _p.read_beatmap(osu_file_path)
