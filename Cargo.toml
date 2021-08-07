@@ -15,7 +15,7 @@ pyo3 = { version = "0.14.1", features = ["extension-module"] }
 pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", features = [
     "tokio-runtime",
 ] }
-tokio = "1.4"
+tokio = "1.9.0"
 log = "0.4"
 timed = "0.2.1"
 pretty_env_logger = "0.4.0"
