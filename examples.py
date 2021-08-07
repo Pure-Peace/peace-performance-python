@@ -7,7 +7,7 @@ from peace_performance_python.prelude import *
 # from peace_performance_python.beatmap import Beatmap
 # from peace_performance_python.calculator import Calculator
 
-from tests.config import join_beatmap, TEST_BEATMAP_FILE
+from tests.config import join_beatmap, HITORIGOTO
 
 asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
@@ -28,12 +28,12 @@ def calculate_2(beatmap: Beatmap) -> CalcResult:
     c.set_miss(3)
 
     # or
-    # c.acc = 98.8
-    # c.miss = 3
+    c.acc = 98.8
+    c.miss = 3
 
     # or
-    # c.setattr('acc', 98.8)
-    # c.setattr('miss', 3)
+    c.setattr('acc', 98.8)
+    c.setattr('miss', 3)
     return calculate_pp(beatmap, c)
 
 
@@ -52,12 +52,16 @@ def calculate_5(beatmap: Beatmap) -> CalcResult:
 
 
 async def main():
-    path = join_beatmap(TEST_BEATMAP_FILE)
+    path = join_beatmap(HITORIGOTO)
     # Load beatmap
     beatmap = await Beatmap.create(path)
     # Calculate pp
     result = calculate_5(beatmap)
-    print(result.attrs_dict)
+    print('\n***** result:', result)
+    print('\n***** result.pp:', result.pp)
+    print('\n***** result as dict:', result.attrs_dict)
+    print('\n***** result.raw_stars as dict:', result.raw_stars.attrs_dict)
+    print('\n***** result.raw_pp as dict:', result.raw_pp.attrs_dict)
 
 if __name__ == '__main__':
     asyncio.run(main())
