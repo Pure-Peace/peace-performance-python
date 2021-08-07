@@ -3,7 +3,7 @@ import pytest
 
 from peace_performance_python.beatmap import Beatmap
 
-from config import read_beatmap as _rd, \
+from . import read_beatmap as _rd, \
     PADORU, \
     HITORIGOTO, \
     FREEDOM_DIVE, \

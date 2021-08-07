@@ -3,7 +3,7 @@ import asyncio
 import pytest
 from peace_performance_python.prelude import *
 
-from config import join_beatmap, HITORIGOTO
+from . import join_beatmap, HITORIGOTO
 
 
 loop = asyncio.get_event_loop()

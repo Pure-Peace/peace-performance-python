@@ -1,7 +1,7 @@
 import asyncio
 from peace_performance_python.beatmap import raw_read_beatmap
 
-from config import join_beatmap, HITORIGOTO
+from . import join_beatmap, HITORIGOTO
 
 
 loop = asyncio.get_event_loop()
