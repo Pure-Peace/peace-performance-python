@@ -92,9 +92,11 @@ class RawStars:
 
     @classmethod
     def __init_property__(cls) -> None:
-        def _getter_wrapper(c: 'RawStars'): return getattr(c._raw, attr)
+        def _getter_maker(attr):
+            def _fget(c: 'RawPP'): return getattr(c._raw, attr)
+            return _fget
         for attr in cls._raw_attrs:
-            setattr(cls, attr, property(fget=_getter_wrapper))
+            setattr(cls, attr, property(fget=_getter_maker(attr)))
 
     def get_mode_attrs(self, mode: Union[OsuModeInt, OsuModeStr]) -> Tuple[str]:
         '''Get attrs with mode (str or int): ({`0`: `osu`, `1`: `taiko`, `2`: `catch the beat`, `3`: `mania`})'''
@@ -177,9 +179,11 @@ class RawPP:
 
     @classmethod
     def __init_property__(cls) -> None:
-        def _getter_wrapper(c: 'RawPP'): return getattr(c._raw, attr)
+        def _getter_maker(attr):
+            def _fget(c: 'RawPP'): return getattr(c._raw, attr)
+            return _fget
         for attr in cls._raw_attrs:
-            setattr(cls, attr, property(fget=_getter_wrapper))
+            setattr(cls, attr, property(fget=_getter_maker(attr)))
 
     @property
     def attrs(self) -> str:
@@ -237,9 +241,11 @@ class CalcResult:
 
     @classmethod
     def __init_property__(cls) -> None:
-        def _getter_wrapper(c: 'CalcResult'): return getattr(c._raw, attr)
+        def _getter_maker(attr):
+            def _fget(c: 'RawPP'): return getattr(c._raw, attr)
+            return _fget
         for attr in cls._raw_attrs:
-            setattr(cls, attr, property(fget=_getter_wrapper))
+            setattr(cls, attr, property(fget=_getter_maker(attr)))
 
     @property
     def attrs(self) -> str:
