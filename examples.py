@@ -1,5 +1,5 @@
 import asyncio
-import time
+import sys
 
 # import all
 from peace_performance_python.prelude import *
@@ -7,9 +7,8 @@ from peace_performance_python.prelude import *
 # from peace_performance_python.beatmap import Beatmap
 # from peace_performance_python.calculator import Calculator
 
-from tests.config import join_beatmap, HITORIGOTO
+from tests import join_beatmap, HITORIGOTO
 
-asyncio.set_event_loop_policy(asyncio.WindowsSelectorEventLoopPolicy())
 
 # Initial Rust logger (optional)
 set_log_level('trace')
