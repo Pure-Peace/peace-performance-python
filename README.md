@@ -5,6 +5,7 @@
 **[peace-performance](https://github.com/Pure-Peace/peace-performance)** (Rust) binding for python based on [PyO3](https://github.com/PyO3/pyo3).
 
 Cross-platform support.
+Support synchronous and asynchronous(tokio and async_std).
 
 *Faster than oppai-ng, see the **[benchmark](https://github.com/Pure-Peace/peace-performance-python#vs-oppai-ng)** for details.*
 
@@ -15,7 +16,7 @@ Cross-platform support.
 ```python
 from peace_performance_python.prelude import *
 
-beatmap = await Beatmap.create('path_to_osu_file') # Beatmap can be cached and reused!
+beatmap = await Beatmap.create_async('path_to_osu_file') # Beatmap can be cached and reused!
 result = Calculator(acc=98.8, miss=3).calculate(beatmap) # Calculator can also
 ```
 
@@ -77,11 +78,14 @@ def calculate_5(beatmap: Beatmap) -> CalcResult:
 async def main():
     path = join_beatmap(HITORIGOTO)
     # Load beatmap
-    beatmap = await Beatmap.create(path)
+    beatmap = await Beatmap.create_async(path)
+    # Sync
+    # beatmap = Beatmap.create_sync(path) 
+    # beatmap = Beatmap(path, initial_sync = True)
     print('\n**** Beatmap:', beatmap)
 
     # Calculate pp
-    # result = Calculator(acc=98.8, miss=3).calculate(beatmap)
+    # result = calculate_5(beatmap)
     c = Calculator(acc=98.8, miss=3)
     print('\n***** Calculator as dict:', c.attrs_dict)
     result = c.calculate(beatmap)

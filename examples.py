@@ -52,7 +52,10 @@ def calculate_5(beatmap: Beatmap) -> CalcResult:
 async def main() -> None:
     path = join_beatmap(HITORIGOTO)
     # Load beatmap
-    beatmap = await Beatmap.create(path)
+    beatmap = await Beatmap.create_async(path)
+    # Sync
+    # beatmap = Beatmap.create_sync(path) 
+    # beatmap = Beatmap(path, initial_sync = True)
     print('\n**** Beatmap:', beatmap)
 
     # Calculate pp
