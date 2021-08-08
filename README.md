@@ -78,13 +78,28 @@ async def main():
     path = join_beatmap(HITORIGOTO)
     # Load beatmap
     beatmap = await Beatmap.create(path)
+    print('\n**** Beatmap:', beatmap)
+
     # Calculate pp
-    result = calculate_5(beatmap)
-    print('\n***** result:', result)
+    # result = Calculator(acc=98.8, miss=3).calculate(beatmap)
+    c = Calculator(acc=98.8, miss=3)
+    print('\n***** Calculator as dict:', c.attrs_dict)
+    result = c.calculate(beatmap)
+
+    # Print results
+    # print('\n***** result:', result)
     print('\n***** result.pp:', result.pp)
     print('\n***** result as dict:', result.attrs_dict)
-    print('\n***** result.raw_stars as dict:', result.raw_stars.attrs_dict)
-    print('\n***** result.raw_pp as dict:', result.raw_pp.attrs_dict)
+    # print('\n***** result.raw_stars as dict:', result.raw_stars.attrs_dict)
+    # print('\n***** result.raw_pp as dict:', result.raw_pp.attrs_dict)
+
+    # Reset calculator
+    c.reset()
+    print('\n***** reseted Calculator as dict:', c.attrs_dict)
+
+    # Calc again
+    result2 = c.calculate(beatmap)
+    print('\n***** result2 as dict:', result2)
 
 if __name__ == '__main__':
     asyncio.run(main())
@@ -94,16 +109,29 @@ if __name__ == '__main__':
 ### Running results
 
 ```rust
- TRACE peace_performance_python::methods::common > function=async_read_file duration=289.1µs
- TRACE peace_performance_python::methods::pp     > function=async_parse_beatmap duration=414µs
- TRACE peace_performance_python::methods::pp     > function=calc_with_any_pp duration=99.6µs
- TRACE peace_performance_python::objects::calculator > function=calc duration=245.4µs
+ TRACE peace_performance_python::methods::common > function=async_read_file duration=319µs
+ TRACE peace_performance_python::methods::pp     > function=async_parse_beatmap duration=421.3µs
 
-...
+**** Beatmap: <Beatmap object (path: ./test_beatmaps/hitorigoto.osu, is_initialized: True)>
+
+***** Calculator as dict: {
+    'mode': None, 
+    'mods': None, 
+    'n50': None, 
+    'n100': None, 
+    'n300': None, 
+    'katu': None, 
+    'acc': 98.80000305175781, 
+    'passed_obj': None, 
+    'combo': None, 
+    'miss': 3
+    }
+ TRACE peace_performance_python::methods::pp     > function=calc_with_any_pp duration=98.3µs
+ TRACE peace_performance_python::objects::calculator > function=calc duration=238µs
+
 
 ***** result.pp: 152.19204711914062
 
-...
 
 ***** result as dict: {
     'mode': 0, 

@@ -53,13 +53,29 @@ async def main() -> None:
     path = join_beatmap(HITORIGOTO)
     # Load beatmap
     beatmap = await Beatmap.create(path)
+    print('\n**** Beatmap:', beatmap)
+
     # Calculate pp
-    result = calculate_5(beatmap)
-    print('\n***** result:', result)
+    # result = calculate_5(beatmap)
+    c = Calculator(acc=98.8, miss=3)
+    print('\n***** Calculator as dict:', c.attrs_dict)
+    result = c.calculate(beatmap)
+
+    # Print results
+    # print('\n***** result:', result)
     print('\n***** result.pp:', result.pp)
     print('\n***** result as dict:', result.attrs_dict)
-    print('\n***** result.raw_stars as dict:', result.raw_stars.attrs_dict)
-    print('\n***** result.raw_pp as dict:', result.raw_pp.attrs_dict)
+    # print('\n***** result.raw_stars as dict:', result.raw_stars.attrs_dict)
+    # print('\n***** result.raw_pp as dict:', result.raw_pp.attrs_dict)
+
+    # Reset calculator
+    c.reset()
+    print('\n***** reseted Calculator as dict:', c.attrs_dict)
+
+    # Calc again
+    result2 = c.calculate(beatmap)
+    print('\n***** result2 as dict:', result2)
+
 
 if __name__ == '__main__':
     asyncio.run(main())
