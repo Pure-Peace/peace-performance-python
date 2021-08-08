@@ -1,5 +1,4 @@
 import asyncio
-import sys
 
 # import all
 from peace_performance_python.prelude import *
@@ -10,7 +9,7 @@ from peace_performance_python.prelude import *
 from tests import join_beatmap, HITORIGOTO
 
 
-# Initial Rust logger (optional)
+# Initialize Rust logger (optional)
 set_log_level('trace')
 init_logger()
 
@@ -50,7 +49,7 @@ def calculate_5(beatmap: Beatmap) -> CalcResult:
     return Calculator(acc=98.8, miss=3).calculate(beatmap)
 
 
-async def main():
+async def main() -> None:
     path = join_beatmap(HITORIGOTO)
     # Load beatmap
     beatmap = await Beatmap.create(path)

@@ -1,13 +1,14 @@
-from .types import \
-    ModeResult, \
-    NativeRawCalcResult, \
-    NativeRawPP, \
-    NativeRawStars, \
-    OsuModeInt, \
+from .types import (
+    ModeResult,
+    NativeRawCalcResult,
+    NativeRawPP,
+    NativeRawStars,
+    OsuModeInt,
     OsuModeStr
+)
 from .common import get_attrs_dict, get_attrs_str, osu_mode_str
 
-from typing import Dict, Optional, Tuple, Union
+from typing import Any, Callable, Dict, Optional, Tuple, Union
 
 
 class RawStars:
@@ -63,7 +64,7 @@ class RawStars:
     _raw_attrs = ('stars', 'max_combo', 'ar', 'n_fruits',
                   'n_droplets', 'n_tiny_droplets', 'od', 'speed_strain',
                   'aim_strain', 'n_circles', 'n_spinners',)
-    _extra_attrs = ('_raw', )
+    _extra_attrs = ('_raw',)
     __slots__ = _raw_attrs + _extra_attrs
 
     _raw: NativeRawStars
@@ -92,9 +93,11 @@ class RawStars:
 
     @classmethod
     def __init_property__(cls) -> None:
-        def _getter_maker(attr):
-            def _fget(c: 'RawStars'): return getattr(c._raw, attr)
+        def _getter_maker(attr) -> Callable[['RawStars'], Any]:
+            def _fget(c: 'RawStars') -> Any:
+                return getattr(c._raw, attr)
             return _fget
+
         for attr in cls._raw_attrs:
             setattr(cls, attr, property(fget=_getter_maker(attr)))
 
@@ -179,9 +182,11 @@ class RawPP:
 
     @classmethod
     def __init_property__(cls) -> None:
-        def _getter_maker(attr):
-            def _fget(c: 'RawPP'): return getattr(c._raw, attr)
+        def _getter_maker(attr) -> Callable[['RawPP'], Any]:
+            def _fget(c: 'RawPP') -> Any:
+                return getattr(c._raw, attr)
             return _fget
+
         for attr in cls._raw_attrs:
             setattr(cls, attr, property(fget=_getter_maker(attr)))
 
@@ -234,16 +239,18 @@ class CalcResult:
         obj: 'CalcResult' = super().__new__(cls)
         return obj
 
-    def __init__(self, raw: NativeRawCalcResult):
+    def __init__(self, raw: NativeRawCalcResult) -> None:
         self.raw_pp = RawPP(raw.raw_pp)
         self.raw_stars = RawStars(raw.raw_stars)
         self._raw = raw
 
     @classmethod
     def __init_property__(cls) -> None:
-        def _getter_maker(attr):
-            def _fget(c: 'CalcResult'): return getattr(c._raw, attr)
+        def _getter_maker(attr) -> Callable[['CalcResult'], Any]:
+            def _fget(c: 'CalcResult') -> Any:
+                return getattr(c._raw, attr)
             return _fget
+
         for attr in cls._raw_attrs:
             setattr(cls, attr, property(fget=_getter_maker(attr)))
 
@@ -256,4 +263,5 @@ class CalcResult:
 
     @property
     def attrs_dict(self) -> Dict[str, Union[RawPP, RawStars, int, float]]:
-        return {**get_attrs_dict(self._raw, self._raw_attrs), **get_attrs_dict(self, self._manual_impl)}
+        return {**get_attrs_dict(self._raw, self._raw_attrs),
+                **get_attrs_dict(self, self._manual_impl)}

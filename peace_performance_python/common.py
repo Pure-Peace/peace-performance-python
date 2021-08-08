@@ -32,12 +32,12 @@ def init_logger() -> None:
 
 def get_attrs_str(target: object, attrs: Iterable[str]) -> str:
     '''Get object attrs as str'''
-    return ', '.join((f'{attr}: {getattr(target, attr)}' for attr in attrs))
+    return ', '.join([f'{attr}: {getattr(target, attr)}' for attr in attrs])
 
 
 def get_attrs_dict(target: object, attrs: Iterable[str]) -> Dict[str, Any]:
     '''Get object attrs as dict'''
-    def _getattr(target, attr):
+    def _getattr(target, attr) -> Any:
         val = getattr(target, attr)
         dic = getattr(val, 'attrs_dict', None)
         return dic if dic else val

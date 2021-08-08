@@ -1,32 +1,36 @@
 import asyncio
+from typing import Callable
 import pytest
 import sys
 import os
 
 from peace_performance_python.prelude import Beatmap, Calculator, calculate_pp
 
-from . import OppaiWrapper, join_beatmap, \
-    PADORU, \
-    HITORIGOTO, \
-    FREEDOM_DIVE, \
-    SOTARKS, \
-    GALAXY_BURST, \
+from . import (
+    OppaiWrapper,
+    join_beatmap,
+    PADORU,
+    HITORIGOTO,
+    FREEDOM_DIVE,
+    SOTARKS,
+    GALAXY_BURST,
     UNFORGIVING
+)
 
 if sys.platform == 'win32':
-    raise Exception('Oppai - Windows not support!!')
+    raise Exception('Oppai - No windows support!!')
 
 OPPAI_PATH = 'oppai_build/liboppai.so'
 if not os.path.exists(OPPAI_PATH):
-    raise Exception('Oppai - .so Build not exist!!!')
+    raise Exception("Oppai - Couldn't find shared library (.so file)!!")
 
 loop = asyncio.get_event_loop()
 
 
-def calc_rust(path):
+def calc_rust(path) -> Callable[[None], None]:
     p = join_beatmap(path)
 
-    def wrap():
+    def wrap() -> None:
         beatmap: Beatmap = loop.run_until_complete(Beatmap(p))
         c = Calculator()
         c.set_with_dict({'acc': 98.8, 'miss': 3})
@@ -34,10 +38,10 @@ def calc_rust(path):
     return wrap
 
 
-def calc_oppai(path):
+def calc_oppai(path) -> Callable[[None], None]:
     p = join_beatmap(path)
 
-    def wrap():
+    def wrap() -> None:
         with OppaiWrapper(OPPAI_PATH) as ezpp:
             ezpp.set_accuracy_percent(98.8)
             ezpp.set_nmiss(3)
