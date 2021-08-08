@@ -1,4 +1,4 @@
-from peace_performance_python.common import get_attrs_dict, get_attrs_str
+from .common import get_attrs_dict, get_attrs_str
 from .types import NativeCalculator
 from .pp_result import CalcResult
 from .beatmap import Beatmap

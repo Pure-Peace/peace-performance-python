@@ -1,4 +1,5 @@
 from .types import OsuModeInt, OsuModeStr
+
 from ._peace_performance import common as _c
 
 from typing import Any, Dict, Iterable
