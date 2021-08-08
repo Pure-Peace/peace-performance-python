@@ -4,7 +4,7 @@ from setuptools_rust import RustExtension
 
 setup(
     name="peace-performance-python",
-    version="0.1.0",
+    version="0.2.0",
     classifiers=[
         "License :: OSI Approved :: MIT License",
         "Development Status :: 0 - Alpha",

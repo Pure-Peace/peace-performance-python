@@ -34,6 +34,12 @@ pub fn read_beatmap(py: Python, path: PathBuf) -> PyResult<&PyAny> {
 }
 
 #[pyfunction]
+pub fn read_beatmap_sync(py: Python, path: PathBuf) -> Beatmap {
+    let file = common::sync_read_file(path)?;
+    pp::sync_parse_beatmap(file)?
+}
+
+#[pyfunction]
 pub fn new_calculator() -> Calculator {
     Calculator::new()
 }

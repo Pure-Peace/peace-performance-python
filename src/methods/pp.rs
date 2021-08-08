@@ -59,3 +59,11 @@ pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
         .await
         .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
 }
+
+/// Parse the beatmap file synchronously
+#[inline(always)]
+#[timed::timed(duration(printer = "trace!"))]
+pub fn sync_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
+    RawBeatmap::parse_sync(file)
+        .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
+}

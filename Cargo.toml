@@ -1,6 +1,6 @@
 [package]
 name = "peace-performance-python"
-version = "0.1.0"
+version = "0.2.0"
 authors = ["Pure-Peace <940857703@qq.com>"]
 edition = "2018"
 
@@ -10,23 +10,45 @@ crate-type = ["cdylib"]
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
+[features]
+# You can choose whether to be asynchronous or not
+default = ["async_tokio"]
+
+
+# Features
+sync = []
+async_tokio = [
+    "tokio",
+    "peace-performance/async_tokio",
+    "pyo3-asyncio/tokio-runtime",
+]
+async_std = [
+    "async-std",
+    "peace-performance/async_std",
+    "pyo3-asyncio/async-std-runtime",
+]
+
+
 [dependencies]
 pyo3 = { version = "0.14.1", features = ["extension-module"] }
-pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", features = [
-    "tokio-runtime",
-] }
-tokio = "1.9.0"
 log = "0.4"
 timed = "0.2.1"
 pretty_env_logger = "0.4.0"
 
-peace-performance = { version = "0.2.7", git = "https://github.com/Pure-Peace/Peace-performance.git", branch = "main", default-features = false, features = [
+
+# Async optional
+pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", optional = true }
+tokio = { version = "1.9.0", optional = true }
+async-std = { version = "1.9", optional = true }
+
+
+# Peace-performance
+peace-performance = { version = "0.2.9", default-features = false, features = [
     "osu",
     "taiko",
     "fruits",
     "mania",
     "no_sliders_no_leniency",
-    "async_tokio",
     "peace_edition",
 ] }
 
