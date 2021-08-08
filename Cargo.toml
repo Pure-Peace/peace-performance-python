@@ -1,6 +1,6 @@
 [package]
 name = "peace-performance-python"
-version = "0.2.2"
+version = "0.2.3"
 authors = ["Pure-Peace <940857703@qq.com>"]
 edition = "2018"
 
@@ -12,7 +12,29 @@ crate-type = ["cdylib"]
 
 [features]
 # You can choose whether to be asynchronous or not
-default = ["async_tokio"]
+# And other features
+default = [
+    "osu",
+    "taiko",
+    "fruits",
+    "mania",
+    "async_tokio",
+    "no_sliders_no_leniency",
+]
+
+peace_edition = ["peace-performance/peace_edition"]
+relax_nerf = ["peace-performance/relax_nerf"]
+
+# game modes
+osu = ["peace-performance/osu"]
+taiko = ["peace-performance/taiko"]
+fruits = ["peace-performance/fruits"]
+mania = ["peace-performance/mania"]
+
+# osu!standard version
+all_included = ["peace-performance/all_included"]
+no_leniency = ["peace-performance/no_leniency"]
+no_sliders_no_leniency = ["peace-performance/no_sliders_no_leniency"]
 
 
 # Features
@@ -43,14 +65,7 @@ async-std = { version = "1.9", optional = true }
 
 
 # Peace-performance
-peace-performance = { version = "0.2.9", default-features = false, features = [
-    "osu",
-    "taiko",
-    "fruits",
-    "mania",
-    "no_sliders_no_leniency",
-    "peace_edition",
-] }
+peace-performance = { version = "0.2.9", default-features = false }
 
 [package.metadata.maturin]
 classifier = [
