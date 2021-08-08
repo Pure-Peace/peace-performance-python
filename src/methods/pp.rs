@@ -55,11 +55,7 @@ pub fn mode_any_pp(mode: u8, beatmap: &RawBeatmap) -> AnyPP {
 #[inline(always)]
 #[timed::timed(duration(printer = "trace!"))]
 pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
-    match RawBeatmap::parse(file).await {
-        Ok(beatmap) => Ok(beatmap),
-        Err(err) => Err(ParseBeatmapError::new_err(format!(
-            "Could not parse beatmap: {}",
-            err
-        ))),
-    }
+    RawBeatmap::parse(file)
+        .await
+        .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
 }
