@@ -1,4 +1,3 @@
-import asyncio
 from typing import Callable
 import pytest
 import sys
@@ -19,14 +18,13 @@ from . import (
 
 
 OPPAI_PATH = 'oppai_build/liboppai.so'
-loop = asyncio.get_event_loop()
 
 
 def calc_rust(path) -> Callable[[None], None]:
     p = join_beatmap(path)
 
     def wrap() -> None:
-        beatmap: Beatmap = loop.run_until_complete(Beatmap(p))
+        beatmap: Beatmap = Beatmap.create_sync(path)
         c = Calculator()
         c.set_with_dict({'acc': 98.8, 'miss': 3})
         calculate_pp(beatmap, c)

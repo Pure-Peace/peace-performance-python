@@ -7,7 +7,7 @@ from . import join_beatmap, HITORIGOTO
 
 
 loop = asyncio.get_event_loop()
-beatmap: Beatmap = loop.run_until_complete(Beatmap.create(
+beatmap: Beatmap = loop.run_until_complete(Beatmap.create_async(
     join_beatmap(HITORIGOTO)))
 
 

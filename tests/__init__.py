@@ -1,7 +1,7 @@
 from peace_performance_python.beatmap import Beatmap
 from .oppai_wrapper import OppaiWrapper
 
-from typing import Callable, TYPE_CHECKING
+from typing import Callable, Optional, TYPE_CHECKING
 
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
@@ -21,9 +21,12 @@ def join_beatmap(beatmap: str) -> str:
     return BEATMAP_DIR + beatmap
 
 
-def read_beatmap(path: str, loop: 'AbstractEventLoop') -> Callable[[None], None]:
+def read_beatmap(path: str, loop: Optional['AbstractEventLoop'] = None) -> Callable[[None], None]:
     p = join_beatmap(path)
 
-    def wrapper() -> None:
+    def wrapper_async() -> None:
         loop.run_until_complete(Beatmap(p))
-    return wrapper
+
+    def wrapper_sync() -> None:
+        Beatmap.create_sync(p)
+    return wrapper_async if loop else wrapper_sync

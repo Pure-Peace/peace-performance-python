@@ -1,4 +1,3 @@
-import asyncio
 import pytest
 from typing import Callable
 
@@ -12,11 +11,9 @@ from . import (
     UNFORGIVING
 )
 
-loop = asyncio.get_event_loop()
-
 
 def read_beatmap(path: str) -> Callable[[None], None]:
-    return _rd(path, loop)
+    return _rd(path)
 
 
 @pytest.mark.benchmark(group="bench-beatmap")
