@@ -17,13 +17,8 @@ from . import (
     UNFORGIVING
 )
 
-if sys.platform == 'win32':
-    raise Exception('Oppai - No windows support!!')
 
 OPPAI_PATH = 'oppai_build/liboppai.so'
-if not os.path.exists(OPPAI_PATH):
-    raise Exception("Oppai - Couldn't find shared library (.so file)!!")
-
 loop = asyncio.get_event_loop()
 
 
@@ -49,63 +44,44 @@ def calc_oppai(path) -> Callable[[None], None]:
     return wrap
 
 
-# rust ---------
+@pytest.mark.skipif(sys.platform == 'win32', reason='Oppai - No windows support!!')
+@pytest.mark.skipif(not os.path.exists(OPPAI_PATH), reason='Oppai - Couldn\'t find shared library (.so file)!!')
 @pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_rust_padoru(benchmark) -> None:
-    benchmark(calc_rust(PADORU))
+class TestBenchOppaiVsRust:
+    # rust ---------
+    def test_rust_padoru(self, benchmark) -> None:
+        benchmark(calc_rust(PADORU))
 
+    def test_rust_hitorigoto(self, benchmark) -> None:
+        benchmark(calc_rust(HITORIGOTO))
 
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_rust_hitorigoto(benchmark) -> None:
-    benchmark(calc_rust(HITORIGOTO))
+    def test_rust_freedom_dive(self, benchmark) -> None:
+        benchmark(calc_rust(FREEDOM_DIVE))
 
+    def test_rust_sotarks(self, benchmark) -> None:
+        benchmark(calc_rust(SOTARKS))
 
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_rust_freedom_dive(benchmark) -> None:
-    benchmark(calc_rust(FREEDOM_DIVE))
+    def test_rust_galaxy_burst(self, benchmark) -> None:
+        benchmark(calc_rust(GALAXY_BURST))
 
+    def test_rust_unforgiving(self, benchmark) -> None:
+        benchmark(calc_rust(UNFORGIVING))
 
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_rust_sotarks(benchmark) -> None:
-    benchmark(calc_rust(SOTARKS))
+    # oppai ---------
+    def test_oppai_padoru(self, benchmark) -> None:
+        benchmark(calc_oppai(PADORU))
 
+    def test_oppai_hitorigoto(self, benchmark) -> None:
+        benchmark(calc_oppai(HITORIGOTO))
 
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_rust_galaxy_burst(benchmark) -> None:
-    benchmark(calc_rust(GALAXY_BURST))
+    def test_oppai_freedom_dive(self, benchmark) -> None:
+        benchmark(calc_oppai(FREEDOM_DIVE))
 
+    def test_oppai_sotarks(self, benchmark) -> None:
+        benchmark(calc_oppai(SOTARKS))
 
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_rust_unforgiving(benchmark) -> None:
-    benchmark(calc_rust(UNFORGIVING))
+    def test_oppai_galaxy_burst(self, benchmark) -> None:
+        benchmark(calc_oppai(GALAXY_BURST))
 
-
-# oppai ---------
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_oppai_padoru(benchmark) -> None:
-    benchmark(calc_oppai(PADORU))
-
-
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_oppai_hitorigoto(benchmark) -> None:
-    benchmark(calc_oppai(HITORIGOTO))
-
-
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_oppai_freedom_dive(benchmark) -> None:
-    benchmark(calc_oppai(FREEDOM_DIVE))
-
-
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_oppai_sotarks(benchmark) -> None:
-    benchmark(calc_oppai(SOTARKS))
-
-
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_oppai_galaxy_burst(benchmark) -> None:
-    benchmark(calc_oppai(GALAXY_BURST))
-
-
-@pytest.mark.benchmark(group="bench-oppai-vs-rust")
-def test_oppai_unforgiving(benchmark) -> None:
-    benchmark(calc_oppai(UNFORGIVING))
+    def test_oppai_unforgiving(self, benchmark) -> None:
+        benchmark(calc_oppai(UNFORGIVING))
