@@ -1,18 +1,21 @@
 import asyncio
 import pytest
+from typing import Callable
 
-from . import read_beatmap as _rd, \
-    PADORU, \
-    HITORIGOTO, \
-    FREEDOM_DIVE, \
-    SOTARKS, \
-    GALAXY_BURST, \
+from . import (
+    read_beatmap as _rd,
+    PADORU,
+    HITORIGOTO,
+    FREEDOM_DIVE,
+    SOTARKS,
+    GALAXY_BURST,
     UNFORGIVING
+)
 
 loop = asyncio.get_event_loop()
 
 
-def read_beatmap(path):
+def read_beatmap(path: str) -> Callable[[None], None]:
     return _rd(path, loop)
 
 

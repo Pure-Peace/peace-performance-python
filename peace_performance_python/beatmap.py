@@ -1,6 +1,6 @@
 from .types import NativeBeatmap
 
-from ._peace_performance import pp as _p
+from ._peace_performance import pp as _pp_rust
 
 from typing import Optional
 from pathlib import Path
@@ -41,12 +41,12 @@ class Beatmap:
     _raw: Optional[NativeBeatmap]
     path: Path
 
-    def __repr__(self) -> str:
-        return f'<Beatmap object ({self.path})>'
-
-    def __init__(self, osu_file_path: Path):
+    def __init__(self, osu_file_path: Path) -> None:
         '''Init async with .osu files'''
         self.path = osu_file_path
+
+    def __repr__(self) -> str:
+        return f'<Beatmap object ({self.path})>'
 
     def __await__(self):
         return self.reload().__await__()
@@ -70,11 +70,11 @@ class Beatmap:
         return obj
 
     @property
-    def is_initialed(self) -> bool:
+    def is_initialized(self) -> bool:
         '''Returns whether the beatmap (.osu files) has been loaded and parsed'''
-        return bool(self._raw)
+        return self._raw is not None
 
 
 async def raw_read_beatmap(osu_file_path: Path) -> NativeBeatmap:
     '''Read and parse .osu files from local, returns native beatmap object'''
-    return await _p.read_beatmap(osu_file_path)
+    return await _pp_rust.read_beatmap(osu_file_path)
