@@ -1,12 +1,15 @@
+from peace_performance_python.common import get_attrs_dict, get_attrs_str
 from .types import NativeCalculator
 from .pp_result import CalcResult
 from .beatmap import Beatmap
+from .utils import _mutable_property_generator
 
 from ._peace_performance import pp as _pp_rust
 
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Any, Dict, Optional, Union
 
 
+@_mutable_property_generator
 class Calculator:
     '''
     Calculator for storing pp calculation configurations (mode, mods, combo, 300, miss, acc, etc.)
@@ -40,11 +43,6 @@ class Calculator:
     combo: Optional[int]
     miss: Optional[int]
 
-    def __new__(cls, *_, **__) -> 'Calculator':
-        cls.__init_property__()
-        obj: 'Calculator' = super().__new__(cls)
-        return obj
-
     def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None, **kwargs) -> 'Calculator':
         '''Create new Calculator'''
         self._raw = _pp_rust.Calculator()
@@ -55,49 +53,27 @@ class Calculator:
     def __repr__(self) -> str:
         return f'<Calculator object ({self.attrs})>'
 
-    @classmethod
-    def __init_property__(cls) -> None:
-        '''Initial property and methods'''
-        for attr in cls._raw_attrs:
-            handlers = cls.__property_handlers__(attr)
-            for prefix, handler in zip(('get_', 'set_', 'del_',), handlers):
-                setattr(cls, prefix + attr, handler)
-            setattr(cls, attr, property(*handlers))
-
-    @staticmethod
-    def __property_handlers__(attr: str) -> Tuple[Callable[['Calculator'], Any]]:
-        '''Returns getter, setter and deleter methods for attr'''
-        def _getter_wrapper(c: 'Calculator') -> Any:
-            return c.getattr(attr)
-
-        def _setter_wrapper(c: 'Calculator', value) -> None:
-            return c.setattr(attr, value)
-
-        def _deleter_wrapper(c: 'Calculator') -> None:
-            return c.setattr(attr, None)
-
-        return (_getter_wrapper, _setter_wrapper, _deleter_wrapper,)
-
-    def __clear_calc_attrs__(self) -> None:
-        '''Clear all calc attr'''
-        for attr in self._raw_attrs:
-            self.setattr(attr, None)
-
     def getattr(self, attr) -> Any:
+        '''Set attr from _raw'''
         return getattr(self._raw, attr)
 
     def setattr(self, attr, value) -> None:
+        '''Get attr to _raw'''
         return setattr(self._raw, attr, value)
 
     @property
     def attrs(self) -> str:
-        return ', '.join([f'{attr}: {self.getattr(attr)}'
-                          for attr in self._raw_attrs])
+        '''Get attrs as text'''
+        return get_attrs_str(self._raw, self._raw_attrs)
+
+    @property
+    def attrs_dict(self) -> Dict[str, Union[int, float, None]]:
+        '''Get attrs as dict'''
+        return get_attrs_dict(self._raw, self._raw_attrs)
 
     def reset(self) -> None:
-        '''Set self to the default state'''
+        '''Set Calculator to the default state'''
         self._raw.reset()
-        self.__clear_calc_attrs__()
 
     def set_with_dict(self, data: Dict[str, Any]) -> None:
         '''

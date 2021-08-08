@@ -46,7 +46,7 @@ class Beatmap:
         self.path = osu_file_path
 
     def __repr__(self) -> str:
-        return f'<Beatmap object ({self.path})>'
+        return f'<Beatmap object (path: {self.path}, is_initialized: {self.is_initialized})>'
 
     def __await__(self):
         return self.reload().__await__()

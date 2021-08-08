@@ -7,10 +7,14 @@ from .types import (
     OsuModeStr
 )
 from .common import get_attrs_dict, get_attrs_str, osu_mode_str
+from .utils import _read_only_property_generator
 
-from typing import Any, Callable, Dict, Optional, Tuple, Union
+from typing import Dict, Optional, Tuple, Union
+
+_str = str
 
 
+@_read_only_property_generator
 class RawStars:
     '''
     Raw PP Calculation results: `RawStars` (read only).
@@ -83,23 +87,8 @@ class RawStars:
     def __repr__(self) -> str:
         return f'<RawStars object ({self.attrs})>'
 
-    def __new__(cls, *_) -> 'RawStars':
-        cls.__init_property__()
-        obj: 'RawStars' = super().__new__(cls)
-        return obj
-
     def __init__(self, raw: NativeRawStars):
         self._raw = raw
-
-    @classmethod
-    def __init_property__(cls) -> None:
-        def _getter_maker(attr) -> Callable[['RawStars'], Any]:
-            def _fget(c: 'RawStars') -> Any:
-                return getattr(c._raw, attr)
-            return _fget
-
-        for attr in cls._raw_attrs:
-            setattr(cls, attr, property(fget=_getter_maker(attr)))
 
     def get_mode_attrs(self, mode: Union[OsuModeInt, OsuModeStr]) -> Tuple[str]:
         '''Get attrs with mode (str or int): ({`0`: `osu`, `1`: `taiko`, `2`: `catch the beat`, `3`: `mania`})'''
@@ -113,10 +102,12 @@ class RawStars:
 
     @property
     def attrs(self) -> str:
+        '''Get attrs as text'''
         return get_attrs_str(self._raw, self._raw_attrs)
 
     @property
     def attrs_dict(self) -> ModeResult:
+        '''Get attrs as dict'''
         return get_attrs_dict(self._raw, self._raw_attrs)
 
     @property
@@ -140,6 +131,7 @@ class RawStars:
         return self.get_mode('mania')
 
 
+@_read_only_property_generator
 class RawPP:
     '''
     Raw PP Calculation results: `RawPP` (read only).
@@ -169,36 +161,24 @@ class RawPP:
     acc: Optional[float]
     total: Optional[float]
 
-    def __repr__(self) -> str:
+    def __repr__(self) -> _str:
         return f'<RawPP object ({self.attrs})>'
-
-    def __new__(cls, *_) -> 'RawPP':
-        cls.__init_property__()
-        obj: 'RawPP' = super().__new__(cls)
-        return obj
 
     def __init__(self, raw: NativeRawPP):
         self._raw = raw
 
-    @classmethod
-    def __init_property__(cls) -> None:
-        def _getter_maker(attr) -> Callable[['RawPP'], Any]:
-            def _fget(c: 'RawPP') -> Any:
-                return getattr(c._raw, attr)
-            return _fget
-
-        for attr in cls._raw_attrs:
-            setattr(cls, attr, property(fget=_getter_maker(attr)))
-
     @property
-    def attrs(self) -> str:
+    def attrs(self) -> _str:
+        '''Get attrs as text'''
         return get_attrs_str(self._raw, self._raw_attrs)
 
     @property
-    def attrs_dict(self) -> Dict[str, Optional[float]]:
+    def attrs_dict(self) -> Dict[_str, Optional[float]]:
+        '''Get attrs as dict'''
         return get_attrs_dict(self._raw, self._raw_attrs)
 
 
+@_read_only_property_generator
 class CalcResult:
     '''
     PP Calculation results: `CalcResult` (read only).
@@ -234,28 +214,14 @@ class CalcResult:
     def __repr__(self) -> str:
         return f'<CalcResult object ({self.attrs})>'
 
-    def __new__(cls, *_) -> 'CalcResult':
-        cls.__init_property__()
-        obj: 'CalcResult' = super().__new__(cls)
-        return obj
-
     def __init__(self, raw: NativeRawCalcResult) -> None:
         self.raw_pp = RawPP(raw.raw_pp)
         self.raw_stars = RawStars(raw.raw_stars)
         self._raw = raw
 
-    @classmethod
-    def __init_property__(cls) -> None:
-        def _getter_maker(attr) -> Callable[['CalcResult'], Any]:
-            def _fget(c: 'CalcResult') -> Any:
-                return getattr(c._raw, attr)
-            return _fget
-
-        for attr in cls._raw_attrs:
-            setattr(cls, attr, property(fget=_getter_maker(attr)))
-
     @property
     def attrs(self) -> str:
+        '''Get attrs as text'''
         return ', '.join((
             get_attrs_str(self._raw, self._raw_attrs),
             get_attrs_str(self, self._manual_impl),
@@ -263,5 +229,6 @@ class CalcResult:
 
     @property
     def attrs_dict(self) -> Dict[str, Union[RawPP, RawStars, int, float]]:
+        '''Get attrs as dict'''
         return {**get_attrs_dict(self._raw, self._raw_attrs),
                 **get_attrs_dict(self, self._manual_impl)}
