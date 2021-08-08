@@ -3,7 +3,14 @@ use peace_performance::{
 };
 use pyo3::PyErr;
 use std::collections::HashMap;
+
+use std::fs::File as SyncFile;
+
+#[cfg(feature = "async_tokio")]
 use tokio::fs::File as AsyncFile;
+
+#[cfg(feature = "async_std")]
+use async_std::fs::File as AsyncFile;
 
 use crate::python::exceptions::ParseBeatmapError;
 
@@ -63,7 +70,7 @@ pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
 /// Parse the beatmap file synchronously
 #[inline(always)]
 #[timed::timed(duration(printer = "trace!"))]
-pub fn sync_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
+pub fn sync_parse_beatmap(file: SyncFile) -> Result<RawBeatmap, PyErr> {
     RawBeatmap::parse_sync(file)
         .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
 }

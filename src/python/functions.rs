@@ -34,9 +34,9 @@ pub fn read_beatmap(py: Python, path: PathBuf) -> PyResult<&PyAny> {
 }
 
 #[pyfunction]
-pub fn read_beatmap_sync(py: Python, path: PathBuf) -> Beatmap {
+pub fn read_beatmap_sync(py: Python, path: PathBuf) -> PyResult<Beatmap> {
     let file = common::sync_read_file(path)?;
-    pp::sync_parse_beatmap(file)?
+    Ok(Beatmap(pp::sync_parse_beatmap(file)?))
 }
 
 #[pyfunction]
