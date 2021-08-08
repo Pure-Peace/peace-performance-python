@@ -13,14 +13,21 @@ class Beatmap:
     ### Examples:
     ```
     # Read and parse .osu files from local
-    beatmap = await Beatmap('path_to_osu_file')
+    beatmap = await Beatmap('path_to_osu_file') # Default is async (need await)
     # Same as
-    beatmap = await Beatmap.create('path_to_osu_file')
+    beatmap = await Beatmap.create_async('path_to_osu_file')
+    # Sync
+    beatmap = Beatmap.create_sync('path_to_osu_file')
+    # or
+    beatmap = Beatmap('path_to_osu_file', initial_sync = True)
+
 
     # We can reload this .osu files as:
     await beatmap
     # or
-    await beatmap.reload()
+    await beatmap.reload_async()
+    # Sync
+    beatmap.reload_sync()
 
     # We can load another .osu files as:
     await beatmap.async_init('path_to_another_osu_file')
@@ -41,32 +48,52 @@ class Beatmap:
     _raw: Optional[NativeBeatmap]
     path: Path
 
-    def __init__(self, osu_file_path: Path) -> None:
+    def __init__(self, osu_file_path: Path, initial_sync: bool = False) -> None:
         '''Init async with .osu files'''
         self.path = osu_file_path
+        if initial_sync:
+            self.reload_sync()
 
     def __repr__(self) -> str:
         return f'<Beatmap object (path: {self.path}, is_initialized: {self.is_initialized})>'
 
     def __await__(self):
-        return self.reload().__await__()
+        return self.reload_async().__await__()
 
-    async def reload(self) -> 'Beatmap':
-        '''Reload this .osu files'''
-        self._raw = await raw_read_beatmap(self.path)
+    async def reload_async(self) -> 'Beatmap':
+        '''(Async) Reload this .osu files'''
+        self._raw = await raw_read_beatmap_async(self.path)
+        return self
+
+    def reload_sync(self) -> 'Beatmap':
+        '''(Sync) Reload this .osu files'''
+        self._raw = raw_read_beatmap_sync(self.path)
         return self
 
     async def async_init(self, osu_file_path: Path) -> 'Beatmap':
-        '''Load the .osu files with path'''
+        '''(Async) Load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = await raw_read_beatmap(self.path)
+        self._raw = await raw_read_beatmap_async(self.path)
+        return self
+
+    def sync_init(self, osu_file_path: Path) -> 'Beatmap':
+        '''(Sync) Load the .osu files with path'''
+        self.path = osu_file_path
+        self._raw = raw_read_beatmap_sync(self.path)
         return self
 
     @classmethod
-    async def create(cls, osu_file_path: Path) -> 'Beatmap':
-        '''Init async with .osu files'''
+    async def create_async(cls, osu_file_path: Path) -> 'Beatmap':
+        '''(Async) Init with .osu files'''
         obj = cls(osu_file_path)
         await obj.async_init(osu_file_path)
+        return obj
+
+    @classmethod
+    def create_sync(cls, osu_file_path: Path) -> 'Beatmap':
+        '''(Sync) Init with .osu files'''
+        obj = cls(osu_file_path)
+        obj.sync_init(osu_file_path)
         return obj
 
     @property
@@ -75,6 +102,11 @@ class Beatmap:
         return self._raw is not None
 
 
-async def raw_read_beatmap(osu_file_path: Path) -> NativeBeatmap:
-    '''Read and parse .osu files from local, returns native beatmap object'''
+async def raw_read_beatmap_async(osu_file_path: Path) -> NativeBeatmap:
+    '''(Async) Read and parse .osu files from local, returns native beatmap object'''
     return await _pp_rust.read_beatmap(osu_file_path)
+
+
+def raw_read_beatmap_sync(osu_file_path: Path) -> NativeBeatmap:
+    '''(Sync) Read and parse .osu files from local, returns native beatmap object'''
+    return _pp_rust.read_beatmap_sync(osu_file_path)
