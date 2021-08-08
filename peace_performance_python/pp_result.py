@@ -263,5 +263,5 @@ class CalcResult:
 
     @property
     def attrs_dict(self) -> Dict[str, Union[RawPP, RawStars, int, float]]:
-        return (get_attrs_dict(self._raw, self._raw_attrs) |
-                get_attrs_dict(self, self._manual_impl))
+        return {**get_attrs_dict(self._raw, self._raw_attrs),
+                **get_attrs_dict(self, self._manual_impl)}
