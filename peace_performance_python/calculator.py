@@ -16,7 +16,7 @@ class Calculator:
 
     ### Examples:
     ```
-    beatmap = await Beatmap('path_to_osu_file')
+    beatmap = Beatmap('path_to_osu_file')
     c = Calculator()
     c.set_acc(98.8)
     c.set_combo(727)
@@ -101,7 +101,7 @@ class Calculator:
 
         ### Examples:
         ```
-        beatmap = await Beatmap('path_to_osu_file')
+        beatmap = Beatmap('path_to_osu_file')
         c = Calculator()
         c.set_acc(98.8)
         c.set_combo(727)
