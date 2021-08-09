@@ -16,8 +16,9 @@ Support synchronous and asynchronous(tokio and async_std).
 ```python
 from peace_performance_python.prelude import *
 
-beatmap = await Beatmap.create_async('path_to_osu_file') # Beatmap can be cached and reused!
-result = Calculator(acc=98.8, miss=3).calculate(beatmap) # Calculator can also
+beatmap = Beatmap('path_to_osu_file') # Beatmap can be cached and reused!
+beatmap = await Beatmap.create_async_rs('path_to_osu_file') # Async support!
+result = Calculator(acc=98.8, miss=3).calculate(beatmap)
 ```
 
 ## Full Examples
@@ -29,10 +30,10 @@ import sys
 # import all
 from peace_performance_python.prelude import *
 # or
-# from peace_performance_python.beatmap import Beatmap
+# from peace_performance_python.beatmap import Beatmap, AsyncBeatmapRust, AsyncBeatmapPython
 # from peace_performance_python.calculator import Calculator
 
-from tests import join_beatmap, HITORIGOTO
+from tests import join_beatmap, HITORIGOTO, FORGIVING
 
 
 # Initial Rust logger (optional)
@@ -75,13 +76,18 @@ def calculate_5(beatmap: Beatmap) -> CalcResult:
     return Calculator(acc=98.8, miss=3).calculate(beatmap)
 
 
-async def main():
+async def main() -> None:
     path = join_beatmap(HITORIGOTO)
     # Load beatmap
-    beatmap = await Beatmap.create_async(path)
-    # Sync
-    # beatmap = Beatmap.create_sync(path) 
-    # beatmap = Beatmap(path, initial_sync = True)
+    beatmap = Beatmap(path)
+    # beatmap = Beatmap.create(path)
+    
+    # Async
+    # beatmap = await Beatmap.create_async_rs(path)
+    # beatmap = await Beatmap.create_async_py(path)
+    # or
+    # beatmap = await AsyncBeatmapRust(path)
+    # beatmap = await AsyncBeatmapPython(path)
     print('\n**** Beatmap:', beatmap)
 
     # Calculate pp
@@ -104,6 +110,12 @@ async def main():
     # Calc again
     result2 = c.calculate(beatmap)
     print('\n***** result2 as dict:', result2)
+
+    # Load another .osu files
+    path2 = join_beatmap(UNFORGIVING)
+    beatmap.init(path2)
+    print(beatmap)
+
 
 if __name__ == '__main__':
     asyncio.run(main())
