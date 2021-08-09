@@ -33,7 +33,7 @@ from peace_performance_python.prelude import *
 # from peace_performance_python.beatmap import Beatmap, AsyncBeatmapRust, AsyncBeatmapPython
 # from peace_performance_python.calculator import Calculator
 
-from tests import join_beatmap, HITORIGOTO, FORGIVING
+from tests import join_beatmap, HITORIGOTO, UNFORGIVING
 
 
 # Initial Rust logger (optional)
