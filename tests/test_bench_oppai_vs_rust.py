@@ -24,7 +24,7 @@ def calc_rust(path) -> Callable[[None], None]:
     p = join_beatmap(path)
 
     def wrap() -> None:
-        beatmap: Beatmap = Beatmap.create_sync(path)
+        beatmap = Beatmap.create(path)
         c = Calculator()
         c.set_with_dict({'acc': 98.8, 'miss': 3})
         calculate_pp(beatmap, c)

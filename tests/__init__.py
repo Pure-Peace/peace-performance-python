@@ -25,8 +25,8 @@ def read_beatmap(path: str, loop: Optional['AbstractEventLoop'] = None) -> Calla
     p = join_beatmap(path)
 
     def wrapper_async() -> None:
-        loop.run_until_complete(Beatmap(p))
+        loop.run_until_complete(Beatmap.create_async_rs(p))
 
     def wrapper_sync() -> None:
-        Beatmap.create_sync(p)
+        Beatmap.create(p)
     return wrapper_async if loop else wrapper_sync
