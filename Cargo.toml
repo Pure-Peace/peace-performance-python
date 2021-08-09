@@ -1,6 +1,6 @@
 [package]
 name = "peace-performance-python"
-version = "0.2.4"
+version = "0.2.5"
 authors = ["Pure-Peace <940857703@qq.com>"]
 edition = "2018"
 
@@ -19,6 +19,7 @@ default = [
     "fruits",
     "mania",
     "async_tokio",
+    "peace_edition",
     "no_sliders_no_leniency",
 ]
 
