@@ -58,19 +58,47 @@ pub fn mode_any_pp(mode: u8, beatmap: &RawBeatmap) -> AnyPP {
     }
 }
 
-/// Parse the beatmap file asynchronously
-#[inline(always)]
-#[timed::timed(duration(printer = "trace!"))]
-pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
-    RawBeatmap::parse(file)
-        .await
-        .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
+macro_rules! parse_beatmap_body {
+    ($parse_method:ident, $file:ident) => {{
+        RawBeatmap::$parse_method($file)
+            .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
+    }};
+
+    (async $parse_method:ident, $file:ident) => {{
+        RawBeatmap::$parse_method($file).await.map_err(|err| {
+            ParseBeatmapError::new_err(format!("Could not async parse beatmap: {}", err))
+        })
+    }};
 }
 
-/// Parse the beatmap file synchronously
-#[inline(always)]
-#[timed::timed(duration(printer = "trace!"))]
-pub fn sync_parse_beatmap(file: SyncFile) -> Result<RawBeatmap, PyErr> {
-    RawBeatmap::parse_sync(file)
-        .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
+macro_rules! parse_beatmap {
+    ($parse_method:ident) => {
+        #[inline(always)]
+        #[timed::timed(duration(printer = "trace!"))]
+        pub fn sync_parse_beatmap(file: SyncFile) -> Result<RawBeatmap, PyErr> {
+            parse_beatmap_body!($parse_method, file)
+        }
+    };
+
+    (async $parse_method:ident) => {
+        #[inline(always)]
+        #[timed::timed(duration(printer = "trace!"))]
+        pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
+            parse_beatmap_body!(async $parse_method, file)
+        }
+    };
 }
+
+#[cfg(any(feature = "async_tokio", feature = "async_std"))]
+parse_beatmap!(async parse);
+
+#[cfg(any(feature = "async_tokio", feature = "async_std"))]
+parse_beatmap!(parse_sync);
+
+#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
+pub async fn async_parse_beatmap(_file: SyncFile) -> Result<RawBeatmap, PyErr> {
+    unimplemented!("Any async features (async_tokio, async_std) are not enabled.")
+}
+
+#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
+parse_beatmap!(parse);

@@ -104,7 +104,7 @@ class Beatmap:
 
 async def raw_read_beatmap_async(osu_file_path: Path) -> NativeBeatmap:
     '''(Async) Read and parse .osu files from local, returns native beatmap object'''
-    return await _pp_rust.read_beatmap(osu_file_path)
+    return await _pp_rust.read_beatmap_async(osu_file_path)
 
 
 def raw_read_beatmap_sync(osu_file_path: Path) -> NativeBeatmap:
