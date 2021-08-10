@@ -7,7 +7,6 @@ Source: https://github.com/cmyui/cmyui_pkg
 '''
 
 import ctypes
-import functools
 from types import TracebackType
 from typing import Optional
 from typing import Type

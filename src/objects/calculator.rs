@@ -1,5 +1,5 @@
 use peace_performance::PpResult;
-use pyo3::prelude::{pyclass, pymethods};
+use pyo3::{PyResult, Python, prelude::{pyclass, pymethods}, types::PyDict};
 
 use crate::{methods::pp, objects::Beatmap};
 use super::CalcResult;
@@ -53,6 +53,41 @@ impl Calculator {
         self.passed_obj = None;
         self.combo = None;
         self.miss = None;
+    }
+
+    #[getter]
+    pub fn as_string(&self) -> String {
+        format!(
+            "mode: {:?}, mods: {:?}, n50: {:?}, n100: {:?}, n300: {:?}, katu: {:?}, 
+                acc: {:?}, passed_obj: {:?}, combo: {:?}, miss: {:?}",
+            self.mode,
+            self.mods,
+            self.n50,
+            self.n100,
+            self.n300,
+            self.katu,
+            self.acc,
+            self.passed_obj,
+            self.combo,
+            self.miss,
+        )
+    }
+
+    #[getter]
+    pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        let d = crate::pyo3_py_dict!(py, self; {
+            mode,
+            mods,
+            n50,
+            n100,
+            n300,
+            katu,
+            acc,
+            passed_obj,
+            combo,
+            miss
+        });
+        Ok(d)
     }
 }
 

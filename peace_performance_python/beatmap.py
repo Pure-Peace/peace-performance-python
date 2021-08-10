@@ -1,6 +1,7 @@
 from .types import NativeBeatmap
 
-from ._peace_performance import pp as _pp_rust
+from ._peace_performance import beatmap as _beatmap_rust
+
 
 from typing import Optional
 from pathlib import Path
@@ -68,12 +69,12 @@ class Beatmap:
     def init(self, osu_file_path: Path) -> 'Beatmap':
         '''Load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = _pp_rust.read_beatmap_sync(self.path)
+        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
         return self
 
     def reload(self) -> 'Beatmap':
         '''Reload this .osu files'''
-        self._raw = _pp_rust.read_beatmap_sync(self.path)
+        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
         return self
 
     @classmethod
@@ -94,7 +95,7 @@ class Beatmap:
         Load the .osu files with path
         '''
         self.path = osu_file_path
-        self._raw = await _pp_rust.read_beatmap_async(self.path)
+        self._raw = await _beatmap_rust.read_beatmap_async(self.path)
         return self
 
     async def reload_async_rs(self) -> 'Beatmap':
@@ -104,7 +105,7 @@ class Beatmap:
         ### *May have performance issues: Rust future -> Python coroutine 
 
         Reload this .osu files'''
-        self._raw = await _pp_rust.read_beatmap_async(self.path)
+        self._raw = await _beatmap_rust.read_beatmap_async(self.path)
         return self
 
     @classmethod
@@ -117,7 +118,7 @@ class Beatmap:
         Create Beatmap with .osu files'''
         obj: 'Beatmap' = cls.__new__(cls)
         obj.path = osu_file_path
-        obj._raw = await _pp_rust.read_beatmap_async(obj.path)
+        obj._raw = await _beatmap_rust.read_beatmap_async(obj.path)
         return obj
 
     # Python Async wrapper ------------
@@ -126,14 +127,14 @@ class Beatmap:
         ### Python Async wrapper
         Load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = _pp_rust.read_beatmap_sync(self.path)
+        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
         return self
 
     async def reload_async_py(self) -> 'Beatmap':
         '''
         ### Python Async wrapper
         Reload this .osu files'''
-        self._raw = _pp_rust.read_beatmap_sync(self.path)
+        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
         return self
 
     @classmethod
@@ -143,7 +144,7 @@ class Beatmap:
         Create Beatmap with .osu files'''
         obj: 'Beatmap' = cls.__new__(cls)
         obj.path = osu_file_path
-        obj._raw = _pp_rust.read_beatmap_sync(obj.path)
+        obj._raw = _beatmap_rust.read_beatmap_sync(obj.path)
         return obj
 
     # Properties ------------
@@ -178,12 +179,12 @@ class AsyncBeatmapRust(Beatmap):
     async def init(self, osu_file_path: Path) -> 'Beatmap':
         '''Async load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = await _pp_rust.read_beatmap_async(self.path)
+        self._raw = await _beatmap_rust.read_beatmap_async(self.path)
         return self
 
     async def reload(self) -> 'Beatmap':
         '''Async reload this .osu files'''
-        self._raw = await _pp_rust.read_beatmap_async(self.path)
+        self._raw = await _beatmap_rust.read_beatmap_async(self.path)
         return self
 
     @classmethod
@@ -191,7 +192,7 @@ class AsyncBeatmapRust(Beatmap):
         '''Async create Beatmap with .osu files'''
         obj = cls(osu_file_path)
         obj.path = osu_file_path
-        obj._raw = await _pp_rust.read_beatmap_async(obj.path)
+        obj._raw = await _beatmap_rust.read_beatmap_async(obj.path)
         return obj
 
 
@@ -217,12 +218,12 @@ class AsyncBeatmapPython(Beatmap):
     async def init(self, osu_file_path: Path) -> 'Beatmap':
         '''Async load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = _pp_rust.read_beatmap_sync(self.path)
+        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
         return self
 
     async def reload(self) -> 'Beatmap':
         '''Async reload this .osu files'''
-        self._raw = _pp_rust.read_beatmap_sync(self.path)
+        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
         return self
 
     @classmethod
@@ -230,7 +231,7 @@ class AsyncBeatmapPython(Beatmap):
         '''Async create Beatmap with .osu files'''
         obj = cls(osu_file_path)
         obj.path = osu_file_path
-        obj._raw = _pp_rust.read_beatmap_sync(obj.path)
+        obj._raw = _beatmap_rust.read_beatmap_sync(obj.path)
         return obj
 
 
@@ -239,7 +240,7 @@ def raw_read_beatmap_sync(osu_file_path: Path) -> NativeBeatmap:
     ### Sync
     Read and parse .osu files from local, returns native beatmap object
     '''
-    return _pp_rust.read_beatmap_sync(osu_file_path)
+    return _beatmap_rust.read_beatmap_sync(osu_file_path)
 
 
 async def raw_read_beatmap_async_rs(osu_file_path: Path) -> NativeBeatmap:
@@ -250,7 +251,7 @@ async def raw_read_beatmap_async_rs(osu_file_path: Path) -> NativeBeatmap:
     ### *May have performance issues: Rust future -> Python coroutine 
     ### *Only available when the asynchronous features (`async_tokio`, `async_std`) is enabled.
     '''
-    return await _pp_rust.read_beatmap_async(osu_file_path)
+    return await _beatmap_rust.read_beatmap_async(osu_file_path)
 
 
 async def raw_read_beatmap_async_py(osu_file_path: Path) -> NativeBeatmap:
@@ -258,4 +259,4 @@ async def raw_read_beatmap_async_py(osu_file_path: Path) -> NativeBeatmap:
     ### Python Async Wrapper
     Read and parse .osu files from local, returns native beatmap object
     '''
-    return _pp_rust.read_beatmap_sync(osu_file_path)
+    return _beatmap_rust.read_beatmap_sync(osu_file_path)

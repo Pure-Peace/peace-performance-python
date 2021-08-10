@@ -1,6 +1,7 @@
 # peace-performance-python
 
-*Fast, To calculate star ratings and performance points for all osu! gamemodes*
+*Fast, To calculate star ratings and performance points for all osu! gamemodes,*
+*And, quickly parse Beatmap into python objects.*
 
 **[peace-performance](https://github.com/Pure-Peace/peace-performance)** (Rust) binding for python based on [PyO3](https://github.com/PyO3/pyo3).
 

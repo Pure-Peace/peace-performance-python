@@ -1,3 +1,4 @@
+use peace_performance::GameMode;
 use pyo3::PyErr;
 use std::path::PathBuf;
 
@@ -36,6 +37,31 @@ pub fn sync_read_file(path: PathBuf) -> Result<SyncFile, PyErr> {
             err
         ))),
     }
+}
+
+/// osu! mode to string
+#[inline(always)]
+pub fn osu_mode_str(mode: &GameMode) -> String {
+    match mode {
+        GameMode::STD => "std",
+        GameMode::TKO => "taiko",
+        GameMode::CTB => "ctb",
+        GameMode::MNA => "mania",
+    }
+    .into()
+}
+
+/// osu! mode int to string
+#[inline(always)]
+pub fn osu_mode_int_str(mode: u8) -> String {
+    match mode {
+        0 => "std",
+        1 => "taiko",
+        2 => "ctb",
+        3 => "mania",
+        _ => "unknown",
+    }
+    .into()
 }
 
 #[cfg(any(feature = "async_tokio", feature = "async_std"))]
