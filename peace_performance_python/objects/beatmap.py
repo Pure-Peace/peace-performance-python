@@ -1,10 +1,11 @@
+from .parsing import DifficultyPoint, HitObject, TimingPoint
 from ..utils import _read_only_property_generator
 from ..types import NativeBeatmap
 
 from .._peace_performance import beatmap as _beatmap_rust
 
 
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 from pathlib import Path
 
 
@@ -12,6 +13,41 @@ from pathlib import Path
 class Beatmap:
     '''
     The Beatmap used to calculate the pp, it contains the parsed .osu beatmap.
+
+    `path`: `Optional[Path]`
+
+    `mode`: `int`
+
+    `mode_str`: `str`
+
+    `version`: `int`
+
+    `n_circles`: `int`
+
+    `n_sliders`: `int`
+
+    `n_spinners`: `int`
+
+    `ar`: `float`
+
+    `od`: `float`
+
+    `cs`: `float`
+
+    `hp`: `float`
+
+    `sv`: `float`
+
+    `tick_rate`: `float`
+
+    `stack_leniency`: `Optional[float]`
+
+    `hit_objects`: `Optional[List[HitObject]]`
+
+    `timing_points`: `Optional[List[TimingPoint]]`
+
+    `difficulty_points`: `Optional[List[DifficultyPoint]]`
+
 
     ### Examples:
     ```
@@ -58,25 +94,33 @@ class Beatmap:
                   'n_spinners', 'ar', 'od', 'cs',
                   'hp', 'sv', 'tick_rate', 'mode',
                   'mode_str', 'stack_leniency',)
-    _extra_attrs = ('_raw', 'path',)
+    _extra_attrs = ('_raw', 'path', '_hit_objects',
+                    '_timing_points', '_difficulty_points',)
     __slots__ = _raw_attrs + _extra_attrs
 
     _raw: Optional[NativeBeatmap]
     path: Optional[Path]
     # raw attrs
+    mode: int
+    mode_str: str
     version: int
+
     n_circles: int
     n_sliders: int
     n_spinners: int
+
     ar: float
     od: float
     cs: float
     hp: float
     sv: float
     tick_rate: float
-    mode: int
-    mode_str: str
     stack_leniency: Optional[float]
+
+    # cache needed attrs
+    hit_objects: Optional[List[HitObject]]
+    timing_points: Optional[List[TimingPoint]]
+    difficulty_points: Optional[List[DifficultyPoint]]
 
     def __init__(self, osu_file_path: Path) -> 'Beatmap':
         '''Init with .osu files'''
@@ -84,7 +128,7 @@ class Beatmap:
         self._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
 
     def __repr__(self) -> str:
-        return f'<Beatmap object ({self.attrs})>'
+        return f'<Beatmap object ({self.attrs}), hidden: hit_objects, timing_points, difficulty_points>'
 
     # Sync ------------
     def init(self, osu_file_path: Path) -> 'Beatmap':
@@ -182,6 +226,46 @@ class Beatmap:
     def attrs_dict(self) -> Dict[str, Optional[float]]:
         '''Get attrs as dict'''
         return {'path': self.path, 'is_initialized': self.is_initialized, **self._raw.as_dict}
+
+    # Cache needed ------------
+    @property
+    def hit_objects(self) -> Optional[List[HitObject]]:
+        '''Returns wrapped HitObject object list'''
+        _attr = getattr(self, '_hit_objects', None)
+        if _attr:
+            return _attr
+        _tmp = self._raw.hit_objects
+        if not _tmp:
+            return _tmp
+        _attr = list(map(lambda obj: HitObject(obj), _tmp))
+        setattr(self, '_hit_objects', _attr)
+        return _attr
+
+    @property
+    def timing_points(self) -> Optional[List[TimingPoint]]:
+        '''Returns wrapped TimingPoint object list'''
+        _attr = getattr(self, '_timing_points', None)
+        if _attr:
+            return _attr
+        _tmp = self._raw.timing_points
+        if not _tmp:
+            return _tmp
+        _attr = list(map(lambda obj: TimingPoint(obj), _tmp))
+        setattr(self, '_timing_points', _attr)
+        return _attr
+
+    @property
+    def difficulty_points(self) -> Optional[List[DifficultyPoint]]:
+        '''Returns wrapped DifficultyPoint object list'''
+        _attr = getattr(self, '_difficulty_points', None)
+        if _attr:
+            return _attr
+        _tmp = self._raw.difficulty_points
+        if not _tmp:
+            return _tmp
+        _attr = list(map(lambda obj: DifficultyPoint(obj), _tmp))
+        setattr(self, '_difficulty_points', _attr)
+        return _attr
 
 
 class AsyncBeatmapRust(Beatmap):

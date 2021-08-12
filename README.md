@@ -110,7 +110,7 @@ async def main() -> None:
 
     # Calc again
     result2 = c.calculate(beatmap)
-    print('\n***** result2 as dict:', result2)
+    print('\n***** result2 as dict:', result2.attrs_dict)
 
     # Load another .osu files
     path2 = join_beatmap(UNFORGIVING)
@@ -129,7 +129,7 @@ if __name__ == '__main__':
  TRACE peace_performance_python::methods::common > function=sync_read_file duration=73.3µs
  TRACE peace_performance_python::methods::pp     > function=sync_parse_beatmap duration=181.9µs
 
-**** Beatmap: <Beatmap object (
+>>>>> Beatmap: <Beatmap object (
         path: ./test_beatmaps/hitorigoto.osu, 
         is_initialized: True, 
         mode: 0, 
@@ -147,7 +147,7 @@ if __name__ == '__main__':
         stack_leniency: None
     )>
 
-***** Calculator as dict: {
+>>>>> Calculator as dict: {
     'mode': None, 
     'mods': None, 
     'n50': None, 
@@ -163,10 +163,10 @@ if __name__ == '__main__':
  TRACE peace_performance_python::objects::calculator > function=calc duration=103.2µs
 
 
-***** result.pp: 152.19204711914062
+>>>>> result.pp: 152.19204711914062
 
 
-***** result as dict: {
+>>>>> result as dict: {
     'mode': 0, 
     'mods': 0, 
     'pp': 152.19204711914062, 
@@ -193,6 +193,113 @@ if __name__ == '__main__':
     }
 
 ...
+```
+
+---
+
+## Beatmap parse
+
+### Examples
+
+```python
+from peace_performance_python.prelude import *
+from tests import join_beatmap, HITORIGOTO
+
+# Initialize Rust logger (optional)
+set_log_level('trace')
+init_logger()
+
+
+def main():
+    path = join_beatmap(HITORIGOTO)
+    # Load beatmap
+    b = Beatmap(path)
+    print('\n>>>>> Beatmap:', b)
+    print('\n>>>>> Beatmap.hit_objects (0-3):', b.hit_objects[:3])
+    print('\n>>>>> Beatmap.timing_points:', b.timing_points)
+    print('\n>>>>> Beatmap.difficulty_points (0-3):', b.difficulty_points[:3])
+    print('\n>>>>> Beatmap.hit_objects[0].pos:', b.hit_objects[0].pos)
+    print('\n>>>>> Beatmap.hit_objects[3].kind:', b.hit_objects[3].kind)
+    print('\n>>>>> Beatmap.hit_objects[3].kind.curve_points:',
+          b.hit_objects[3].kind.curve_points)
+
+    pos_0 = b.hit_objects[0].pos
+    pos_1 = b.hit_objects[1].pos
+    print('\n>>>>> Beatmap object(0):', b.hit_objects[0])
+    print('\n>>>>> Beatmap object(1):', b.hit_objects[1])
+    print('\n>>>>> Beatmap object pos(0):', pos_0)
+    print('\n>>>>> Beatmap object pos(1):', pos_1)
+    print('\n>>>>> Beatmap object pos(0) length, squared:',
+          pos_0.length, pos_0.length_squared)
+    print('\n>>>>> Beatmap object pos(0 and 1) distance:', pos_0.distance(pos_1))
+    print('\n>>>>> Beatmap object pos(0 and 1) add:', pos_0.add(pos_1))
+    print('\n>>>>> Beatmap object pos(0 and 1) sub:', pos_0.sub(pos_1))
+
+
+if __name__ == '__main__':
+    main()
+
+```
+
+### Running results
+
+```rust
+ TRACE peace_performance_python::methods::common > function=sync_read_file duration=78.3µs
+ TRACE peace_performance_python::methods::pp     > function=sync_parse_beatmap duration=193.4µs
+
+>>>>> Beatmap: <Beatmap object (
+        path: ./test_beatmaps/hitorigoto.osu, 
+        is_initialized: True, 
+        mode: 0, mode_str: std, version: 14, 
+        n_circles: 207, n_sliders: 132, n_spinners: 1, 
+        ar: 9, od: 8.5, cs: 4, hp: 6, sv: 1.7, tick_rate: 1, 
+        stack_leniency: None
+    ), hidden: hit_objects, timing_points, difficulty_points>
+
+>>>>> Beatmap.hit_objects (0-3): [
+    <HitObject object (
+        start_time: 536, sound: 4, end_time: 536, kind: circle, pos: (44, 136))>, 
+    <HitObject object (
+        start_time: 717, sound: 0, end_time: 717, kind: circle, pos: (315, 196))>, 
+    <HitObject object (
+        start_time: 899, sound: 0, end_time: 899, kind: slider, pos: (152, 304))>]
+
+>>>>> Beatmap.timing_points: [<TimingPoint object (time: 536, beat_len: 363.63635)>]
+
+>>>>> Beatmap.difficulty_points (0-3): [
+    <DifficultyPoint object (time: 23808, speed_multiplier: 1)>, 
+    <DifficultyPoint object (time: 35445, speed_multiplier: 0.8)>, 
+    <DifficultyPoint object (time: 41263, speed_multiplier: 1)>]
+
+>>>>> Beatmap.hit_objects[0].pos: <Pos2 object (x: 44, y: 136)>
+
+>>>>> Beatmap.hit_objects[3].kind: <HitObjectKind object (
+    kind: slider, pixel_len: Some(85.0), repeats: Some(1), 
+    path_type: Some("perfect_curve"), end_time: None)>
+
+>>>>> Beatmap.hit_objects[3].kind.curve_points: [
+    <Pos2 object (x: 315, y: 196)>, 
+    <Pos2 object (x: 277, y: 176)>, 
+    <Pos2 object (x: 248, y: 145)>]
+
+>>>>> Beatmap object(0): <HitObject object (
+    start_time: 536, sound: 4, end_time: 536, kind: circle, pos: (44, 136))>
+
+>>>>> Beatmap object(1): <HitObject object (
+    start_time: 717, sound: 0, end_time: 717, kind: circle, pos: (315, 196))>
+
+>>>>> Beatmap object pos(0): <Pos2 object (x: 44, y: 136)>
+
+>>>>> Beatmap object pos(1): <Pos2 object (x: 315, y: 196)>
+
+>>>>> Beatmap object pos(0) length, squared: 142.9405517578125 20432.0
+
+>>>>> Beatmap object pos(0 and 1) distance: 277.5625915527344
+
+>>>>> Beatmap object pos(0 and 1) add: <Pos2 object (x: 359, y: 332)>
+
+>>>>> Beatmap object pos(0 and 1) sub: <Pos2 object (x: -271, y: -60)>
+
 ```
 
 ---

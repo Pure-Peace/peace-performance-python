@@ -163,25 +163,27 @@ class HitObjectKind:
 
     `repeats`: `int` | `None`
 
-    `curve_points`: `List<Pos2>` | `None`
+    `curve_points`: `List[Pos2]` | `None`
 
     `path_type`: `str` | `None`
 
     `end_time`: `float` | `None`
 
     '''
-    _raw_attrs = ('kind', 'pixel_len', 'repeats', 'curve_points',
+    _raw_attrs = ('kind', 'pixel_len', 'repeats',
                   'path_type', 'end_time',)
-    _extra_attrs = ('_raw', )
+    _extra_attrs = ('_raw', '_curve_points',)
     __slots__ = _raw_attrs + _extra_attrs
 
     _raw: NativeHitObjectKind
     kind: float
     pixel_len: Optional[float]
     repeats: Optional[int]
-    curve_points: Optional[List[Pos2]]
     path_type: Optional[str]
     end_time: Optional[float]
+
+    # cache needed attrs
+    curve_points: Optional[List[Pos2]]
 
     def __init__(self, raw: NativeHitObjectKind):
         self._raw = raw
@@ -198,6 +200,20 @@ class HitObjectKind:
     def attrs_dict(self) -> Dict[str, float]:
         '''Get attrs as dict'''
         return self._raw.as_dict
+
+    # Cache needed ------------
+    @property
+    def curve_points(self) -> Optional[List[Pos2]]:
+        '''Returns wrapped Pos2 object list'''
+        _attr = getattr(self, '_curve_points', None)
+        if _attr:
+            return _attr
+        _tmp = self._raw.curve_points
+        if not _tmp:
+            return _tmp
+        _attr = list(map(lambda obj: Pos2(obj), _tmp))
+        setattr(self, '_curve_points', _attr)
+        return _attr
 
 
 @_read_only_property_generator
@@ -225,9 +241,8 @@ class HitObject:
 
     '''
     _raw_attrs = ('start_time', 'sound', 'end_time', 'is_circle',
-                  'is_slider', 'is_spinner', 'pos', 'kind_str',
-                  'kind',)
-    _extra_attrs = ('_raw', )
+                  'is_slider', 'is_spinner', 'kind_str',)
+    _extra_attrs = ('_raw', 'kind', 'pos')
     __slots__ = _raw_attrs + _extra_attrs
 
     _raw: NativeHitObject
@@ -237,12 +252,16 @@ class HitObject:
     is_circle: bool
     is_slider: bool
     is_spinner: bool
-    pos: Pos2
     kind_str: str
+
+    # cache needed attrs
+    pos: Pos2
     kind: HitObjectKind
 
     def __init__(self, raw: NativeHitObject):
         self._raw = raw
+        self.pos = Pos2(raw.pos)
+        self.kind = HitObjectKind(raw.kind)
 
     def __repr__(self) -> str:
         return f'<HitObject object ({self.attrs})>'
