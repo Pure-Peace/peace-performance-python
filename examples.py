@@ -3,8 +3,7 @@ import asyncio
 # import all
 from peace_performance_python.prelude import *
 # or
-# from peace_performance_python.beatmap import Beatmap
-# from peace_performance_python.calculator import Calculator
+# from peace_performance_python.objects import Beatmap, Calculator
 
 from tests import join_beatmap, HITORIGOTO, UNFORGIVING
 
@@ -15,8 +14,8 @@ init_logger()
 
 
 # Choose a style you like
-def calculate_1(beatmap: Beatmap) -> CalcResult:
-    return calculate_pp(beatmap, Calculator({'acc': 98.8, 'miss': 3}))
+def calculate(beatmap: Beatmap, calculator: Calculator) -> CalcResult:
+    return calculator.calculate(beatmap)
 
 
 def calculate_2(beatmap: Beatmap) -> CalcResult:
@@ -32,13 +31,13 @@ def calculate_2(beatmap: Beatmap) -> CalcResult:
     # or
     c.setattr('acc', 98.8)
     c.setattr('miss', 3)
-    return calculate_pp(beatmap, c)
+    return calculate(beatmap, c)
 
 
 def calculate_3(beatmap: Beatmap) -> CalcResult:
     c = Calculator()
     c.set_with_dict({'acc': 98.8, 'miss': 3})
-    return calculate_pp(beatmap, c)
+    return calculate(beatmap, c)
 
 
 def calculate_4(beatmap: Beatmap) -> CalcResult:

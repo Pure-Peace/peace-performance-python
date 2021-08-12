@@ -12,7 +12,7 @@ Support synchronous and asynchronous(tokio and async_std).
 
 **Note**: This library is not currently uploaded to PypI, you may need to download it locally for compilation and then import it in python.
 
-## Minimal Examples
+## Minimal Examples (PP Calculate)
 
 ```python
 from peace_performance_python.prelude import *
@@ -22,29 +22,27 @@ beatmap = await Beatmap.create_async_rs('path_to_osu_file') # Async support!
 result = Calculator(acc=98.8, miss=3).calculate(beatmap)
 ```
 
-## Full Examples
+## Full Examples (PP Calculate)
 
 ```python
 import asyncio
-import sys
 
 # import all
 from peace_performance_python.prelude import *
 # or
-# from peace_performance_python.beatmap import Beatmap, AsyncBeatmapRust, AsyncBeatmapPython
-# from peace_performance_python.calculator import Calculator
+# from peace_performance_python.objects import Beatmap, Calculator
 
 from tests import join_beatmap, HITORIGOTO, UNFORGIVING
 
 
-# Initial Rust logger (optional)
+# Initialize Rust logger (optional)
 set_log_level('trace')
 init_logger()
 
 
 # Choose a style you like
-def calculate_1(beatmap: Beatmap) -> CalcResult:
-    return calculate_pp(beatmap, Calculator({'acc': 98.8, 'miss': 3}))
+def calculate(beatmap: Beatmap, calculator: Calculator) -> CalcResult:
+    return calculator.calculate(beatmap)
 
 
 def calculate_2(beatmap: Beatmap) -> CalcResult:
@@ -60,13 +58,13 @@ def calculate_2(beatmap: Beatmap) -> CalcResult:
     # or
     c.setattr('acc', 98.8)
     c.setattr('miss', 3)
-    return calculate_pp(beatmap, c)
+    return calculate(beatmap, c)
 
 
 def calculate_3(beatmap: Beatmap) -> CalcResult:
     c = Calculator()
     c.set_with_dict({'acc': 98.8, 'miss': 3})
-    return calculate_pp(beatmap, c)
+    return calculate(beatmap, c)
 
 
 def calculate_4(beatmap: Beatmap) -> CalcResult:
@@ -82,7 +80,7 @@ async def main() -> None:
     # Load beatmap
     beatmap = Beatmap(path)
     # beatmap = Beatmap.create(path)
-    
+
     # Async
     # beatmap = await Beatmap.create_async_rs(path)
     # beatmap = await Beatmap.create_async_py(path)

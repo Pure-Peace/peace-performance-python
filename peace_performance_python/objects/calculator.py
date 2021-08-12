@@ -1,10 +1,10 @@
-from .common import get_attrs_dict, get_attrs_str
-from .types import NativeCalculator
 from .pp_result import CalcResult
 from .beatmap import Beatmap
-from .utils import _mutable_property_generator
 
-from ._peace_performance import pp as _pp_rust
+from ..utils import _mutable_property_generator, _get_attrs_dict, _get_attrs_str
+from ..types import NativeCalculator
+
+from .._peace_performance import pp as _pp_rust
 
 from typing import Any, Dict, Optional, Union
 
@@ -64,12 +64,12 @@ class Calculator:
     @property
     def attrs(self) -> str:
         '''Get attrs as text'''
-        return get_attrs_str(self._raw, self._raw_attrs)
+        return _get_attrs_str(self._raw, self._raw_attrs)
 
     @property
     def attrs_dict(self) -> Dict[str, Union[int, float, None]]:
         '''Get attrs as dict'''
-        return get_attrs_dict(self._raw, self._raw_attrs)
+        return _get_attrs_dict(self._raw, self._raw_attrs)
 
     def reset(self) -> None:
         '''Set Calculator to the default state'''
@@ -146,13 +146,3 @@ class Calculator:
     def get_passed_obj(val: Optional[int]) -> Optional[int]: ...
     def get_combo(val: Optional[int]) -> Optional[int]: ...
     def get_miss(val: Optional[int]) -> Optional[int]: ...
-
-
-def new_raw_calculator() -> NativeCalculator:
-    '''Create new native calculator'''
-    return _pp_rust.new_calculator()
-
-
-def calculate_pp(beatmap: Beatmap, calculator: Calculator) -> CalcResult:
-    '''Calculate PP with beatmap and calculator'''
-    return calculator.calculate(beatmap)

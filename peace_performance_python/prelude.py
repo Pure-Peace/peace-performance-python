@@ -1,4 +1,2 @@
-from .common import *
-from .beatmap import *
-from .calculator import *
-from .pp_result import *
+from .functions import *
+from .objects import *

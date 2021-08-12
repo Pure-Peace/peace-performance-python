@@ -1,4 +1,4 @@
-from .types import (
+from ..types import (
     ModeResult,
     NativeRawCalcResult,
     NativeRawPP,
@@ -6,8 +6,8 @@ from .types import (
     OsuModeInt,
     OsuModeStr
 )
-from .common import get_attrs_dict, get_attrs_str, osu_mode_str
-from .utils import _read_only_property_generator
+from ..functions.common import osu_mode_str
+from ..utils import _read_only_property_generator, _get_attrs_dict, _get_attrs_str
 
 from typing import Dict, Optional, Tuple, Union
 
@@ -103,12 +103,12 @@ class RawStars:
     @property
     def attrs(self) -> str:
         '''Get attrs as text'''
-        return get_attrs_str(self._raw, self._raw_attrs)
+        return _get_attrs_str(self._raw, self._raw_attrs)
 
     @property
     def attrs_dict(self) -> ModeResult:
         '''Get attrs as dict'''
-        return get_attrs_dict(self._raw, self._raw_attrs)
+        return _get_attrs_dict(self._raw, self._raw_attrs)
 
     @property
     def mode_osu(self) -> ModeResult:
@@ -170,12 +170,12 @@ class RawPP:
     @property
     def attrs(self) -> _str:
         '''Get attrs as text'''
-        return get_attrs_str(self._raw, self._raw_attrs)
+        return _get_attrs_str(self._raw, self._raw_attrs)
 
     @property
     def attrs_dict(self) -> Dict[_str, Optional[float]]:
         '''Get attrs as dict'''
-        return get_attrs_dict(self._raw, self._raw_attrs)
+        return _get_attrs_dict(self._raw, self._raw_attrs)
 
 
 @_read_only_property_generator
@@ -223,12 +223,12 @@ class CalcResult:
     def attrs(self) -> str:
         '''Get attrs as text'''
         return ', '.join((
-            get_attrs_str(self._raw, self._raw_attrs),
-            get_attrs_str(self, self._manual_impl),
+            _get_attrs_str(self._raw, self._raw_attrs),
+            _get_attrs_str(self, self._manual_impl),
         ))
 
     @property
     def attrs_dict(self) -> Dict[str, Union[RawPP, RawStars, int, float]]:
         '''Get attrs as dict'''
-        return {**get_attrs_dict(self._raw, self._raw_attrs),
-                **get_attrs_dict(self, self._manual_impl)}
+        return {**_get_attrs_dict(self._raw, self._raw_attrs),
+                **_get_attrs_dict(self, self._manual_impl)}

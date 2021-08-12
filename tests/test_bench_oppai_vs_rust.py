@@ -3,7 +3,7 @@ import pytest
 import sys
 import os
 
-from peace_performance_python.prelude import Beatmap, Calculator, calculate_pp
+from peace_performance_python.prelude import Beatmap, Calculator
 
 from . import (
     OppaiWrapper,
@@ -27,7 +27,7 @@ def calc_rust(path) -> Callable[[None], None]:
         beatmap = Beatmap.create(path)
         c = Calculator()
         c.set_with_dict({'acc': 98.8, 'miss': 3})
-        calculate_pp(beatmap, c)
+        c.calculate(beatmap)
     return wrap
 
 

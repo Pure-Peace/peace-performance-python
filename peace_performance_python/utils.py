@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Dict, Iterable
 
 
 def _getter_maker(attr: str) -> Callable[[Any], Any]:
@@ -38,3 +38,17 @@ def _read_only_property_generator(cls):
     for attr in cls._raw_attrs:
         setattr(cls, attr, property(fget=_getter_maker(attr)))
     return cls
+
+
+def _get_attrs_str(target: object, attrs: Iterable[str]) -> str:
+    '''Get object attrs as str'''
+    return ', '.join([f'{attr}: {getattr(target, attr)}' for attr in attrs])
+
+
+def _get_attrs_dict(target: object, attrs: Iterable[str]) -> Dict[str, Any]:
+    '''Get object attrs as dict'''
+    def _getattr(target, attr) -> Any:
+        val = getattr(target, attr)
+        dic = getattr(val, 'attrs_dict', None)
+        return dic if dic else val
+    return {attr: _getattr(target, attr) for attr in attrs}

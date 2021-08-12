@@ -1,4 +1,4 @@
-from peace_performance_python.beatmap import Beatmap
+from peace_performance_python import Beatmap
 from .oppai_wrapper import OppaiWrapper
 
 from typing import Callable, Optional, TYPE_CHECKING

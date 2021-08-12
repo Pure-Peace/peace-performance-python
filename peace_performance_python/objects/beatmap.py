@@ -1,6 +1,6 @@
-from .types import NativeBeatmap
+from ..types import NativeBeatmap
 
-from ._peace_performance import beatmap as _beatmap_rust
+from .._peace_performance import beatmap as _beatmap_rust
 
 
 from typing import Optional
@@ -233,30 +233,3 @@ class AsyncBeatmapPython(Beatmap):
         obj.path = osu_file_path
         obj._raw = _beatmap_rust.read_beatmap_sync(obj.path)
         return obj
-
-
-def raw_read_beatmap_sync(osu_file_path: Path) -> NativeBeatmap:
-    '''
-    ### Sync
-    Read and parse .osu files from local, returns native beatmap object
-    '''
-    return _beatmap_rust.read_beatmap_sync(osu_file_path)
-
-
-async def raw_read_beatmap_async_rs(osu_file_path: Path) -> NativeBeatmap:
-    '''
-    ### Real Rust Async
-    Read and parse .osu files from local, returns native beatmap object
-
-    ### *May have performance issues: Rust future -> Python coroutine 
-    ### *Only available when the asynchronous features (`async_tokio`, `async_std`) is enabled.
-    '''
-    return await _beatmap_rust.read_beatmap_async(osu_file_path)
-
-
-async def raw_read_beatmap_async_py(osu_file_path: Path) -> NativeBeatmap:
-    '''
-    ### Python Async Wrapper
-    Read and parse .osu files from local, returns native beatmap object
-    '''
-    return _beatmap_rust.read_beatmap_sync(osu_file_path)

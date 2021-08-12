@@ -1,6 +1,6 @@
 import asyncio
 
-from peace_performance_python.common import rust_sleep
+from peace_performance_python.functions import rust_sleep
 
 loop = asyncio.get_event_loop()
 

@@ -13,7 +13,7 @@ beatmap: Beatmap = loop.run_until_complete(Beatmap.create_async_rs(
 
 @pytest.mark.benchmark(group="bench-pp-calc")
 def test_calculate_1(benchmark) -> CalcResult:
-    def wrap(): calculate_pp(beatmap, Calculator({'acc': 98.8, 'miss': 3}))
+    def wrap(): Calculator({'acc': 98.8, 'miss': 3}).calculate(beatmap)
     benchmark(wrap)
 
 
@@ -32,7 +32,7 @@ def test_calculate_2(benchmark) -> CalcResult:
         # or
         # c.setattr('acc', 98.8)
         # c.setattr('miss', 3)
-        calculate_pp(beatmap, c)
+        c.calculate(beatmap)
     benchmark(wrap)
 
 
@@ -41,7 +41,7 @@ def test_calculate_3(benchmark) -> CalcResult:
     def wrap():
         c = Calculator()
         c.set_with_dict({'acc': 98.8, 'miss': 3})
-        calculate_pp(beatmap, c)
+        c.calculate(beatmap)
     benchmark(wrap)
 
 
