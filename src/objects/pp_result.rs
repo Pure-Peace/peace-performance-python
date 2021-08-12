@@ -162,8 +162,9 @@ crate::pyo3_py_methods!(
         #[getter]
         pub fn as_string(&self) -> String {
             format!(
-                "mode: {}, mods: {}, pp: {}, stars: {}",
+                "mode: {}, mode_str: {}, mods: {}, pp: {}, stars: {}",
                 self.0.mode,
+                osu_mode_int_str(self.0.mode),
                 self.0.mods,
                 self.0.pp,
                 self.0.stars(),
@@ -176,7 +177,7 @@ crate::pyo3_py_methods!(
                 mode,
                 mods,
                 pp
-            }; fn self {stars});
+            }; fn self {mode_str, stars});
             d.set_item("raw_pp", self.raw_pp().as_dict(py)?)?;
             d.set_item("raw_stars", self.raw_stars().as_dict(py)?)?;
             Ok(d)

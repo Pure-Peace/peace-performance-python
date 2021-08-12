@@ -146,7 +146,18 @@ crate::pyo3_py_methods!(DifficultyPoint, {time: f32, speed_multiplier: f32}, imp
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct TimingPoint(pub RawTimingPoint);
-crate::pyo3_py_methods!(TimingPoint, {time: f32, beat_len: f32});
+crate::pyo3_py_methods!(TimingPoint, {time: f32, beat_len: f32}, impl {
+    #[getter]
+    pub fn as_string(&self) -> String {
+        format!("time: {}, beat_len: {}", self.0.time, self.0.beat_len)
+    }
+
+    #[getter]
+    pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        let d = crate::pyo3_py_dict!(py, self.0; {time, beat_len});
+        Ok(d)
+    }
+});
 
 #[pyclass]
 #[derive(Clone, Default, Debug)]
