@@ -84,50 +84,50 @@ class RawStars:
     n_circles: Optional[int]
     n_spinners: Optional[int]
 
-    def __repr__(self) -> str:
-        return f'<RawStars object ({self.attrs})>'
-
     def __init__(self, raw: NativeRawStars):
         self._raw = raw
 
+    def __repr__(self) -> str:
+        return f'<RawStars object ({self.attrs})>'
+
     def get_mode_attrs(self, mode: Union[OsuModeInt, OsuModeStr]) -> Tuple[str]:
-        '''Get attrs with mode (str or int): ({`0`: `osu`, `1`: `taiko`, `2`: `catch the beat`, `3`: `mania`})'''
+        '''Get attrs with gamemode (str or int): ({`0`: `osu`, `1`: `taiko`, `2`: `catch the beat`, `3`: `mania`})'''
         if isinstance(mode, int):
             mode = osu_mode_str(mode)
         return self.mode_attrs.get(mode, tuple())
 
     def get_mode(self, mode: Union[OsuModeInt, OsuModeStr]) -> ModeResult:
-        '''Get attrs Dict with mode (str or int): ({`0`: `osu`, `1`: `taiko`, `2`: `catch the beat`, `3`: `mania`})'''
+        '''Get attrs Dict with gamemode (str or int): ({`0`: `osu`, `1`: `taiko`, `2`: `catch the beat`, `3`: `mania`})'''
         return {attr: getattr(self._raw, attr) for attr in self.get_mode_attrs(mode)}
 
     @property
     def attrs(self) -> str:
         '''Get attrs as text'''
-        return _get_attrs_str(self._raw, self._raw_attrs)
+        return self._raw.as_string
 
     @property
     def attrs_dict(self) -> ModeResult:
         '''Get attrs as dict'''
-        return _get_attrs_dict(self._raw, self._raw_attrs)
+        return self._raw.as_dict
 
     @property
     def mode_osu(self) -> ModeResult:
-        '''RawStars info with mode `osu`'''
+        '''RawStars info with gamemode `osu`'''
         return self.get_mode('osu')
 
     @property
     def mode_taiko(self) -> ModeResult:
-        '''RawStars info with mode `taiko`'''
+        '''RawStars info with gamemode `taiko`'''
         return self.get_mode('taiko')
 
     @property
     def mode_ctb(self) -> ModeResult:
-        '''RawStars info with mode `ctb`'''
+        '''RawStars info with gamemode `ctb`'''
         return self.get_mode('ctb')
 
     @property
     def mode_mania(self) -> ModeResult:
-        '''RawStars info with mode `mania`'''
+        '''RawStars info with gamemode `mania`'''
         return self.get_mode('mania')
 
 
@@ -161,21 +161,21 @@ class RawPP:
     acc: Optional[float]
     total: Optional[float]
 
-    def __repr__(self) -> _str:
-        return f'<RawPP object ({self.attrs})>'
-
     def __init__(self, raw: NativeRawPP):
         self._raw = raw
+
+    def __repr__(self) -> _str:
+        return f'<RawPP object ({self.attrs})>'
 
     @property
     def attrs(self) -> _str:
         '''Get attrs as text'''
-        return _get_attrs_str(self._raw, self._raw_attrs)
+        return self._raw.as_string
 
     @property
     def attrs_dict(self) -> Dict[_str, Optional[float]]:
         '''Get attrs as dict'''
-        return _get_attrs_dict(self._raw, self._raw_attrs)
+        return self._raw.as_dict
 
 
 @_read_only_property_generator
@@ -207,28 +207,29 @@ class CalcResult:
     raw_pp: RawPP
     raw_stars: RawStars
     mode: int
+    mode_str: str
     mods: int
     pp: float
     stars: float
 
-    def __repr__(self) -> str:
-        return f'<CalcResult object ({self.attrs})>'
-
     def __init__(self, raw: NativeRawCalcResult) -> None:
+        self._raw = raw
         self.raw_pp = RawPP(raw.raw_pp)
         self.raw_stars = RawStars(raw.raw_stars)
-        self._raw = raw
+
+    def __repr__(self) -> str:
+        return f'<CalcResult object ({self.attrs})>'
 
     @property
     def attrs(self) -> str:
         '''Get attrs as text'''
         return ', '.join((
-            _get_attrs_str(self._raw, self._raw_attrs),
+            self._raw.as_string,
             _get_attrs_str(self, self._manual_impl),
         ))
 
     @property
     def attrs_dict(self) -> Dict[str, Union[RawPP, RawStars, int, float]]:
         '''Get attrs as dict'''
-        return {**_get_attrs_dict(self._raw, self._raw_attrs),
+        return {**self._raw.as_dict,
                 **_get_attrs_dict(self, self._manual_impl)}

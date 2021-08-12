@@ -81,7 +81,7 @@ async def main() -> None:
 
     # Calc again
     result2 = c.calculate(beatmap)
-    print('\n***** result2 as dict:', result2)
+    print('\n***** result2 as dict:', result2.attrs_dict)
 
     # Load another .osu files
     path2 = join_beatmap(UNFORGIVING)

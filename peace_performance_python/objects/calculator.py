@@ -1,7 +1,7 @@
 from .pp_result import CalcResult
 from .beatmap import Beatmap
 
-from ..utils import _mutable_property_generator, _get_attrs_dict, _get_attrs_str
+from ..utils import _mutable_property_generator
 from ..types import NativeCalculator
 
 from .._peace_performance import pp as _pp_rust
@@ -64,12 +64,12 @@ class Calculator:
     @property
     def attrs(self) -> str:
         '''Get attrs as text'''
-        return _get_attrs_str(self._raw, self._raw_attrs)
+        return self._raw.as_string
 
     @property
     def attrs_dict(self) -> Dict[str, Union[int, float, None]]:
         '''Get attrs as dict'''
-        return _get_attrs_dict(self._raw, self._raw_attrs)
+        return self._raw.as_dict
 
     def reset(self) -> None:
         '''Set Calculator to the default state'''

@@ -12,7 +12,9 @@ Support synchronous and asynchronous(tokio and async_std).
 
 **Note**: This library is not currently uploaded to PypI, you may need to download it locally for compilation and then import it in python.
 
-## Minimal Examples (PP Calculate)
+## PP Calculate
+
+### Minimal Examples
 
 ```python
 from peace_performance_python.prelude import *
@@ -22,7 +24,7 @@ beatmap = await Beatmap.create_async_rs('path_to_osu_file') # Async support!
 result = Calculator(acc=98.8, miss=3).calculate(beatmap)
 ```
 
-## Full Examples (PP Calculate)
+### Full Examples
 
 ```python
 import asyncio
@@ -124,10 +126,26 @@ if __name__ == '__main__':
 ### Running results
 
 ```rust
- TRACE peace_performance_python::methods::common > function=async_read_file duration=319µs
- TRACE peace_performance_python::methods::pp     > function=async_parse_beatmap duration=421.3µs
+ TRACE peace_performance_python::methods::common > function=sync_read_file duration=73.3µs
+ TRACE peace_performance_python::methods::pp     > function=sync_parse_beatmap duration=181.9µs
 
-**** Beatmap: <Beatmap object (path: ./test_beatmaps/hitorigoto.osu, is_initialized: True)>
+**** Beatmap: <Beatmap object (
+        path: ./test_beatmaps/hitorigoto.osu, 
+        is_initialized: True, 
+        mode: 0, 
+        mode_str: std, 
+        version: 14, 
+        n_circles: 207, 
+        n_sliders: 132, 
+        n_spinners: 1, 
+        ar: 9, 
+        od: 8.5, 
+        cs: 4, 
+        hp: 6, 
+        sv: 1.7, 
+        tick_rate: 1, 
+        stack_leniency: None
+    )>
 
 ***** Calculator as dict: {
     'mode': None, 
@@ -141,8 +159,8 @@ if __name__ == '__main__':
     'combo': None, 
     'miss': 3
     }
- TRACE peace_performance_python::methods::pp     > function=calc_with_any_pp duration=98.3µs
- TRACE peace_performance_python::objects::calculator > function=calc duration=238µs
+ TRACE peace_performance_python::methods::pp         > function=calc_with_any_pp duration=55.7µs
+ TRACE peace_performance_python::objects::calculator > function=calc duration=103.2µs
 
 
 ***** result.pp: 152.19204711914062
