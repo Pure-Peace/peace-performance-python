@@ -97,7 +97,7 @@ parse_beatmap!(parse_sync);
 
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
 pub async fn async_parse_beatmap(_file: SyncFile) -> Result<RawBeatmap, PyErr> {
-    unimplemented!("Any async features (async_tokio, async_std) are not enabled.")
+    Err(crate::async_not_enabled_err!())
 }
 
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]

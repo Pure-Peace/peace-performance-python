@@ -35,7 +35,7 @@ pub fn rust_sleep(py: Python, secs: u64) -> PyResult<&PyAny> {
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
 #[pyfunction]
 pub fn rust_sleep(_py: Python, _secs: u64) -> PyResult<&PyAny> {
-    unimplemented!("Any async features (async_tokio, async_std) are not enabled.")
+    Err(crate::async_not_enabled_err!())
 }
 
 #[cfg(any(feature = "async_tokio", feature = "async_std"))]
@@ -57,7 +57,7 @@ pub fn read_beatmap_sync(path: PathBuf) -> PyResult<Beatmap> {
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
 #[pyfunction]
 pub fn read_beatmap_async(_py: Python, _path: PathBuf) -> PyResult<&PyAny> {
-    unimplemented!("Any async features (async_tokio, async_std) are not enabled.")
+    Err(crate::async_not_enabled_err!())
 }
 
 #[pyfunction]

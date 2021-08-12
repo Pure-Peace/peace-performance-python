@@ -28,3 +28,12 @@ macro_rules! pyo3_py_dict {
         let d = PyDict::new($py);$(d.set_item(stringify!($attr), $obj.$attr.clone())?;)*$(d.set_item(stringify!($func), $obj1.$func())?;)*d
     }};
 }
+
+#[macro_export]
+macro_rules! async_not_enabled_err {
+    () => {
+        crate::python::exceptions::AsyncNotEnabledError::new_err(
+            "Any async features (async_tokio, async_std) are not enabled.",
+        )
+    };
+}

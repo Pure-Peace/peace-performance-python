@@ -20,7 +20,7 @@ pub async fn async_read_file(path: PathBuf) -> Result<AsyncFile, PyErr> {
     match AsyncFile::open(path).await {
         Ok(file) => Ok(file),
         Err(err) => Err(ReadFileError::new_err(format!(
-            "Could not read file: {}",
+            "Could not read file async: {}",
             err
         ))),
     }
@@ -73,5 +73,5 @@ pub async fn sleep(secs: u64) {
 
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
 pub async fn sleep(_secs: u64) {
-    unimplemented!("Any async features (async_tokio, async_std) are not enabled.")
+    Err(crate::async_not_enabled_err!())
 }
