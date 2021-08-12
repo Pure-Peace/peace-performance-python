@@ -1,0 +1,1 @@
+pytest --benchmark-disable-gc --benchmark-warmup=True --benchmark-histogram

@@ -8,7 +8,7 @@
 Cross-platform support.
 Support synchronous and asynchronous(tokio and async_std).
 
-*Faster than oppai-ng, see the **[benchmark](https://github.com/Pure-Peace/peace-performance-python#vs-oppai-ng)** for details.*
+*Faster than [oppai-ng](https://github.com/Francesco149/oppai-ng), see the **[benchmark](https://github.com/Pure-Peace/peace-performance-python#vs-oppai-ng)** for details.*
 
 **Note**: This library is not currently uploaded to PypI, you may need to download it locally for compilation and then import it in python.
 
@@ -378,6 +378,12 @@ pytest
 pytest --benchmark-histogram
 ```
 
+**Complete bench**
+
+```shell
+pytest --benchmark-disable-gc --benchmark-warmup=True --benchmark-histogram
+```
+
 **Run examples**
 
 ```shell
@@ -388,47 +394,53 @@ python examples.py
 
 ### Vs Oppai-ng
 
-*peace-performance Python bindings vs [C89 oppai-ng](https://github.com/Francesco149/oppai-ng).*
+*peace-performance Python bindings vs [C89 oppai-ng](https://github.com/Francesco149/oppai-ng) Python bindings.*
 
-Fast than oppai, the longer the map, the more obvious the advantages of rust.
+Rust is Faster. The longer the map, the more obvious the advantages of rust.
 
 peace-performance enables the `no_sliders_no_leniency` feature to be consistent with oppai's algorithm (faster, but loses precision).
 
 If you need maximum precision (osu-performance) rather than performance, use `all_included` features.
 
-```
+**This test was run on my subsystem and had performance issues with a minimum time greater than 1ms.**
+(The minimum time in windows is **86us** (padoru) and the next smallest is **192us** (hitorigoto)
+
+```shell
 ------------------------------------------------------------------------ benchmark 'bench-oppai-vs-rust': 12 tests -------------------------------------------------------------------------
 Name (time in ms)               Min                Max               Mean            StdDev             Median               IQR            Outliers       OPS            Rounds  Iterations
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-test_rust_padoru             1.7768 (1.0)       1.9478 (1.0)       1.8508 (1.0)      0.0400 (1.0)       1.8443 (1.0)      0.0535 (1.0)          28;0  540.3156 (1.0)          87           1
-test_oppai_padoru            1.8122 (1.02)      9.7861 (5.02)      1.9889 (1.07)     0.5237 (13.08)     1.9249 (1.04)     0.1314 (2.46)          7;8  502.7874 (0.93)        242           1
-test_rust_hitorigoto         2.0610 (1.16)      2.5040 (1.29)      2.1910 (1.18)     0.0657 (1.64)      2.1785 (1.18)     0.0694 (1.30)        95;19  456.4104 (0.84)        418           1
-test_oppai_hitorigoto        2.5288 (1.42)      3.7520 (1.93)      2.7401 (1.48)     0.1818 (4.54)      2.7067 (1.47)     0.1176 (2.20)        25;17  364.9477 (0.68)        322           1
-test_rust_freedom_dive       3.8093 (2.14)      7.3134 (3.75)      3.9828 (2.15)     0.2293 (5.73)      3.9567 (2.15)     0.0845 (1.58)          4;6  251.0782 (0.46)        241           1
-test_rust_sotarks            4.4968 (2.53)      5.1071 (2.62)      4.6848 (2.53)     0.0985 (2.46)      4.6712 (2.53)     0.0965 (1.80)        45;13  213.4562 (0.40)        196           1
-test_oppai_freedom_dive      5.6872 (3.20)      7.0520 (3.62)      5.9250 (3.20)     0.2010 (5.02)      5.8822 (3.19)     0.1848 (3.46)         17;7  168.7767 (0.31)        159           1
-test_oppai_sotarks           6.1222 (3.45)     16.0620 (8.25)      6.4435 (3.48)     0.8114 (20.27)     6.3351 (3.43)     0.1677 (3.14)         3;10  155.1956 (0.29)        152           1
-test_rust_galaxy_burst       6.1535 (3.46)      7.3282 (3.76)      6.4249 (3.47)     0.1903 (4.75)      6.3857 (3.46)     0.1377 (2.57)        21;10  155.6452 (0.29)        148           1
-test_oppai_galaxy_burst      8.1627 (4.59)     11.3769 (5.84)      8.5283 (4.61)     0.3584 (8.96)      8.4481 (4.58)     0.2359 (4.41)          9;6  117.2565 (0.22)        110           1
-test_rust_unforgiving       12.9719 (7.30)     13.9540 (7.16)     13.2572 (7.16)     0.1567 (3.92)     13.2482 (7.18)     0.1395 (2.61)         16;4   75.4307 (0.14)         71           1
-test_oppai_unforgiving      22.4598 (12.64)    35.3505 (18.15)    23.6072 (12.76)    2.4802 (61.97)    22.8837 (12.41)    0.4452 (8.32)          3;4   42.3600 (0.08)         44           1
+test_rust_padoru             1.3805 (1.0)       1.7463 (1.0)       1.4447 (1.0)      0.0518 (1.0)       1.4301 (1.0)      0.0444 (1.01)        68;32  692.1759 (1.0)         358           1
+test_rust_hitorigoto         1.6154 (1.17)      2.0133 (1.15)      1.7433 (1.21)     0.0587 (1.13)      1.7407 (1.22)     0.0439 (1.0)        129;82  573.6085 (0.83)        498           1
+test_oppai_padoru            1.8734 (1.36)      2.3294 (1.33)      1.9799 (1.37)     0.0845 (1.63)      1.9659 (1.37)     0.0931 (2.12)        47;11  505.0744 (0.73)        204           1
+test_oppai_hitorigoto        2.5925 (1.88)      3.1272 (1.79)      2.7537 (1.91)     0.0883 (1.70)      2.7357 (1.91)     0.0887 (2.02)        84;21  363.1464 (0.52)        346           1
+test_rust_freedom_dive       3.0829 (2.23)      3.6729 (2.10)      3.1865 (2.21)     0.0687 (1.33)      3.1715 (2.22)     0.0685 (1.56)        70;18  313.8282 (0.45)        303           1
+test_rust_sotarks            3.6848 (2.67)      4.0976 (2.35)      3.7886 (2.62)     0.0748 (1.45)      3.7676 (2.63)     0.0748 (1.70)        51;17  263.9489 (0.38)        240           1
+test_rust_galaxy_burst       5.1418 (3.72)      5.7422 (3.29)      5.2629 (3.64)     0.0851 (1.64)      5.2349 (3.66)     0.0911 (2.08)         44;9  190.0092 (0.27)        184           1
+test_oppai_freedom_dive      5.8532 (4.24)      6.3883 (3.66)      6.0279 (4.17)     0.1154 (2.23)      5.9971 (4.19)     0.1660 (3.78)         45;2  165.8948 (0.24)        161           1
+test_oppai_sotarks           6.2822 (4.55)      7.0327 (4.03)      6.4706 (4.48)     0.1350 (2.61)      6.4400 (4.50)     0.1544 (3.52)         36;4  154.5453 (0.22)        145           1
+test_oppai_galaxy_burst      8.2669 (5.99)      9.4358 (5.40)      8.5453 (5.91)     0.1838 (3.55)      8.5012 (5.94)     0.1732 (3.95)         25;8  117.0232 (0.17)        114           1
+test_rust_unforgiving       10.9350 (7.92)     11.6170 (6.65)     11.1305 (7.70)     0.1289 (2.49)     11.1028 (7.76)     0.1701 (3.87)         26;2   89.8429 (0.13)         88           1
+test_oppai_unforgiving      22.8311 (16.54)    23.7671 (13.61)    23.1481 (16.02)    0.2352 (4.54)     23.0818 (16.14)    0.2999 (6.83)         10;1   43.2001 (0.06)         43           1
 --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
 ```
 
-<img src="./benchmark_results/benchmark_20210807_210152-bench-oppai-vs-rust.svg">
+<img src="./benchmark_results/benchmark_20210812_155724-bench-oppai-vs-rust.svg">
 
 ### Simple Benchmarks
 
-*Native vs wrapped beatmap object*
-<img src="./benchmark_results/benchmark_20210807_190701.svg">
+****Native** vs **Wrapped** beatmap object*,
+**Sync** vs **Async**,
+**Py async** vs **Rust async***
+
+**Note: Rust has its own event loop (independent of python) and has performance issues due to rust's need to convert built-in futures to python coroutine. So rust async is the worst performer.**
+<img src="./benchmark_results/benchmark_20210812_155507-async-vs-sync-beatmap.svg">
 
 *Read and parsing time spent on beatmap of different sizes*
 (forgiving is a beatmap over 50 minutes long and takes the longest)
-<img src="./benchmark_results/benchmark_20210807_190701-bench-beatmap.svg">
+<img src="./benchmark_results/benchmark_20210812_155507-bench-beatmap.svg">
 
 *There are also subtle differences in the different calling methods*
-<img src="./benchmark_results/benchmark_20210807_190701-bench-pp-calc.svg">
+<img src="./benchmark_results/benchmark_20210812_155507-bench-pp-calc.svg">
 
 ---
 
