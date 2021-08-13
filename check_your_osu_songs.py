@@ -46,8 +46,8 @@ async def main():
             errs[f] = str(err)
         done += 1
         print(
-            '\rBeatmap [{}] {}/{}; ok: {}, err: {}; total time: {:.2f}ms, avg: {:.2f}ms'.format(
-                f, done, total, ok_count, err_count, total_dutaion, total_dutaion / done
+            '\r{}/{}; ok: {}, err: {}; total time: {:.2f}ms, avg: {:.2f}ms'.format(
+                done, total, ok_count, err_count, total_dutaion, total_dutaion / done
             ), end=''
         )
     print('\n[ All DONE ]\nRaw Errs:')

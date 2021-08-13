@@ -12,6 +12,21 @@ Support synchronous and asynchronous(tokio and async_std).
 
 **Note**: This library is not currently uploaded to PypI, you may need to download it locally for compilation and then import it in python.
 
+**Reliability**:
+
+`check_your_osu_songs.py`
+
+Testing on my local machine, about 70,000 maps can be calculated properly.
+
+```shell
+[ Walking (E:\osu\songs) Start... ]
+[ 69146 ] .osu files founded...
+[ Walking Done! ]
+[ Start task ]
+69146/69146; ok: 69142, err: 0; total time: 23825.90ms, avg: 0.34ms
+[ All DONE ]
+```
+
 ## PP Calculate
 
 ### Minimal Examples
