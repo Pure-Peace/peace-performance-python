@@ -54,25 +54,13 @@ jobs:
       # Variable needed for PyO3 to properly identify the python interpreter
       PYTHON_SYS_EXECUTABLE: /opt/python/${{ matrix.PYTHON_IMPLEMENTATION_ABI }}/bin/python
     steps:
-      - uses: actions/checkout@v2
-      - name: Install/Update OpenSSL
-        run: |
-          retryCount=0
-          # yum install seems to be flakey (due to network timeouts)
-          # retry up to 5 times with a 10s sleep in case of failure
-          until yum install openssl-devel --assumeyes --noplugins; do
-            # For some reason the install has failed
-            if [ ${retryCount} -eq 5 ]; then
-                false
-            else
-              retryCount=$((${retryCount}+1))
-            fi
-            sleep 10
-          done
+      - name: Checkout
+        uses: actions/checkout@v1
+    
       - uses: actions-rs/toolchain@v1
         with:
+          profile: minimal
           toolchain: stable
-          default: true
           override: true
       - name: Install Tox
         run: ${{ env.PYTHON_SYS_EXECUTABLE }} -m pip install tox
