@@ -47,7 +47,7 @@ setup(
         "Operating System :: MacOS :: MacOS X",
         "Operating System :: Microsoft :: Windows",
     ],
-    packages=["peace_performance_python"],
+    packages=["peace_performance_python", "peace_performance_python.objects", "peace_performance_python.functions"],
     rust_extensions=[
         RustExtension(
             "peace_performance_python._peace_performance",
