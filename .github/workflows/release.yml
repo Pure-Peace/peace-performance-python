@@ -6,20 +6,6 @@ on:
       - release-v*
 
 jobs:
-  rust-release:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions-rs/toolchain@v1
-        with:
-          profile: minimal
-          toolchain: stable
-          override: true
-      - run: cargo login ${CRATES_IO_TOKEN}
-        env:
-          CRATES_IO_TOKEN: ${{ secrets.CRATES_IO_TOKEN }}
-      - run: cargo publish
-        working-directory: ./
   create_macos_and_windows_wheels:
     name: Wheels for Python ${{ matrix.python-version }} / ${{ matrix.os }}
     strategy:
@@ -85,8 +71,8 @@ jobs:
           done
       - uses: actions-rs/toolchain@v1
         with:
-          profile: minimal
           toolchain: stable
+          default: true
           override: true
       - name: Install Tox
         run: ${{ env.PYTHON_SYS_EXECUTABLE }} -m pip install tox
