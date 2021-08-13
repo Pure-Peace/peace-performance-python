@@ -11,7 +11,7 @@ jobs:
     strategy:
       matrix:
         os: [macos-latest, windows-latest]
-        python-version: ['3.6', '3.7', '3.8', '3.9']
+        python-version: ['3.6', '3.7', '3.8', '3.9', '3.10']
         architecture: [x86, x64]
         exclude:
         - os: macos-latest
@@ -39,6 +39,13 @@ jobs:
         with:
           name: Distribution Artifacts
           path: dist/
+      - name: Add Release File
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ./dist/*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create_wheels_manylinux:
     name: Wheels for Python ${{ matrix.PYTHON_IMPLEMENTATION_ABI }} / Linux
@@ -91,6 +98,13 @@ jobs:
         with:
           name: Distribution Artifacts
           path: dist/
+      - name: Add Release File
+        uses: softprops/action-gh-release@v1
+        if: startsWith(github.ref, 'refs/tags/')
+        with:
+          files: ./dist/*.whl
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
   create_source_dist:
     name: Create sdist package
