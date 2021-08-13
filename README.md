@@ -409,6 +409,23 @@ python examples.py
 
 ---
 
+### Features
+
+| Flag                     | Description                                                                                                                                                                          |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`default`**            | Enable **async_tokio**, **all modes** and choose the **`all_included`** version for osu!standard.                                                                                    |
+| **`peace_edition`**      | **Buff ScoreV2 (STD)** - `acc *= 1.2`                                                                                                                                                |
+| `relax_nerf`             | *Nerf relax and autopilot pp.* Relax: `aim * 0.9, spd * 0.3, acc *0.8`; Autopilot: `aim * 0.3, spd * 0.9, acc * 0.8`                                                                 |
+| `taiko`                  | Enable osu!taiko.                                                                                                                                                                    |
+| `fruits`                 | Enable osu!ctb.                                                                                                                                                                      |
+| `mania`                  | Enable osu!mania.                                                                                                                                                                    |
+| `osu`                    | Enable osu!standard. Requires to also enable exactly one of the features `no_leniency`, `no_sliders_no_leniency`, or `all_included`.                                                 |
+| **`no_leniency`**        | When calculating difficulty attributes in osu!standard, ignore stack leniency but consider sliders. Solid middleground between performance and precision, hence the default version. |
+| `no_sliders_no_leniency` | When calculating difficulty attributes in osu!standard, ignore stack leniency and sliders. Best performance but slightly less precision than `no_leniency`.                          |
+| `all_included`           | When calculating difficulty attributes in osu!standard, consider both stack leniency and sliders. Best precision but significantly worse performance than `no_leniency`.             |
+| `async_tokio`            | Beatmap parsing will be async through [tokio](https://github.com/tokio-rs/tokio)                                                                                                     |
+| `async_std`              | Beatmap parsing will be async through [async-std](https://github.com/async-rs/async-std)                                                                                             |
+
 ### Vs Oppai-ng
 
 *peace-performance Python bindings vs [C89 oppai-ng](https://github.com/Francesco149/oppai-ng) Python bindings.*

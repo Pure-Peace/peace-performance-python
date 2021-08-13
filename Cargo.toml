@@ -19,7 +19,7 @@ default = [
     "fruits",
     "mania",
     "async_tokio",
-    "no_sliders_no_leniency",
+    "all_included",
 ]
 
 peace_edition = ["peace-performance/peace_edition"]
