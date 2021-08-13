@@ -1,2 +1,2 @@
-include pyproject.toml Cargo.toml
+include pyproject.toml Cargo.toml rust-toolchain
 recursive-include src *
