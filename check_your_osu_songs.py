@@ -8,7 +8,7 @@ errs = {}
 
 # Your osu songs
 # Will traverse a directory and try to read and calculate all .osu files
-OSU_SONGS_PATH = r'D:\osu\songs'
+OSU_SONGS_PATH = r'E:\osu\songs'
 
 
 def walk(path):
@@ -37,7 +37,7 @@ async def main():
     for f in osu_list:
         try:
             start = time.time_ns()
-            c.calculate(await Beatmap(f))
+            c.calculate(Beatmap(f))
             instant_ms = (time.time_ns() - start) / 1000 / 1000
             total_dutaion += instant_ms
             ok_count += 1
