@@ -1,6 +1,6 @@
 [package]
 name = "peace-performance-python"
-version = "1.0.1"
+version = "1.0.2"
 authors = ["Pure-Peace <940857703@qq.com>"]
 edition = "2018"
 
@@ -15,8 +15,9 @@ crate-type = ["cdylib"]
 # And other features
 default = ["osu", "taiko", "fruits", "mania", "async_tokio", "all_included"]
 
-peace_edition = ["peace-performance/peace_edition"]
+score_v2_buff = ["peace-performance/score_v2_buff"]
 relax_nerf = ["peace-performance/relax_nerf"]
+ppysb_edition = ["peace-performance/ppysb_edition"]
 
 # game modes
 osu = ["peace-performance/osu"]
@@ -58,7 +59,7 @@ async-std = { version = "1.9", optional = true }
 
 
 # Peace-performance
-peace-performance = { version = "0.3.0", default-features = false }
+peace-performance = { version = "0.4.0", default-features = false }
 
 
 # Don't optimize the release build (built by maturin / tox) for this module, as
