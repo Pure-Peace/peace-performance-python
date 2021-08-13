@@ -13,14 +13,7 @@ crate-type = ["cdylib"]
 [features]
 # You can choose whether to be asynchronous or not
 # And other features
-default = [
-    "osu",
-    "taiko",
-    "fruits",
-    "mania",
-    "async_tokio",
-    "all_included",
-]
+default = ["osu", "taiko", "fruits", "mania", "async_tokio", "all_included"]
 
 peace_edition = ["peace-performance/peace_edition"]
 relax_nerf = ["peace-performance/relax_nerf"]
@@ -67,17 +60,6 @@ async-std = { version = "1.9", optional = true }
 # Peace-performance
 peace-performance = { version = "0.3.0", default-features = false }
 
-[package.metadata.maturin]
-classifier = [
-    "License :: OSI Approved :: MIT License",
-    "Development Status :: 0 - Alpha",
-    "Intended Audience :: Developers",
-    "Programming Language :: Python",
-    "Programming Language :: Rust",
-    "Operating System :: POSIX",
-    "Operating System :: MacOS :: MacOS X",
-    "Operating System :: Microsoft :: Windows",
-]
 
 # Don't optimize the release build (built by maturin / tox) for this module, as
 # it's a test module.

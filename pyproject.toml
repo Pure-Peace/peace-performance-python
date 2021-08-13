@@ -2,7 +2,36 @@
 requires = ["maturin>=0.11,<0.12"]
 build-backend = "maturin"
 
-[tool.pytest.ini_options]
-markers = [
-    "benchmark",
+
+[project]
+name = "peace-performance-python"
+version = "1.0.0"
+description = "Rust binding for python. To calculate star ratings and performance points for all osu! gamemodes, and quickly parse Beatmap into python objects."
+keywords = "rust peace osu pp beatmap parse rosu-pp peace-performance"
+author = "PurePeace"
+author_email = "940857703@qq.com"
+maintainer = "PurePeace"
+maintainer_email = "940857703@qq.com"
+python_requires = ">=3.6"
+url = "https://github.com/Pure-Peace/peace-performance-python"
+license = "MIT"
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.6",
+    "Programming Language :: Python :: 3.7",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: Implementation :: CPython",
+    "Programming Language :: Rust",
+    "Operating System :: POSIX",
+    "Operating System :: MacOS :: MacOS X",
+    "Operating System :: Microsoft :: Windows",
 ]
+packages = ["peace_performance_python"]
+
+[tool.pytest.ini_options]
+markers = ["benchmark"]
