@@ -1,4 +1,8 @@
-from typing import Dict, Literal, Union
+from typing import Dict, Union
+try:
+    from typing import Literal
+except ImportError:
+    from typing_extensions import Literal
 
 # PP Calculate objects
 NativeRawStars = object

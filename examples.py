@@ -1,11 +1,9 @@
-import asyncio
-
 # import all
 from peace_performance_python.prelude import *
 # or
 # from peace_performance_python.objects import Beatmap, Calculator
 
-from tests import join_beatmap, HITORIGOTO, UNFORGIVING
+from tests import async_run, join_beatmap, HITORIGOTO, UNFORGIVING
 
 
 # Initialize Rust logger (optional)
@@ -90,4 +88,4 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    async_run(main())

@@ -1,3 +1,4 @@
+import asyncio
 from peace_performance_python import Beatmap
 from .oppai_wrapper import OppaiWrapper
 
@@ -19,6 +20,15 @@ UNFORGIVING = r'unforgiving.osu'  # marathon - 238kb
 
 def join_beatmap(beatmap: str) -> str:
     return BEATMAP_DIR + beatmap
+
+
+def async_run(future):
+    try:
+        return asyncio.run(future)
+    except AttributeError:
+        # For <= python3.6
+        loop = asyncio.get_event_loop()
+        return loop.run_until_complete(asyncio.wait([future]))
 
 
 def read_beatmap(path: str, loop: Optional['AbstractEventLoop'] = None) -> Callable[[None], None]:

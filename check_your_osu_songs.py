@@ -1,7 +1,9 @@
 import os
-import asyncio
 import time
+
 from peace_performance_python.prelude import *
+from tests import async_run
+
 
 osu_list = []
 errs = {}
@@ -55,4 +57,4 @@ async def main():
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    async_run(main())
