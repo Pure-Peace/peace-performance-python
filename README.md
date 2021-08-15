@@ -419,8 +419,9 @@ python examples.py
 
 | Flag                     | Description                                                                                                                                                                          |
 | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **`default`**            | Enable **async_tokio**, **all modes** and choose the **`all_included`** version for osu!standard.                                                                                    |
-| **`peace_edition`**      | **Buff ScoreV2 (STD)** - `acc *= 1.2`                                                                                                                                                |
+| **`default`**            | Enable **async_tokio**, **all modes** and choose the **`all_included`** version for osu!standard. Set `default_features = false` to disable.                                         |
+| **`score_v2_buff`**      | **Buff ScoreV2 (STD)** - `acc *= 1.25`                                                                                                                                               |
+| **`ppysb_edition`**      | Special changes for **RELAX** and **AUTOPILOT**                                                                                                                                      |
 | `relax_nerf`             | *Nerf relax and autopilot pp.* Relax: `aim * 0.9, spd * 0.3, acc *0.8`; Autopilot: `aim * 0.3, spd * 0.9, acc * 0.8`                                                                 |
 | `taiko`                  | Enable osu!taiko.                                                                                                                                                                    |
 | `fruits`                 | Enable osu!ctb.                                                                                                                                                                      |
