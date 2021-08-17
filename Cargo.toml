@@ -46,15 +46,15 @@ async_std = [
 
 
 [dependencies]
-pyo3 = { version = "0.14.1", features = ["extension-module"] }
+pyo3 = { version = "0.14", features = ["extension-module"] }
 log = "0.4"
 timed = "0.2.1"
 pretty_env_logger = "0.4.0"
 
 
 # Async optional
-pyo3-asyncio = { git = "https://github.com/Pure-Peace/pyo3-asyncio.git", optional = true }
-tokio = { version = "1.9.0", optional = true }
+pyo3-asyncio = { version = "0.14", optional = true }
+tokio = { version = "1.9", optional = true }
 async-std = { version = "1.9", optional = true }
 
 
