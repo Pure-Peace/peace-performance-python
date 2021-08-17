@@ -42,22 +42,23 @@ Testing on my local machine, about 70,000 maps can be calculated properly.
 ```python
 from peace_performance_python.prelude import *
 
-beatmap = Beatmap('path_to_osu_file') # Beatmap can be cached and reused!
-beatmap = await Beatmap.create_async_rs('path_to_osu_file') # Async support!
+# Beatmap can be cached and reused!
+beatmap = Beatmap('path_to_osu_file') 
 result = Calculator(acc=98.8, miss=3).calculate(beatmap)
+
+# Async support!
+beatmap = await Beatmap.create_async_rs('path_to_osu_file')
 ```
 
 ### Full Examples
 
 ```python
-import asyncio
-
 # import all
 from peace_performance_python.prelude import *
 # or
 # from peace_performance_python.objects import Beatmap, Calculator
 
-from tests import join_beatmap, HITORIGOTO, UNFORGIVING
+from tests import async_run, join_beatmap, HITORIGOTO, UNFORGIVING
 
 
 # Initialize Rust logger (optional)
@@ -112,28 +113,28 @@ async def main() -> None:
     # or
     # beatmap = await AsyncBeatmapRust(path)
     # beatmap = await AsyncBeatmapPython(path)
-    print('\n**** Beatmap:', beatmap)
+    print('\n>>>>> Beatmap:', beatmap)
 
     # Calculate pp
     # result = calculate_5(beatmap)
     c = Calculator(acc=98.8, miss=3)
-    print('\n***** Calculator as dict:', c.attrs_dict)
+    print('\n>>>>> Calculator as dict:', c.attrs_dict)
     result = c.calculate(beatmap)
 
     # Print results
-    # print('\n***** result:', result)
-    print('\n***** result.pp:', result.pp)
-    print('\n***** result as dict:', result.attrs_dict)
-    # print('\n***** result.raw_stars as dict:', result.raw_stars.attrs_dict)
-    # print('\n***** result.raw_pp as dict:', result.raw_pp.attrs_dict)
+    # print('\n>>>>> result:', result)
+    print('\n>>>>> result.pp:', result.pp)
+    print('\n>>>>> result as dict:', result.attrs_dict)
+    # print('\n>>>>> result.raw_stars as dict:', result.raw_stars.attrs_dict)
+    # print('\n>>>>> result.raw_pp as dict:', result.raw_pp.attrs_dict)
 
     # Reset calculator
     c.reset()
-    print('\n***** reseted Calculator as dict:', c.attrs_dict)
+    print('\n>>>>> reseted Calculator as dict:', c.attrs_dict)
 
     # Calc again
     result2 = c.calculate(beatmap)
-    print('\n***** result2 as dict:', result2.attrs_dict)
+    print('\n>>>>> result2 as dict:', result2.attrs_dict)
 
     # Load another .osu files
     path2 = join_beatmap(UNFORGIVING)
@@ -142,7 +143,7 @@ async def main() -> None:
 
 
 if __name__ == '__main__':
-    asyncio.run(main())
+    async_run(main())
 
 ```
 
