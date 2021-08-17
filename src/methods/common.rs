@@ -72,6 +72,6 @@ pub async fn sleep(secs: u64) {
 }
 
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
-pub async fn sleep(_secs: u64) {
+pub async fn sleep(_secs: u64) -> Result<(), PyErr> {
     Err(crate::async_not_enabled_err!())
 }
