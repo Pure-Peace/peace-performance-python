@@ -37,3 +37,19 @@ macro_rules! async_not_enabled_err {
         )
     };
 }
+
+#[macro_export]
+macro_rules! set_calculator {
+    ($target:ident.$attr:ident, $calculator:ident) => {
+        match $target.$attr {
+            Some($attr) => $calculator.$attr($attr),
+            None => $calculator,
+        }
+    };
+    ($target:ident.$attr:ident, $func:ident, $calculator:ident) => {
+        match $target.$attr {
+            Some($attr) => $calculator.$func($attr),
+            None => $calculator,
+        }
+    };
+}

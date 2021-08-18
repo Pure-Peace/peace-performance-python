@@ -1,8 +1,12 @@
 use peace_performance::PpResult;
-use pyo3::{PyResult, Python, prelude::{pyclass, pymethods}, types::PyDict};
+use pyo3::{
+    prelude::{pyclass, pymethods},
+    types::PyDict,
+    PyResult, Python,
+};
 
-use crate::{methods::pp, objects::Beatmap};
 use super::CalcResult;
+use crate::{methods::pp, objects::Beatmap, set_calculator};
 
 #[pyclass]
 #[derive(Debug, Default, Clone)]
@@ -27,6 +31,8 @@ pub struct Calculator {
     pub combo: Option<usize>,
     #[pyo3(get, set)]
     pub miss: Option<usize>,
+    #[pyo3(get, set)]
+    pub score: Option<u32>,
 }
 
 #[pymethods]
@@ -53,13 +59,14 @@ impl Calculator {
         self.passed_obj = None;
         self.combo = None;
         self.miss = None;
+        self.score = None;
     }
 
     #[getter]
     pub fn as_string(&self) -> String {
         format!(
             "mode: {:?}, mods: {:?}, n50: {:?}, n100: {:?}, n300: {:?}, katu: {:?}, 
-                acc: {:?}, passed_obj: {:?}, combo: {:?}, miss: {:?}",
+                acc: {:?}, passed_obj: {:?}, combo: {:?}, miss: {:?}, score: {:?}",
             self.mode,
             self.mods,
             self.n50,
@@ -70,6 +77,7 @@ impl Calculator {
             self.passed_obj,
             self.combo,
             self.miss,
+            self.score,
         )
     }
 
@@ -85,7 +93,8 @@ impl Calculator {
             acc,
             passed_obj,
             combo,
-            miss
+            miss,
+            score
         });
         Ok(d)
     }
@@ -96,38 +105,23 @@ impl Calculator {
     #[timed::timed(duration(printer = "trace!"))]
     pub fn calc(&self, beatmap: &Beatmap) -> PpResult {
         let c = pp::mode_any_pp(self.mode.unwrap_or(4), &beatmap.0);
-        let c = match self.mods {
-            Some(mods) => c.mods(mods),
-            None => c,
-        };
-        let c = match self.combo {
-            Some(combo) => c.combo(combo),
-            None => c,
-        };
-        let c = match self.n50 {
-            Some(n50) => c.n50(n50),
-            None => c,
-        };
-        let c = match self.n100 {
-            Some(n100) => c.n100(n100),
-            None => c,
-        };
-        let c = match self.n300 {
-            Some(n300) => c.n300(n300),
-            None => c,
-        };
-        let c = match self.katu {
-            Some(katu) => c.n_katu(katu),
-            None => c,
-        };
-        let c = match self.miss {
-            Some(miss) => c.misses(miss),
-            None => c,
-        };
-        let mut c = match self.passed_obj {
-            Some(passed_obj) => c.passed_objects(passed_obj),
-            None => c,
-        };
+        let c = set_calculator!(self.mods, c);
+        // Irrelevant for osu!mania
+        let c = set_calculator!(self.combo, c);
+        // Irrelevant for osu!mania and osu!taiko
+        let c = set_calculator!(self.n50, c);
+        // Irrelevant for osu!mania
+        let c = set_calculator!(self.n100, c);
+        // Irrelevant for osu!mania
+        let c = set_calculator!(self.n300, c);
+        // Only relevant for osu!ctb
+        let c = set_calculator!(self.katu, n_katu, c);
+        // Irrelevant for osu!mania
+        let c = set_calculator!(self.miss, misses, c);
+        let c = set_calculator!(self.passed_obj, passed_objects, c);
+        // Only relevant for osu!mania
+        let mut c = set_calculator!(self.score, c);
+        // Irrelevant for osu!mania
         if let Some(acc) = self.acc {
             c.set_accuracy(acc)
         };
