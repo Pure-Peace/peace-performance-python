@@ -14,6 +14,28 @@ class Calculator:
     '''
     Calculator for storing pp calculation configurations (mode, mods, combo, 300, miss, acc, etc.)
 
+    `mode`: `Optional[int]` # gamemode convert
+
+    `mods`: `Optional[int]`
+
+    `n50`: `Optional[int]` # Irrelevant for osu!mania
+
+    `n100`: `Optional[int]` # Irrelevant for osu!mania and osu!taiko
+
+    `n300`: `Optional[int]` # Irrelevant for osu!mania
+
+    `katu`: `Optional[int]` # Only relevant for osu!ctb
+
+    `acc`: `Optional[float]` # Irrelevant for osu!mania
+
+    `passed_obj`: `Optional[int]` 
+
+    `combo`: `Optional[int]` # Irrelevant for osu!mania
+
+    `miss`: `Optional[int]` # Irrelevant for osu!mania
+
+    `score`: `Optional[int]` # Only relevant for osu!mania
+
     ### Examples:
     ```
     beatmap = Beatmap('path_to_osu_file')
@@ -27,21 +49,22 @@ class Calculator:
     ```
     '''
     _raw_attrs = ('mode', 'mods', 'n50', 'n100', 'n300',
-                  'katu', 'acc', 'passed_obj', 'combo', 'miss',)
+                  'katu', 'acc', 'passed_obj', 'combo', 'miss', 'score',)
     _extra_attrs = ('_raw',)
     __slots__ = _raw_attrs + _extra_attrs
 
     _raw: NativeCalculator
     mode: Optional[int]
     mods: Optional[int]
-    n50: Optional[int]
-    n100: Optional[int]
-    n300: Optional[int]
-    katu: Optional[int]
-    acc: Optional[float]
+    n50: Optional[int]  # Irrelevant for osu!mania
+    n100: Optional[int]  # Irrelevant for osu!mania and osu!taiko
+    n300: Optional[int]  # Irrelevant for osu!mania
+    katu: Optional[int]  # Only relevant for osu!ctb
+    acc: Optional[float]  # Irrelevant for osu!mania
     passed_obj: Optional[int]
-    combo: Optional[int]
-    miss: Optional[int]
+    combo: Optional[int]  # Irrelevant for osu!mania
+    miss: Optional[int]  # Irrelevant for osu!mania
+    score: Optional[int]  # Only relevant for osu!mania
 
     def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None, **kwargs) -> 'Calculator':
         '''Create new Calculator'''
@@ -116,14 +139,40 @@ class Calculator:
     # Interfaces -----
     def set_mode(val: Optional[int]) -> None: ...
     def set_mods(val: Optional[int]) -> None: ...
-    def set_n50(val: Optional[int]) -> None: ...
-    def set_n100(val: Optional[int]) -> None: ...
-    def set_n300(val: Optional[int]) -> None: ...
-    def set_katu(val: Optional[int]) -> None: ...
-    def set_acc(val: Optional[float]) -> None: ...
+
+    def set_n50(val: Optional[int]) -> None:
+        '''### Irrelevant for osu!mania'''
+        ...
+
+    def set_n100(val: Optional[int]) -> None:
+        '''### Irrelevant for osu!mania and osu!taiko'''
+        ...
+
+    def set_n300(val: Optional[int]) -> None:
+        '''### Irrelevant for osu!mania'''
+        ...
+
+    def set_katu(val: Optional[int]) -> None:
+        '''### Only relevant for osu!ctb'''
+        ...
+
+    def set_acc(val: Optional[float]) -> None:
+        '''### Irrelevant for osu!mania'''
+        ...
+
     def set_passed_obj(val: Optional[int]) -> None: ...
-    def set_combo(val: Optional[int]) -> None: ...
-    def set_miss(val: Optional[int]) -> None: ...
+
+    def set_combo(val: Optional[int]) -> None:
+        '''### Irrelevant for osu!mania'''
+        ...
+
+    def set_miss(val: Optional[int]) -> None:
+        '''### Irrelevant for osu!mania'''
+        ...
+
+    def set_score(val: Optional[int]) -> None:
+        '''### Only relevant for osu!mania'''
+        ...
 
     def del_mode() -> None: ...
     def del_mods() -> None: ...
@@ -135,6 +184,7 @@ class Calculator:
     def del_passed_obj() -> None: ...
     def del_combo() -> None: ...
     def del_miss() -> None: ...
+    def del_score() -> None: ...
 
     def get_mode(val: Optional[int]) -> Optional[int]: ...
     def get_mods(val: Optional[int]) -> Optional[int]: ...
@@ -146,3 +196,4 @@ class Calculator:
     def get_passed_obj(val: Optional[int]) -> Optional[int]: ...
     def get_combo(val: Optional[int]) -> Optional[int]: ...
     def get_miss(val: Optional[int]) -> Optional[int]: ...
+    def get_score(val: Optional[int]) -> Optional[int]: ...
