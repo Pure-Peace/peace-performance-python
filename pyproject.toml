@@ -10,7 +10,7 @@ requires = [
 
 [project]
 name = "peace-performance-python"
-version = "1.0.2"
+version = "1.0.3"
 description = "Rust binding for python. To calculate star ratings and performance points for all osu! gamemodes, and quickly parse Beatmap into python objects."
 keywords = "rust peace osu pp beatmap parse rosu-pp peace-performance"
 author = "PurePeace"
@@ -44,4 +44,4 @@ packages = [
 ]
 
 [tool.pytest.ini_options]
-markers = ["benchmark"]
+markers = ["benchmark", "std_pp", "taiko_pp", "fruits_pp", "mania_pp"]
