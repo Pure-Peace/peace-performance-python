@@ -10,12 +10,19 @@ if TYPE_CHECKING:
 BEATMAP_DIR = r'./test_beatmaps/'
 
 # Test beatmaps
+# std
 PADORU = r'padoru.osu'  # super short - 5kb
 HITORIGOTO = r'hitorigoto.osu'  # short - 15kb
 FREEDOM_DIVE = r'freedom_dive.osu'  # stream medium - 50kb
 SOTARKS = r'sotarks.osu'  # jump medium - 68kb
 GALAXY_BURST = r'galaxy_burst.osu'  # tech - 102kb
 UNFORGIVING = r'unforgiving.osu'  # marathon - 238kb
+# taiko
+THE_BIG_BLACK_TAIKO = r'the_big_black_taiko.osu'  # 35kb
+# fruits
+MEI_FRUITS = r'mei_fruits.osu'  # 107kb
+# mania
+BLUE_ZENITH_MANIA = r'blue_zenith_mania.osu'  # 16 stars - 244kb
 
 
 def join_beatmap(beatmap: str) -> str:
