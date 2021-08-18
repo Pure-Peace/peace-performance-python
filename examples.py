@@ -86,6 +86,10 @@ async def main() -> None:
     beatmap.init(path2)
     print(beatmap)
 
+    # Convert calculate
+    result3 = Calculator(mode=3).calculate(beatmap)
+    print(result3)
+
 
 if __name__ == '__main__':
     async_run(main())

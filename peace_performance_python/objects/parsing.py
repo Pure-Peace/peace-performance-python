@@ -242,7 +242,7 @@ class HitObject:
     '''
     _raw_attrs = ('start_time', 'sound', 'end_time', 'is_circle',
                   'is_slider', 'is_spinner', 'kind_str',)
-    _extra_attrs = ('_raw', 'kind', 'pos')
+    _extra_attrs = ('_raw', 'kind', 'pos',)
     __slots__ = _raw_attrs + _extra_attrs
 
     _raw: NativeHitObject
