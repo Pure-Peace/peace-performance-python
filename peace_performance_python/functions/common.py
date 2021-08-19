@@ -1,11 +1,6 @@
 from ..types import (
-    NativeBeatmap, 
-    OsuModeInt, 
-    OsuModeStr, 
-    NativeCalculator, 
-    CommonModule as _common,
-    BeatmapModule as _beatmap_rust,
-    PpModule as _pp_rust
+    OsuModeInt,
+    OsuModeStr,
 )
 
 from .._peace_performance import common as _common
@@ -66,7 +61,7 @@ def osu_mode_int(mode: OsuModeStr) -> OsuModeInt:
         return 3
 
 
-def raw_read_beatmap_sync(osu_file_path: Path) -> NativeBeatmap:
+def raw_read_beatmap_sync(osu_file_path: Path) -> _beatmap_rust.Beatmap:
     '''
     ### Sync
     Read and parse .osu files from local, returns native beatmap object
@@ -74,7 +69,7 @@ def raw_read_beatmap_sync(osu_file_path: Path) -> NativeBeatmap:
     return _beatmap_rust.read_beatmap_sync(osu_file_path)
 
 
-async def raw_read_beatmap_async_rs(osu_file_path: Path) -> NativeBeatmap:
+async def raw_read_beatmap_async_rs(osu_file_path: Path) -> _beatmap_rust.Beatmap:
     '''
     ### Real Rust Async
     Read and parse .osu files from local, returns native beatmap object
@@ -85,7 +80,7 @@ async def raw_read_beatmap_async_rs(osu_file_path: Path) -> NativeBeatmap:
     return await _beatmap_rust.read_beatmap_async(osu_file_path)
 
 
-async def raw_read_beatmap_async_py(osu_file_path: Path) -> NativeBeatmap:
+async def raw_read_beatmap_async_py(osu_file_path: Path) -> _beatmap_rust.Beatmap:
     '''
     ### Python Async Wrapper
     Read and parse .osu files from local, returns native beatmap object
@@ -93,6 +88,6 @@ async def raw_read_beatmap_async_py(osu_file_path: Path) -> NativeBeatmap:
     return _beatmap_rust.read_beatmap_sync(osu_file_path)
 
 
-def raw_calculator() -> NativeCalculator:
+def raw_calculator() -> _pp_rust.Calculator:
     '''Create new native calculator'''
     return _pp_rust.new_calculator()

@@ -1,6 +1,5 @@
 from .parsing import DifficultyPoint, HitObject, TimingPoint
 from ..utils import _read_only_property_generator
-from ..types import NativeBeatmap, BeatmapModule as _beatmap_rust
 
 from .._peace_performance import beatmap as _beatmap_rust
 
@@ -98,7 +97,7 @@ class Beatmap:
                     '_timing_points', '_difficulty_points',)
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: Optional[NativeBeatmap]
+    _raw: Optional[_beatmap_rust.Beatmap]
     path: Optional[Path]
     # raw attrs
     mode: int

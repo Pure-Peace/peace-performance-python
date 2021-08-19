@@ -1,13 +1,12 @@
 from ..types import (
     ModeResult,
-    NativeRawCalcResult,
-    NativeRawPP,
-    NativeRawStars,
     OsuModeInt,
     OsuModeStr
 )
 from ..functions.common import osu_mode_str
 from ..utils import _read_only_property_generator, _get_attrs_dict, _get_attrs_str
+
+from .._peace_performance import pp as _pp_rust
 
 from typing import Dict, Optional, Tuple, Union
 
@@ -71,7 +70,7 @@ class RawStars:
     _extra_attrs = ('_raw',)
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeRawStars
+    _raw: _pp_rust.RawStars
     stars: Optional[float]
     max_combo: Optional[int]
     ar: Optional[float]
@@ -84,7 +83,7 @@ class RawStars:
     n_circles: Optional[int]
     n_spinners: Optional[int]
 
-    def __init__(self, raw: NativeRawStars):
+    def __init__(self, raw: _pp_rust.RawStars):
         self._raw = raw
 
     def __repr__(self) -> str:
@@ -154,14 +153,14 @@ class RawPP:
     _extra_attrs = ('_raw', )
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeRawCalcResult
+    _raw: _pp_rust.CalcResult
     aim: Optional[float]
     spd: Optional[float]
     str: Optional[float]
     acc: Optional[float]
     total: Optional[float]
 
-    def __init__(self, raw: NativeRawPP):
+    def __init__(self, raw: _pp_rust.RawPP):
         self._raw = raw
 
     def __repr__(self) -> _str:
@@ -203,7 +202,7 @@ class CalcResult:
     _extra_attrs = ('_raw', )
     __slots__ = _raw_attrs + _manual_impl + _extra_attrs
 
-    _raw: NativeRawCalcResult
+    _raw: _pp_rust.CalcResult
     raw_pp: RawPP
     raw_stars: RawStars
     mode: int
@@ -212,7 +211,7 @@ class CalcResult:
     pp: float
     stars: float
 
-    def __init__(self, raw: NativeRawCalcResult) -> None:
+    def __init__(self, raw: _pp_rust.CalcResult) -> None:
         self._raw = raw
         self.raw_pp = RawPP(raw.raw_pp)
         self.raw_stars = RawStars(raw.raw_stars)

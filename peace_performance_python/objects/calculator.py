@@ -2,7 +2,6 @@ from .pp_result import CalcResult
 from .beatmap import Beatmap
 
 from ..utils import _mutable_property_generator
-from ..types import NativeCalculator, PpModule as _pp_rust
 
 from .._peace_performance import pp as _pp_rust
 
@@ -53,7 +52,7 @@ class Calculator:
     _extra_attrs = ('_raw',)
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeCalculator
+    _raw: _pp_rust.Calculator
     mode: Optional[int]
     mods: Optional[int]
     n50: Optional[int]  # Irrelevant for osu!mania

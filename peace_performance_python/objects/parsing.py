@@ -1,12 +1,7 @@
 from typing import Dict, List, Optional, Tuple
+
+from .._peace_performance import beatmap as _beatmap_rust
 from ..utils import _read_only_property_generator
-from ..types import (
-    NativeDifficultyPoint,
-    NativeTimingPoint,
-    NativePos2,
-    NativeHitObjectKind,
-    NativeHitObject
-)
 
 
 @_read_only_property_generator
@@ -23,11 +18,11 @@ class DifficultyPoint:
     _extra_attrs = ('_raw', )
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeDifficultyPoint
+    _raw: _beatmap_rust.DifficultyPoint
     time: float
     speed_multiplier: float
 
-    def __init__(self, raw: NativeDifficultyPoint):
+    def __init__(self, raw: _beatmap_rust.DifficultyPoint):
         self._raw = raw
 
     def __repr__(self) -> str:
@@ -58,11 +53,11 @@ class TimingPoint:
     _extra_attrs = ('_raw', )
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeTimingPoint
+    _raw: _beatmap_rust.TimingPoint
     time: float
     beat_len: float
 
-    def __init__(self, raw: NativeTimingPoint):
+    def __init__(self, raw: _beatmap_rust.TimingPoint):
         self._raw = raw
 
     def __repr__(self) -> str:
@@ -97,13 +92,13 @@ class Pos2:
     _extra_attrs = ('_raw', )
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativePos2
+    _raw: _beatmap_rust.Pos2
     x: float
     y: float
     length_squared: float
     length: float
 
-    def __init__(self, raw: NativePos2):
+    def __init__(self, raw: _beatmap_rust.Pos2):
         self._raw = raw
 
     def __repr__(self) -> str:
@@ -175,7 +170,7 @@ class HitObjectKind:
     _extra_attrs = ('_raw', '_curve_points',)
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeHitObjectKind
+    _raw: _beatmap_rust.HitObjectKind
     kind: float
     pixel_len: Optional[float]
     repeats: Optional[int]
@@ -185,7 +180,7 @@ class HitObjectKind:
     # cache needed attrs
     curve_points: Optional[List[Pos2]]
 
-    def __init__(self, raw: NativeHitObjectKind):
+    def __init__(self, raw: _beatmap_rust.HitObjectKind):
         self._raw = raw
 
     def __repr__(self) -> str:
@@ -245,7 +240,7 @@ class HitObject:
     _extra_attrs = ('_raw', 'kind', 'pos',)
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: NativeHitObject
+    _raw: _beatmap_rust.HitObjectKind
     start_time: float
     sound: int
     end_time: float
@@ -258,7 +253,7 @@ class HitObject:
     pos: Pos2
     kind: HitObjectKind
 
-    def __init__(self, raw: NativeHitObject):
+    def __init__(self, raw: _beatmap_rust.HitObject):
         self._raw = raw
         self.pos = Pos2(raw.pos)
         self.kind = HitObjectKind(raw.kind)
