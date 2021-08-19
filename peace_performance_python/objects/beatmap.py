@@ -1,7 +1,9 @@
-from .parsing import DifficultyPoint, HitObject, TimingPoint
 from ..utils import _read_only_property_generator
 
-from .._peace_performance import beatmap as _beatmap_rust
+from .._peace_performance.beatmap import (
+    DifficultyPoint, HitObject, TimingPoint, Beatmap,
+    read_beatmap_async, read_beatmap_sync
+)
 
 
 from typing import Dict, List, Optional, Union
@@ -97,7 +99,7 @@ class Beatmap:
                     '_timing_points', '_difficulty_points',)
     __slots__ = _raw_attrs + _extra_attrs
 
-    _raw: Optional[_beatmap_rust.Beatmap]
+    _raw: Optional[Beatmap]
     path: Optional[Path]
     # raw attrs
     mode: int
@@ -124,7 +126,7 @@ class Beatmap:
     def __init__(self, osu_file_path: Path) -> 'Beatmap':
         '''Init with .osu files'''
         self.path = osu_file_path
-        self._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
+        self._raw = read_beatmap_sync(osu_file_path)
 
     def __repr__(self) -> str:
         return f'<Beatmap object ({self.attrs}), hidden: hit_objects, timing_points, difficulty_points>'
@@ -133,12 +135,12 @@ class Beatmap:
     def init(self, osu_file_path: Path) -> 'Beatmap':
         '''Load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
+        self._raw = read_beatmap_sync(osu_file_path)
         return self
 
     def reload(self) -> 'Beatmap':
         '''Reload this .osu files'''
-        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
+        self._raw = read_beatmap_sync(self.path)
         return self
 
     @classmethod
@@ -158,7 +160,7 @@ class Beatmap:
         Load the .osu files with path
         '''
         self.path = osu_file_path
-        self._raw = await _beatmap_rust.read_beatmap_async(osu_file_path)
+        self._raw = await read_beatmap_async(osu_file_path)
         return self
 
     async def reload_async_rs(self) -> 'Beatmap':
@@ -168,7 +170,7 @@ class Beatmap:
         ### *May have performance issues: Rust future -> Python coroutine 
 
         Reload this .osu files'''
-        self._raw = await _beatmap_rust.read_beatmap_async(self.path)
+        self._raw = await read_beatmap_async(self.path)
         return self
 
     @classmethod
@@ -181,7 +183,7 @@ class Beatmap:
         Create Beatmap with .osu files'''
         obj: 'Beatmap' = cls.__new__(cls)
         obj.path = osu_file_path
-        obj._raw = await _beatmap_rust.read_beatmap_async(osu_file_path)
+        obj._raw = await read_beatmap_async(osu_file_path)
         return obj
 
     # Python Async wrapper ------------
@@ -190,14 +192,14 @@ class Beatmap:
         ### Python Async wrapper
         Load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
+        self._raw = read_beatmap_sync(osu_file_path)
         return self
 
     async def reload_async_py(self) -> 'Beatmap':
         '''
         ### Python Async wrapper
         Reload this .osu files'''
-        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
+        self._raw = read_beatmap_sync(self.path)
         return self
 
     @classmethod
@@ -207,7 +209,7 @@ class Beatmap:
         Create Beatmap with .osu files'''
         obj: 'Beatmap' = cls.__new__(cls)
         obj.path = osu_file_path
-        obj._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
+        obj._raw = read_beatmap_sync(osu_file_path)
         return obj
 
     # Properties ------------
@@ -236,9 +238,8 @@ class Beatmap:
         _tmp = self._raw.hit_objects
         if not _tmp:
             return _tmp
-        _attr = list(map(lambda obj: HitObject(obj), _tmp))
-        setattr(self, '_hit_objects', _attr)
-        return _attr
+        setattr(self, '_hit_objects', _tmp)
+        return _tmp
 
     @property
     def timing_points(self) -> Optional[List[TimingPoint]]:
@@ -249,9 +250,8 @@ class Beatmap:
         _tmp = self._raw.timing_points
         if not _tmp:
             return _tmp
-        _attr = list(map(lambda obj: TimingPoint(obj), _tmp))
-        setattr(self, '_timing_points', _attr)
-        return _attr
+        setattr(self, '_timing_points', _tmp)
+        return _tmp
 
     @property
     def difficulty_points(self) -> Optional[List[DifficultyPoint]]:
@@ -262,9 +262,8 @@ class Beatmap:
         _tmp = self._raw.difficulty_points
         if not _tmp:
             return _tmp
-        _attr = list(map(lambda obj: DifficultyPoint(obj), _tmp))
-        setattr(self, '_difficulty_points', _attr)
-        return _attr
+        setattr(self, '_difficulty_points', _tmp)
+        return _tmp
 
 
 class AsyncBeatmapRust(Beatmap):
@@ -292,19 +291,19 @@ class AsyncBeatmapRust(Beatmap):
     async def init(self, osu_file_path: Path) -> 'Beatmap':
         '''Async load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = await _beatmap_rust.read_beatmap_async(osu_file_path)
+        self._raw = await read_beatmap_async(osu_file_path)
         return self
 
     async def reload(self) -> 'Beatmap':
         '''Async reload this .osu files'''
-        self._raw = await _beatmap_rust.read_beatmap_async(self.path)
+        self._raw = await read_beatmap_async(self.path)
         return self
 
     @classmethod
     async def create(cls, osu_file_path: Path) -> 'Beatmap':
         '''Async create Beatmap with .osu files'''
         obj = cls(osu_file_path)
-        obj._raw = await _beatmap_rust.read_beatmap_async(osu_file_path)
+        obj._raw = await read_beatmap_async(osu_file_path)
         return obj
 
 
@@ -330,17 +329,17 @@ class AsyncBeatmapPython(Beatmap):
     async def init(self, osu_file_path: Path) -> 'Beatmap':
         '''Async load the .osu files with path'''
         self.path = osu_file_path
-        self._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
+        self._raw = read_beatmap_sync(osu_file_path)
         return self
 
     async def reload(self) -> 'Beatmap':
         '''Async reload this .osu files'''
-        self._raw = _beatmap_rust.read_beatmap_sync(self.path)
+        self._raw = read_beatmap_sync(self.path)
         return self
 
     @classmethod
     async def create(cls, osu_file_path: Path) -> 'Beatmap':
         '''Async create Beatmap with .osu files'''
         obj = cls(osu_file_path)
-        obj._raw = _beatmap_rust.read_beatmap_sync(osu_file_path)
+        obj._raw = read_beatmap_sync(osu_file_path)
         return obj
