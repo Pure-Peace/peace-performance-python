@@ -53,3 +53,34 @@ macro_rules! set_calculator {
         }
     };
 }
+
+#[macro_export]
+macro_rules! pyo3_set_sys_modules {
+    ($m:ident, $py:ident; {$($module:expr),*}) => {
+        let sys = PyModule::import($py, "sys")?;
+        let sys_modules: &PyDict = sys.getattr("modules")?.downcast()?;
+        // let name = $m.name()?;
+        $(sys_modules.set_item(format!("peace_performance_python._peace_performance.{}", $module), $m.getattr($module)?)?;)*
+    };
+}
+
+#[macro_export]
+macro_rules! pyo3_add_functions {
+    ($m:ident; {$($func:ident),*}) => {
+        $($m.add_function(pyo3::wrap_pyfunction!($func, $m)?)?;)*
+    };
+}
+
+#[macro_export]
+macro_rules! pyo3_add_modules {
+    ($m:ident; {$($module:ident),*}) => {
+        $($m.add_wrapped(pyo3::wrap_pymodule!($module))?;)*
+    };
+}
+
+#[macro_export]
+macro_rules! pyo3_add_classes {
+    ($m:ident; {$($class:ident),*}) => {
+        $($m.add_class::<$class>()?;)*
+    };
+}
