@@ -59,8 +59,8 @@ macro_rules! pyo3_set_sys_modules {
     ($m:ident, $py:ident; {$($module:expr),*}) => {
         let sys = PyModule::import($py, "sys")?;
         let sys_modules: &PyDict = sys.getattr("modules")?.downcast()?;
-        // let name = $m.name()?;
-        $(sys_modules.set_item(format!("peace_performance_python._peace_performance.{}", $module), $m.getattr($module)?)?;)*
+        let name = $m.name()?.split_once('.').map(|s| format!("{}.", s.0)).unwrap_or("".into());
+        $(sys_modules.set_item(format!("{}_peace_performance.{}", name, $module), $m.getattr($module)?)?;)*
     };
 }
 
