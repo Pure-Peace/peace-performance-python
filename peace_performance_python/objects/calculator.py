@@ -67,7 +67,34 @@ class Calculator:
     score: Optional[int]  # Only relevant for osu!mania
 
     def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None, **kwargs) -> 'Calculator':
-        '''Create new Calculator'''
+        '''
+        Create new Calculator
+
+        ## Attrs:
+
+        `mode`: `Optional[int]` # gamemode convert
+
+        `mods`: `Optional[int]`
+
+        `n50`: `Optional[int]` # Irrelevant for osu!mania
+
+        `n100`: `Optional[int]` # Irrelevant for osu!mania and osu!taiko
+
+        `n300`: `Optional[int]` # Irrelevant for osu!mania
+
+        `katu`: `Optional[int]` # Only relevant for osu!ctb
+
+        `acc`: `Optional[float]` # Irrelevant for osu!mania
+
+        `passed_obj`: `Optional[int]` 
+
+        `combo`: `Optional[int]` # Irrelevant for osu!mania
+
+        `miss`: `Optional[int]` # Irrelevant for osu!mania
+
+        `score`: `Optional[int]` # Only relevant for osu!mania
+
+        '''
         self._raw = _pp_rust.Calculator()
         set = data or kwargs
         if set:
