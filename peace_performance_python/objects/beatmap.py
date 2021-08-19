@@ -1,11 +1,11 @@
 from .parsing import DifficultyPoint, HitObject, TimingPoint
 from ..utils import _read_only_property_generator
-from ..types import NativeBeatmap
+from ..types import NativeBeatmap, BeatmapModule as _beatmap_rust
 
 from .._peace_performance import beatmap as _beatmap_rust
 
 
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 from pathlib import Path
 
 
@@ -223,7 +223,7 @@ class Beatmap:
         return f'path: {self.path}, is_initialized: {self.is_initialized}, ' + self._raw.as_string
 
     @property
-    def attrs_dict(self) -> Dict[str, Optional[float]]:
+    def attrs_dict(self) -> Dict[str, Union[float, int, str, None]]:
         '''Get attrs as dict'''
         return {'path': self.path, 'is_initialized': self.is_initialized, **self._raw.as_dict}
 

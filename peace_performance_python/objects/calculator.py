@@ -2,7 +2,7 @@ from .pp_result import CalcResult
 from .beatmap import Beatmap
 
 from ..utils import _mutable_property_generator
-from ..types import NativeCalculator
+from ..types import NativeCalculator, PpModule as _pp_rust
 
 from .._peace_performance import pp as _pp_rust
 

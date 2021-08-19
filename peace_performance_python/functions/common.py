@@ -1,4 +1,12 @@
-from ..types import NativeBeatmap, OsuModeInt, OsuModeStr, NativeCalculator
+from ..types import (
+    NativeBeatmap, 
+    OsuModeInt, 
+    OsuModeStr, 
+    NativeCalculator, 
+    CommonModule as _common,
+    BeatmapModule as _beatmap_rust,
+    PpModule as _pp_rust
+)
 
 from .._peace_performance import common as _common
 from .._peace_performance import beatmap as _beatmap_rust
