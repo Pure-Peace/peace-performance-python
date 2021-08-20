@@ -1,8 +1,9 @@
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple, Union
+from . import BaseGetter
+from typing import Dict, List, Optional, Tuple
 
 
-class DifficultyPoint:
+class DifficultyPoint(BaseGetter):
     '''
     DifficultyPoint object
 
@@ -14,27 +15,13 @@ class DifficultyPoint:
     time: float
     speed_multiplier: float
 
-    def __repr__(self) -> str:
-        return f'<DifficultyPoint object ({self.attrs})>'
-
-    @property
-    def as_string(self) -> str: ...
     @property
     def as_dict(self) -> Dict[str, float]: ...
-
-    # Properties -----
     @property
-    def attrs(self) -> str:
-        '''Get attrs as text'''
-        return self.as_string
-
-    @property
-    def attrs_dict(self) -> Dict[str, float]:
-        '''Get attrs as dict'''
-        return self.as_dict
+    def attrs_dict(self) -> Dict[str, float]: ...
 
 
-class TimingPoint:
+class TimingPoint(BaseGetter):
     '''
     TimingPoint object
 
@@ -46,28 +33,13 @@ class TimingPoint:
     time: float
     beat_len: float
 
-    def __repr__(self) -> str:
-        return f'<TimingPoint object ({self.attrs})>'
-
-    @property
-    def as_string(self) -> str: ...
-
     @property
     def as_dict(self) -> Dict[str, float]: ...
-
-    # Properties -----
     @property
-    def attrs(self) -> str:
-        '''Get attrs as text'''
-        return self.as_string
-
-    @property
-    def attrs_dict(self) -> Dict[str, float]:
-        '''Get attrs as dict'''
-        return self.as_dict
+    def attrs_dict(self) -> Dict[str, float]: ...
 
 
-class Pos2:
+class Pos2(BaseGetter):
     '''
     Pos2 object
 
@@ -85,16 +57,8 @@ class Pos2:
     length_squared: float
     length: float
 
-    def __repr__(self) -> str:
-        return f'<Pos2 object ({self.attrs})>'
-
-    @property
-    def as_string(self) -> str: ...
-
-    @property
-    def as_dict(self) -> Dict[str, float]: ...
-
     # Methods ------
+
     def dot(self, other: Pos2) -> float: ...
     def distance(self, other: Pos2) -> float: ...
     def normalize(self) -> Pos2: ...
@@ -104,25 +68,18 @@ class Pos2:
     def div(self, rhs: float) -> Pos2: ...
     def add_assign(self, other: Pos2): ...
 
-    # Properties -----
-
     @property
-    def attrs(self) -> str:
-        '''Get attrs as text'''
-        return self.as_string
-
+    def as_dict(self) -> Dict[str, float]: ...
     @property
-    def attrs_dict(self) -> Dict[str, float]:
-        '''Get attrs as dict'''
-        return self.as_dict
+    def attrs_dict(self) -> Dict[str, float]: ...
 
     @property
     def as_tuple(self) -> Tuple[float, float]:
         '''Get (x, y) as tuple'''
-        return self.as_tuple
+        ...
 
 
-class HitObjectKind:
+class HitObjectKind(BaseGetter):
     '''
     HitObjectKind object
 
@@ -144,32 +101,15 @@ class HitObjectKind:
     repeats: Optional[int]
     path_type: Optional[str]
     end_time: Optional[float]
-
-    # cache needed attrs
     curve_points: Optional[List[Pos2]]
-
-    def __repr__(self) -> str:
-        return f'<HitObjectKind object ({self.attrs})>'
-
-    @property
-    def as_string(self) -> str: ...
 
     @property
     def as_dict(self) -> Dict[str, float]: ...
-
-    # Properties -----
     @property
-    def attrs(self) -> str:
-        '''Get attrs as text'''
-        return self.as_string
-
-    @property
-    def attrs_dict(self) -> Dict[str, float]:
-        '''Get attrs as dict'''
-        return self.as_dict
+    def attrs_dict(self) -> Dict[str, float]: ...
 
 
-class HitObject:
+class HitObject(BaseGetter):
     '''
     HitObject object
 
@@ -199,34 +139,95 @@ class HitObject:
     is_slider: bool
     is_spinner: bool
     kind_str: str
-
-    # cache needed attrs
     pos: Pos2
     kind: HitObjectKind
 
-    def __repr__(self) -> str:
-        return f'<HitObject object ({self.attrs})>'
-
-    @property
-    def as_string(self) -> str: ...
-
     @property
     def as_dict(self) -> Dict[str, float]: ...
-
-    # Properties -----
     @property
-    def attrs(self) -> str:
-        '''Get attrs as text'''
-        return self.as_string
-
-    @property
-    def attrs_dict(self) -> Dict[str, float]:
-        '''Get attrs as dict'''
-        return self.as_dict
+    def attrs_dict(self) -> Dict[str, float]: ...
 
 
-class Beatmap:
-    ...
+class Beatmap(BaseGetter):
+    '''
+    The Beatmap used to calculate the pp, it contains the parsed .osu beatmap.
+
+    `path`: `Optional[Path]`
+
+    `mode`: `int`
+
+    `mode_str`: `str`
+
+    `version`: `int`
+
+    `n_circles`: `int`
+
+    `n_sliders`: `int`
+
+    `n_spinners`: `int`
+
+    `ar`: `float`
+
+    `od`: `float`
+
+    `cs`: `float`
+
+    `hp`: `float`
+
+    `sv`: `float`
+
+    `tick_rate`: `float`
+
+    `stack_leniency`: `Optional[float]`
+
+    `hit_objects`: `Optional[List[HitObject]]`
+
+    `timing_points`: `Optional[List[TimingPoint]]`
+
+    `difficulty_points`: `Optional[List[DifficultyPoint]]`
+
+
+    # Examples:
+    ```
+    # Read and parse .osu files from local
+    beatmap = Beatmap('path_to_osu_file')
+    # Same as
+    beatmap = Beatmap.create('path_to_osu_file')
+
+    # Async Rust
+    beatmap = await Beatmap.create_async_rs('path_to_osu_file')
+    # Async Python (wrapper)
+    beatmap = await Beatmap.create_async_py('path_to_osu_file')
+
+
+
+    # We can reload this .osu files as:
+    beatmap.reload()
+
+    # Async Rust
+    await beatmap.reload_async_rs()
+    # Async Python (wrapper)
+    await beatmap.reload_async_py()
+
+    # We can load another .osu files as:
+    beatmap.init('path_to_another_osu_file')
+
+    # Async Rust
+    await beatmap.init_rs('path_to_another_osu_file')
+    # Async Python (wrapper)
+    await beatmap.init_py('path_to_another_osu_file')
+
+    # Calculate PP
+    c = Calculator()
+    c.set_acc(98.8)
+    c.set_combo(727)
+    # or
+    c = Calculator({'acc': 98.8, 'combo': 727})
+    # then
+    result = c.calculate(beatmap)
+
+    ```
+    '''
     mode: int
     mode_str: str
     version: int
@@ -249,11 +250,6 @@ class Beatmap:
     def timing_points(self) -> List[TimingPoint]: ...
     @property
     def difficulty_points(self) -> List[DifficultyPoint]: ...
-
-    @property
-    def as_string(self) -> str: ...
-    @property
-    def as_dict(self) -> Dict[str, Union[float, int, None]]: ...
 
 
 async def read_beatmap_async(path: Path) -> Beatmap: ...
