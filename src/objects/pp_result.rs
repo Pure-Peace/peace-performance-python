@@ -1,11 +1,11 @@
-use peace_performance::{PpResult, StarResult};
+use peace_performance::{GameMode, PpResult, StarResult};
 use pyo3::{
     prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
-    PyObjectProtocol, PyResult, Python,
+    PyAny, PyObjectProtocol, PyResult, Python,
 };
 
-use crate::methods::common::osu_mode_int_str;
+use crate::methods::common::{osu_mode_int_str, py_any_into_osu_mode};
 
 #[pyclass]
 #[derive(Default)]
@@ -35,6 +35,59 @@ pub struct RawStars {
 }
 crate::pyo3_py_protocol!(RawStars);
 crate::pyo3_py_methods!(RawStars, impl {
+    #[inline(always)]
+    pub fn get_mode_attrs(&self, py_input: &PyAny) -> PyResult<Vec<&'static str>> {
+        let mode = py_any_into_osu_mode(py_input)?;
+        Ok(match mode {
+            GameMode::STD => vec!["stars", "ar", "od", "speed_strain", "aim_strain", "max_combo", "n_circles", "n_spinners"],
+            GameMode::TKO => vec!["stars"],
+            GameMode::CTB => vec!["stars", "max_combo", "ar", "n_fruits", "n_droplets", "n_tiny_droplets"],
+            GameMode::MNA => vec!["stars"],
+        })
+    }
+
+    pub fn get_mode<'a>(&self, py: Python<'a>, py_input: &PyAny) -> PyResult<&'a PyDict> {
+        let mode = py_any_into_osu_mode(py_input)?;
+        Ok(match mode {
+            GameMode::STD => self.mode_osu(py),
+            GameMode::TKO => self.mode_taiko(py),
+            GameMode::CTB => self.mode_ctb(py),
+            GameMode::MNA => self.mode_mania(py),
+        }?)
+    }
+
+    #[getter]
+    #[inline(always)]
+    pub fn mode_osu<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        Ok(crate::pyo3_py_dict!(py, self; {
+            stars, ar, od, speed_strain, aim_strain, max_combo, n_circles, n_spinners
+        }))
+    }
+
+    #[getter]
+    #[inline(always)]
+    pub fn mode_taiko<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        Ok(crate::pyo3_py_dict!(py, self; {
+            stars
+        }))
+    }
+
+    #[getter]
+    #[inline(always)]
+    pub fn mode_ctb<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        Ok(crate::pyo3_py_dict!(py, self; {
+            stars, max_combo, ar, n_fruits, n_droplets, n_tiny_droplets
+        }))
+    }
+
+    #[getter]
+    #[inline(always)]
+    pub fn mode_mania<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        Ok(crate::pyo3_py_dict!(py, self; {
+            stars
+        }))
+    }
+
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
@@ -166,7 +219,7 @@ crate::pyo3_py_methods!(
         #[inline(always)]
         pub fn as_string(&self) -> String {
             format!(
-                "mode: {}, mode_str: {}, mods: {}, pp: {}, stars: {}",
+                "mode: {}, mode_str: {}, mods: {}, pp: {}, stars: {}, raw_pp: <RawPP (...)>, raw_stars: <RawStars (...)>",
                 self.0.mode,
                 osu_mode_int_str(self.0.mode),
                 self.0.mods,
