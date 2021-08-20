@@ -1,8 +1,8 @@
 use peace_performance::PpResult;
 use pyo3::{
     prelude::{pyclass, pymethods, pyproto},
-    types::PyDict,
-    PyObjectProtocol, PyResult, Python,
+    types::{PyDict, PyInt, PyLong, PyString},
+    Py, PyCell, PyObjectProtocol, PyRefMut, PyResult, Python,
 };
 
 use super::CalcResult;
@@ -35,15 +35,62 @@ pub struct Calculator {
     pub score: Option<u32>,
 }
 crate::pyo3_py_protocol!(Calculator);
-crate::pyo3_py_methods!(Calculator, impl {
+
+#[pymethods]
+impl Calculator {
     #[new]
-    pub fn new() -> Self {
+    #[args(data = "None", kwargs = "**")]
+    pub fn new(data: Option<&PyDict>, kwargs: Option<&PyDict>) -> PyResult<Self> {
+        let mut slf = Self::default();
+        if let Some(d) = data {
+            Self::set_with_dict(&mut slf, d)?;
+        } else if let Some(d) = kwargs {
+            Self::set_with_dict(&mut slf, d)?;
+        }
+        Ok(slf)
+    }
+
+    #[staticmethod]
+    pub fn new_empty() -> Self {
         Self::default()
     }
 
     #[inline(always)]
     pub fn calculate(&self, beatmap: &Beatmap) -> CalcResult {
         CalcResult(self.calc(beatmap))
+    }
+
+    #[inline(always)]
+    pub fn set_with_dict(&mut self, data: &PyDict) -> PyResult<()> {
+        for (k, v) in data.iter() {
+            self.set_with_str(
+                k.downcast::<PyString>()?.to_str()?,
+                if v.is_none() {
+                    None
+                } else {
+                    Some(v.downcast::<PyInt>()?)
+                },
+            )?;
+        }
+        Ok(())
+    }
+
+    #[inline(always)]
+    pub fn set_with_str(&mut self, attr: &str, value: Option<&PyLong>) -> PyResult<()> {
+        crate::set_with_py_str!(self, attr, value; {
+            mode,
+            mods,
+            n50,
+            n100,
+            n300,
+            katu,
+            acc,
+            passed_obj,
+            combo,
+            miss,
+            score
+        });
+        Ok(())
     }
 
     #[inline(always)]
@@ -59,6 +106,16 @@ crate::pyo3_py_methods!(Calculator, impl {
         self.combo = None;
         self.miss = None;
         self.score = None;
+    }
+
+    #[getter]
+    pub fn attrs(&self) -> String {
+        self.as_string()
+    }
+
+    #[getter]
+    pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
+        self.as_dict(py)
     }
 
     #[getter]
@@ -99,7 +156,7 @@ crate::pyo3_py_methods!(Calculator, impl {
         });
         Ok(d)
     }
-});
+}
 
 impl Calculator {
     #[inline(always)]
