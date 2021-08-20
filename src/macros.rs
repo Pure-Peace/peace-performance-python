@@ -1,21 +1,56 @@
 #[macro_export]
 macro_rules! pyo3_py_methods {
+    ($type:ident, impl {$($others:item)*}) => {
+        #[pymethods] impl $type {
+            $($others)*
+            #[getter]pub fn attrs(&self) -> String { self.as_string() }
+            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
+        }
+    };
     ($type:ident, {$($attr:ident: $returns:ident),*}, impl {$($others:item)*}) => {
-        #[pymethods] impl $type {$(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})* $($others)*}
+        #[pymethods] impl $type {
+            $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})* $($others)*
+            #[getter]pub fn attrs(&self) -> String { self.as_string() }
+            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
+        }
     };
     ($type:ident, {$($attr:ident: $returns:ident),*}) => {
-        #[pymethods] impl $type {$(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*}
+        #[pymethods] impl $type {
+            $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
+            #[getter]pub fn attrs(&self) -> String { self.as_string() }
+            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
+       }
     };
     ($type:ident, {$($attr:ident: $returns:ident),*}; fn {$( $func:ident: $ret:ident),*}) => {
         #[pymethods] impl $type {
             $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
             $(#[getter]pub fn $func(&self) -> $ret {self.0.$func()})*
+            #[getter]pub fn attrs(&self) -> String { self.as_string() }
+            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
         }
     };
     ($type:ident, {$($attr:ident: $returns:ident),*}; fn {$( $func:ident: $ret:ident),*}; impl {$($others:item)*}) => {
         #[pymethods] impl $type {
             $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
             $(#[getter]pub fn $func(&self) -> $ret {self.0.$func()})*
+            $($others)*
+            #[getter]pub fn attrs(&self) -> String { self.as_string() }
+            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
+        }
+    };
+}
+
+#[macro_export]
+macro_rules! pyo3_py_protocol {
+    ($obj:ident) => {
+        #[pyproto] impl PyObjectProtocol for $obj {
+            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"),self.attrs())) }
+        }
+    };
+    ($obj:ident, impl {$($others:item)*}) => {
+        use pyo3::PyObjectProtocol;
+        #[pyproto] impl PyObjectProtocol for $obj {
+            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"),self.attrs())) }
             $($others)*
         }
     };

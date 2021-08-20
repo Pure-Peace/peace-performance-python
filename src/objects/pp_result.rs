@@ -1,8 +1,8 @@
 use peace_performance::{PpResult, StarResult};
 use pyo3::{
-    prelude::{pyclass, pymethods},
+    prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
-    PyResult, Python,
+    PyObjectProtocol, PyResult, Python,
 };
 
 use crate::methods::common::osu_mode_int_str;
@@ -33,13 +33,13 @@ pub struct RawStars {
     #[pyo3(get)]
     pub n_spinners: Option<usize>,
 }
-
-#[pymethods]
-impl RawStars {
+crate::pyo3_py_protocol!(RawStars);
+crate::pyo3_py_methods!(RawStars, impl {
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!(
-            "stars: {:?}, max_combo: {:?}, ar: {:?}, 
+            "stars: {:?}, max_combo: {:?}, ar: {:?},
             n_fruits: {:?}, n_droplets: {:?}, n_tiny_droplets: {:?}, 
             od: {:?}, speed_strain: {:?}, n_circles: {:?}, n_spinners: {:?}",
             self.stars,
@@ -56,6 +56,7 @@ impl RawStars {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self; {
             stars,
@@ -71,7 +72,7 @@ impl RawStars {
         });
         Ok(d)
     }
-}
+});
 
 #[pyclass]
 pub struct RawPP {
@@ -86,19 +87,20 @@ pub struct RawPP {
     #[pyo3(get)]
     pub total: f32,
 }
-
-#[pymethods]
-impl RawPP {
+crate::pyo3_py_protocol!(RawPP);
+crate::pyo3_py_methods!(RawPP, impl {
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!(
-            "aim: {:?}, spd: {:?}, str: {:?}, 
+            "aim: {:?}, spd: {:?}, str: {:?},
             acc: {:?}, total: {:?}",
             self.aim, self.spd, self.str, self.acc, self.total
         )
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self; {
             aim,
@@ -109,10 +111,11 @@ impl RawPP {
         });
         Ok(d)
     }
-}
+});
 
 #[pyclass]
 pub struct CalcResult(pub PpResult);
+crate::pyo3_py_protocol!(CalcResult);
 crate::pyo3_py_methods!(
     CalcResult, {mode: u8, mods: u32, pp: f32}; fn {stars: f32}; impl {
         #[getter]
@@ -160,6 +163,7 @@ crate::pyo3_py_methods!(
         }
 
         #[getter]
+        #[inline(always)]
         pub fn as_string(&self) -> String {
             format!(
                 "mode: {}, mode_str: {}, mods: {}, pp: {}, stars: {}",
@@ -172,6 +176,7 @@ crate::pyo3_py_methods!(
         }
 
         #[getter]
+        #[inline(always)]
         pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
             let d = crate::pyo3_py_dict!(py, self.0; {
                 mode,

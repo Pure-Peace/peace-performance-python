@@ -9,9 +9,9 @@ use peace_performance::{
     Beatmap as RawBeatmap,
 };
 use pyo3::{
-    prelude::{pyclass, pymethods},
+    prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
-    PyResult, Python,
+    PyObjectProtocol, PyResult, Python,
 };
 
 use crate::methods::common::osu_mode_str;
@@ -19,6 +19,7 @@ use crate::methods::common::osu_mode_str;
 #[pyclass]
 #[derive(Clone, Default, Debug)]
 pub struct Beatmap(pub RawBeatmap);
+crate::pyo3_py_protocol!(Beatmap);
 crate::pyo3_py_methods!(
     Beatmap, {
         version: u8,
@@ -96,6 +97,7 @@ crate::pyo3_py_methods!(
         }
 
         #[getter]
+        #[inline(always)]
         pub fn as_string(&self) -> String {
             format!("mode: {}, mode_str: {}, version: {}, n_circles: {}, n_sliders: {}, n_spinners: {}, ar: {}, od: {}, cs: {}, hp: {}, sv: {}, tick_rate: {}, stack_leniency: {:?}",
                 self.0.mode as u8,
@@ -115,6 +117,7 @@ crate::pyo3_py_methods!(
         }
 
         #[getter]
+        #[inline(always)]
         pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
             let d = crate::pyo3_py_dict!(py, self.0; {
                 version, n_circles, n_sliders, n_spinners, ar, od, cs, hp, sv, tick_rate
@@ -130,13 +133,17 @@ crate::pyo3_py_methods!(
 #[derive(Clone, Debug)]
 pub struct DifficultyPoint(pub RawDifficultyPoint);
 #[cfg(any(feature = "osu", feature = "fruits"))]
+crate::pyo3_py_protocol!(DifficultyPoint);
+#[cfg(any(feature = "osu", feature = "fruits"))]
 crate::pyo3_py_methods!(DifficultyPoint, {time: f32, speed_multiplier: f32}, impl {
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!("time: {}, speed_multiplier: {}", self.0.time, self.0.speed_multiplier)
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self.0; {time, speed_multiplier});
         Ok(d)
@@ -146,13 +153,16 @@ crate::pyo3_py_methods!(DifficultyPoint, {time: f32, speed_multiplier: f32}, imp
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct TimingPoint(pub RawTimingPoint);
+crate::pyo3_py_protocol!(TimingPoint);
 crate::pyo3_py_methods!(TimingPoint, {time: f32, beat_len: f32}, impl {
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!("time: {}, beat_len: {}", self.0.time, self.0.beat_len)
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self.0; {time, beat_len});
         Ok(d)
@@ -162,6 +172,7 @@ crate::pyo3_py_methods!(TimingPoint, {time: f32, beat_len: f32}, impl {
 #[pyclass]
 #[derive(Clone, Default, Debug)]
 pub struct Pos2(pub RawPos2);
+crate::pyo3_py_protocol!(Pos2);
 crate::pyo3_py_methods!(Pos2, {x: f32, y: f32}; fn {
     length_squared: f32,
     length: f32
@@ -199,17 +210,20 @@ crate::pyo3_py_methods!(Pos2, {x: f32, y: f32}; fn {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!("x: {}, y: {}", self.0.x, self.0.y)
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self.0; {x, y});
         Ok(d)
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_tuple(&self) -> (f32, f32) {
         (self.0.x, self.0.y)
     }
@@ -231,10 +245,10 @@ pub struct HitObjectKind {
     #[pyo3(get)]
     pub end_time: Option<f32>,
 }
-
-#[pymethods]
-impl HitObjectKind {
+crate::pyo3_py_protocol!(HitObjectKind);
+crate::pyo3_py_methods!(HitObjectKind, impl {
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!(
             "kind: {}, pixel_len: {:?}, repeats: {:?}, path_type: {:?}, end_time: {:?}",
@@ -243,6 +257,7 @@ impl HitObjectKind {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self; {kind, pixel_len, repeats, path_type, end_time});
         d.set_item(
@@ -255,11 +270,12 @@ impl HitObjectKind {
         )?;
         Ok(d)
     }
-}
+});
 
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct HitObject(pub RawHitObject);
+crate::pyo3_py_protocol!(HitObject);
 crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
     end_time: f32,
     is_circle: bool,
@@ -327,6 +343,7 @@ crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!("start_time: {}, sound: {}, end_time: {}, kind: {}, pos: ({}, {})",
             self.0.start_time,
@@ -339,6 +356,7 @@ crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self.0; {start_time, sound}; fn self {
             end_time

@@ -1,8 +1,8 @@
 use peace_performance::PpResult;
 use pyo3::{
-    prelude::{pyclass, pymethods},
+    prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
-    PyResult, Python,
+    PyObjectProtocol, PyResult, Python,
 };
 
 use super::CalcResult;
@@ -34,9 +34,8 @@ pub struct Calculator {
     #[pyo3(get, set)]
     pub score: Option<u32>,
 }
-
-#[pymethods]
-impl Calculator {
+crate::pyo3_py_protocol!(Calculator);
+crate::pyo3_py_methods!(Calculator, impl {
     #[new]
     pub fn new() -> Self {
         Self::default()
@@ -63,9 +62,10 @@ impl Calculator {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_string(&self) -> String {
         format!(
-            "mode: {:?}, mods: {:?}, n50: {:?}, n100: {:?}, n300: {:?}, katu: {:?}, 
+            "mode: {:?}, mods: {:?}, n50: {:?}, n100: {:?}, n300: {:?}, katu: {:?},
                 acc: {:?}, passed_obj: {:?}, combo: {:?}, miss: {:?}, score: {:?}",
             self.mode,
             self.mods,
@@ -82,6 +82,7 @@ impl Calculator {
     }
 
     #[getter]
+    #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
         let d = crate::pyo3_py_dict!(py, self; {
             mode,
@@ -98,7 +99,7 @@ impl Calculator {
         });
         Ok(d)
     }
-}
+});
 
 impl Calculator {
     #[inline(always)]
