@@ -1,13 +1,13 @@
 #[macro_export]
 macro_rules! pyo3_py_methods {
-    ($type:ident, impl {$($others:item)*}) => {
+    ($type:ident, impl {$($others:tt)*}) => {
         #[pymethods] impl $type {
             $($others)*
             #[getter]pub fn attrs(&self) -> String { self.as_string() }
             #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
         }
     };
-    ($type:ident, {$($attr:ident: $returns:ident),*}, impl {$($others:item)*}) => {
+    ($type:ident, {$($attr:ident: $returns:ident),*}, impl {$($others:tt)*}) => {
         #[pymethods] impl $type {
             $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})* $($others)*
             #[getter]pub fn attrs(&self) -> String { self.as_string() }
@@ -29,7 +29,7 @@ macro_rules! pyo3_py_methods {
             #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
         }
     };
-    ($type:ident, {$($attr:ident: $returns:ident),*}; fn {$( $func:ident: $ret:ident),*}; impl {$($others:item)*}) => {
+    ($type:ident, {$($attr:ident: $returns:ident),*}; fn {$( $func:ident: $ret:ident),*}; impl {$($others:tt)*}) => {
         #[pymethods] impl $type {
             $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
             $(#[getter]pub fn $func(&self) -> $ret {self.0.$func()})*
@@ -70,6 +70,13 @@ macro_rules! async_not_enabled_err {
         crate::python::exceptions::AsyncNotEnabledError::new_err(
             "Any async features (async_tokio, async_std) are not enabled.",
         )
+    };
+}
+
+#[macro_export]
+macro_rules! invalid_gamemode_err {
+    () => {
+        crate::python::exceptions::InvalidGameMode::new_err("Invalid osu! gamemode")
     };
 }
 
@@ -121,5 +128,18 @@ macro_rules! pyo3_add_modules {
 macro_rules! pyo3_add_classes {
     ($m:ident; {$($class:ident),*}) => {
         $($m.add_class::<$class>()?;)*
+    };
+}
+
+#[macro_export]
+macro_rules! set_with_py_str {
+    ($obj:ident, $attr:ident, $value:ident; {$($a:ident),*}) => {
+        match $attr {
+            $(stringify!($a) => $obj.$a = match $value {
+                Some(v) => v.extract()?,
+                None => None
+            },)*
+            _ => {}
+        }
     };
 }

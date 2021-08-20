@@ -1,5 +1,5 @@
 use peace_performance::GameMode;
-use pyo3::PyErr;
+use pyo3::{PyAny, PyErr};
 use std::path::PathBuf;
 
 use std::fs::File as SyncFile;
@@ -62,6 +62,37 @@ pub fn osu_mode_int_str(mode: u8) -> String {
         _ => "unknown",
     }
     .into()
+}
+
+#[inline(always)]
+pub fn str_into_osu_mode(str: &str) -> Result<GameMode, PyErr> {
+    Ok(match str {
+        "std" => GameMode::STD,
+        "taiko" => GameMode::TKO,
+        "ctb" => GameMode::CTB,
+        "mania" => GameMode::MNA,
+        _ => return Err(crate::invalid_gamemode_err!()),
+    })
+}
+
+#[inline(always)]
+pub fn int_into_osu_mode(int: u8) -> Result<GameMode, PyErr> {
+    Ok(match int {
+        0 => GameMode::STD,
+        1 => GameMode::TKO,
+        2 => GameMode::CTB,
+        3 => GameMode::MNA,
+        _ => return Err(crate::invalid_gamemode_err!()),
+    })
+}
+
+pub fn py_any_into_osu_mode(py_input: &PyAny) -> Result<GameMode, PyErr> {
+    if let Ok(str) = py_input.extract::<String>() {
+        return str_into_osu_mode(&str);
+    } else if let Ok(int) = py_input.extract::<u8>() {
+        return int_into_osu_mode(int);
+    }
+    Err(crate::invalid_gamemode_err!())
 }
 
 #[cfg(any(feature = "async_tokio", feature = "async_std"))]

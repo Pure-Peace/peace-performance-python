@@ -62,5 +62,5 @@ pub fn read_beatmap_async(_py: Python, _path: PathBuf) -> PyResult<&PyAny> {
 
 #[pyfunction]
 pub fn new_calculator() -> Calculator {
-    Calculator::new()
+    Calculator::new_empty()
 }
