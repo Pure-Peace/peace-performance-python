@@ -51,3 +51,14 @@ def test_calculate_4(benchmark) -> CalcResult:
 def test_calculate_5(benchmark) -> CalcResult:
     def wrap(): Calculator(acc=98.8, miss=3).calculate(beatmap)
     benchmark(wrap)
+
+
+@pytest.mark.benchmark(group="bench-pp-calc")
+def test_calculate_6(benchmark) -> CalcResult:
+    def wrap():
+        # --
+        c = Calculator()
+        c.set_acc(98.8)
+        c.setattr('miss', 3)
+        c.calculate(beatmap)
+    benchmark(wrap)
