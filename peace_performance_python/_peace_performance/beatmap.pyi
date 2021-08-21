@@ -1,11 +1,12 @@
 from pathlib import Path
-from . import BaseGetter
 from typing import Dict, List, Optional, Tuple
+
+from .types import BaseGetter
 
 
 class DifficultyPoint(BaseGetter):
     '''
-    DifficultyPoint object
+    DifficultyPoint object (`Rust`)
 
     `time`: `float`
 
@@ -23,7 +24,7 @@ class DifficultyPoint(BaseGetter):
 
 class TimingPoint(BaseGetter):
     '''
-    TimingPoint object
+    TimingPoint object (`Rust`)
 
     `time`: `float`
 
@@ -41,7 +42,7 @@ class TimingPoint(BaseGetter):
 
 class Pos2(BaseGetter):
     '''
-    Pos2 object
+    Pos2 object (`Rust`)
 
     `x`: `float`
 
@@ -81,7 +82,7 @@ class Pos2(BaseGetter):
 
 class HitObjectKind(BaseGetter):
     '''
-    HitObjectKind object
+    HitObjectKind object (`Rust`)
 
     `kind`: `str`
 
@@ -111,7 +112,7 @@ class HitObjectKind(BaseGetter):
 
 class HitObject(BaseGetter):
     '''
-    HitObject object
+    HitObject object (`Rust`)
 
     `start_time`: `float`
 
@@ -150,13 +151,13 @@ class HitObject(BaseGetter):
 
 class Beatmap(BaseGetter):
     '''
-    The Beatmap used to calculate the pp, it contains the parsed .osu beatmap.
+    The Beatmap (`Rust`) used to calculate the pp, it contains the parsed .osu beatmap.
 
     `path`: `Optional[Path]`
 
     `mode`: `int`
 
-    `mode_str`: `str`
+    `mode_str`: `Optional[str]`
 
     `version`: `int`
 
@@ -185,51 +186,9 @@ class Beatmap(BaseGetter):
     `timing_points`: `Optional[List[TimingPoint]]`
 
     `difficulty_points`: `Optional[List[DifficultyPoint]]`
-
-
-    # Examples:
-    ```
-    # Read and parse .osu files from local
-    beatmap = Beatmap('path_to_osu_file')
-    # Same as
-    beatmap = Beatmap.create('path_to_osu_file')
-
-    # Async Rust
-    beatmap = await Beatmap.create_async_rs('path_to_osu_file')
-    # Async Python (wrapper)
-    beatmap = await Beatmap.create_async_py('path_to_osu_file')
-
-
-
-    # We can reload this .osu files as:
-    beatmap.reload()
-
-    # Async Rust
-    await beatmap.reload_async_rs()
-    # Async Python (wrapper)
-    await beatmap.reload_async_py()
-
-    # We can load another .osu files as:
-    beatmap.init('path_to_another_osu_file')
-
-    # Async Rust
-    await beatmap.init_rs('path_to_another_osu_file')
-    # Async Python (wrapper)
-    await beatmap.init_py('path_to_another_osu_file')
-
-    # Calculate PP
-    c = Calculator()
-    c.set_acc(98.8)
-    c.set_combo(727)
-    # or
-    c = Calculator({'acc': 98.8, 'combo': 727})
-    # then
-    result = c.calculate(beatmap)
-
-    ```
     '''
     mode: int
-    mode_str: str
+    mode_str: Optional[str]
     version: int
 
     n_circles: int
@@ -245,6 +204,11 @@ class Beatmap(BaseGetter):
     stack_leniency: Optional[float]
 
     @property
+    def as_dict(self) -> Dict[str, float, str, None]: ...
+    @property
+    def attrs_dict(self) -> Dict[str, float, str, None]: ...
+
+    @property
     def hit_objects(self) -> List[HitObject]: ...
     @property
     def timing_points(self) -> List[TimingPoint]: ...
@@ -252,5 +216,11 @@ class Beatmap(BaseGetter):
     def difficulty_points(self) -> List[DifficultyPoint]: ...
 
 
-async def read_beatmap_async(path: Path) -> Beatmap: ...
-def read_beatmap_sync(path: Path) -> Beatmap: ...
+async def read_beatmap_async(path: Path) -> Beatmap:
+    '''Read a beatmap async, returns Beatmap object (`Rust`)'''
+    ...
+
+
+def read_beatmap_sync(path: Path) -> Beatmap:
+    '''Read a beatmap, returns Beatmap object (`Rust`)'''
+    ...

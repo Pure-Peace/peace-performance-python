@@ -1,14 +1,10 @@
-import asyncio
 import pytest
 
 from peace_performance_python.prelude import *
 
 from . import join_beatmap, HITORIGOTO
 
-
-loop = asyncio.get_event_loop()
-beatmap: Beatmap = loop.run_until_complete(Beatmap.create_async_rs(
-    join_beatmap(HITORIGOTO)))
+beatmap = Beatmap(join_beatmap(HITORIGOTO))
 
 
 @pytest.mark.benchmark(group="bench-pp-calc")

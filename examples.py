@@ -5,10 +5,12 @@ from peace_performance_python.prelude import *
 
 from tests import async_run, join_beatmap, HITORIGOTO, UNFORGIVING
 
-
+# *No longer available by default (compile without `rust_logger` features enabled)*
 # Initialize Rust logger (optional)
+'''
 set_log_level('trace')
 init_logger()
+'''
 
 
 # Choose a style you like

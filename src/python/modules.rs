@@ -11,7 +11,7 @@ use crate::{
 
 #[pymodule]
 pub fn common(_py: Python, m: &PyModule) -> PyResult<()> {
-    pyo3_add_functions!(m; {rust_sleep, set_log_level, init_logger});
+    pyo3_add_functions!(m; {rust_sleep, set_log_level, init_logger, osu_mode_int_str, osu_mode_str_int});
     Ok(())
 }
 

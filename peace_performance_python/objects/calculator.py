@@ -1,63 +1,63 @@
-from .pp_result import CalcResult
 from .beatmap import Beatmap
-
-from ..utils import _mutable_property_generator
-
-from .._peace_performance import pp as _pp_rust
-
-from typing import Any, Dict, Optional, Union
+from .._peace_performance.pp import (
+    CalcResult,
+    Calculator as CalculatorRust
+)
 
 
-@_mutable_property_generator
-class Calculator:
+class Calculator(CalculatorRust):
+    '''
+    Calculator for storing pp calculation configurations (mode, mods, combo, 300, miss, acc, etc.)
 
-    _raw_attrs = ('mode', 'mods', 'n50', 'n100', 'n300',
-                  'katu', 'acc', 'passed_obj', 'combo', 'miss', 'score',)
-    _extra_attrs = ('_raw',)
-    __slots__ = _raw_attrs + _extra_attrs
+    `mode`: `Optional[int]`
 
-    _raw: _pp_rust.Calculator
-    mode: Optional[int]
-    mods: Optional[int]
-    n50: Optional[int]  # Irrelevant for osu!mania
-    n100: Optional[int]  # Irrelevant for osu!mania and osu!taiko
-    n300: Optional[int]  # Irrelevant for osu!mania
-    katu: Optional[int]  # Only relevant for osu!ctb
-    acc: Optional[float]  # Irrelevant for osu!mania
-    passed_obj: Optional[int]
-    combo: Optional[int]  # Irrelevant for osu!mania
-    miss: Optional[int]  # Irrelevant for osu!mania
-    score: Optional[int]  # Only relevant for osu!mania
+    `mods`: `Optional[int]`
 
-    def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None, **kwargs) -> 'Calculator':
-        self._raw = _pp_rust.Calculator()
-        set = data or kwargs
-        if set:
-            self.set_with_dict(set)
+    `n50`: `Optional[int]` # Irrelevant for osu!mania
 
-    def __repr__(self) -> str:
-        return f'<Calculator object ({self.attrs})>'
+    `n100`: `Optional[int]` # Irrelevant for osu!mania and osu!taiko
 
-    def getattr(self, attr) -> Any:
-        '''Set attr from _raw'''
-        return getattr(self._raw, attr)
+    `n300`: `Optional[int]` # Irrelevant for osu!mania
 
-    def setattr(self, attr, value) -> None:
-        '''Get attr to _raw'''
-        return setattr(self._raw, attr, value)
+    `katu`: `Optional[int]` # Only relevant for osu!ctb
 
-    @property
-    def attrs(self) -> str:
-        '''Get attrs as text'''
-        return self._raw.as_string
+    `acc`: `Optional[float]` # Irrelevant for osu!mania
 
-    @property
-    def attrs_dict(self) -> Dict[str, Union[int, float, None]]:
-        '''Get attrs as dict'''
-        return self._raw.as_dict
+    `passed_obj`: `Optional[int]` 
 
+    `combo`: `Optional[int]` # Irrelevant for osu!mania
 
+    `miss`: `Optional[int]` # Irrelevant for osu!mania
 
+    `score`: `Optional[int]` # Only relevant for osu!mania
 
+    ### Examples:
+    ```
+    beatmap = Beatmap('path_to_osu_file')
+    c = Calculator()
+    c.set_acc(98.8)
+    c.set_combo(727)
+    # or
+    c = Calculator({'acc': 98.8, 'combo': 727})
+    # then
+    result = c.calculate(beatmap)
+    ```
+    '''
 
+    def calculate(self, beatmap: Beatmap) -> CalcResult:
+        '''
+        Calculate pp with a Beatmap.
 
+        ### Examples:
+        ```
+        beatmap = Beatmap('path_to_osu_file')
+        c = Calculator()
+        c.set_acc(98.8)
+        c.set_combo(727)
+        # or
+        c = Calculator({'acc': 98.8, 'combo': 727})
+        # then
+        result = c.calculate(beatmap)
+        ```
+        '''
+        return self.calculate_raw(beatmap._raw)

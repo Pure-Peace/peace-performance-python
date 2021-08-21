@@ -1,7 +1,6 @@
-from peace_performance_python.objects.calculator import Calculator
-from peace_performance_python.objects.beatmap import Beatmap
 import pytest
-from typing import Callable
+
+from peace_performance_python.prelude import Beatmap, Calculator
 
 from . import (
     join_beatmap,

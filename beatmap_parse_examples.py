@@ -1,9 +1,13 @@
 from peace_performance_python.prelude import *
 from tests import join_beatmap, HITORIGOTO
 
+
+# *No longer available by default (compile without `rust_logger` features enabled)*
 # Initialize Rust logger (optional)
+'''
 set_log_level('trace')
 init_logger()
+'''
 
 
 def main():

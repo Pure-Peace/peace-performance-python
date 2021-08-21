@@ -15,7 +15,7 @@ use async_std::fs::File as AsyncFile;
 use crate::python::exceptions::ParseBeatmapError;
 
 #[inline(always)]
-#[timed::timed(duration(printer = "trace!"))]
+#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
 pub fn calc_with_any_pp(any_pp: &mut AnyPP) -> PpResult {
     match any_pp {
         AnyPP::Fruits(f) => f.calculate(),
@@ -26,7 +26,7 @@ pub fn calc_with_any_pp(any_pp: &mut AnyPP) -> PpResult {
 }
 
 #[inline(always)]
-#[timed::timed(duration(printer = "trace!"))]
+#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
 pub fn calc_acc_list(
     beatmap: &RawBeatmap,
     mode: Option<u8>,
@@ -74,7 +74,7 @@ macro_rules! parse_beatmap_body {
 macro_rules! parse_beatmap {
     ($parse_method:ident) => {
         #[inline(always)]
-        #[timed::timed(duration(printer = "trace!"))]
+        #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
         pub fn sync_parse_beatmap(file: SyncFile) -> Result<RawBeatmap, PyErr> {
             parse_beatmap_body!($parse_method, file)
         }
@@ -82,7 +82,7 @@ macro_rules! parse_beatmap {
 
     (async $parse_method:ident) => {
         #[inline(always)]
-        #[timed::timed(duration(printer = "trace!"))]
+        #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
         pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
             parse_beatmap_body!(async $parse_method, file)
         }

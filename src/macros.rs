@@ -44,13 +44,13 @@ macro_rules! pyo3_py_methods {
 macro_rules! pyo3_py_protocol {
     ($obj:ident) => {
         #[pyproto] impl PyObjectProtocol for $obj {
-            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"),self.attrs())) }
+            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"), self.attrs())) }
         }
     };
     ($obj:ident, impl {$($others:item)*}) => {
         use pyo3::PyObjectProtocol;
         #[pyproto] impl PyObjectProtocol for $obj {
-            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"),self.attrs())) }
+            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"), self.attrs())) }
             $($others)*
         }
     };
@@ -68,7 +68,16 @@ macro_rules! pyo3_py_dict {
 macro_rules! async_not_enabled_err {
     () => {
         crate::python::exceptions::AsyncNotEnabledError::new_err(
-            "Any async features (async_tokio, async_std) are not enabled.",
+            "Any async features (`async_tokio`, `async_std`) are not enabled.",
+        )
+    };
+}
+
+#[macro_export]
+macro_rules! rust_logger_not_enabled_err {
+    () => {
+        crate::python::exceptions::AsyncNotEnabledError::new_err(
+            "`rust_logger` features are not enabled.",
         )
     };
 }
@@ -101,11 +110,12 @@ macro_rules! pyo3_set_sys_modules {
     ($m:ident, $py:ident; {$($module:expr),*}) => {
         let sys = PyModule::import($py, "sys")?;
         let sys_modules: &PyDict = sys.getattr("modules")?.downcast()?;
-        let name = $m.name()?.split_once('.').map(|s| s.0);
-        $(sys_modules.set_item(if name.is_none() {
-            format!("_peace_performance.{}", $module)
+        let name = $m.name()?;
+        let dot = name.find('.');
+        $(sys_modules.set_item(if let Some(d) = dot {
+            format!("{}._peace_performance.{}", &name[..d], $module)
         } else {
-            format!("{}._peace_performance.{}", name.unwrap(), $module)
+            format!("_peace_performance.{}", $module)
         }, $m.getattr($module)?)?;)*
     };
 }
@@ -135,9 +145,10 @@ macro_rules! pyo3_add_classes {
 macro_rules! set_with_py_str {
     ($obj:ident, $attr:ident, $value:ident; {$($a:ident),*}) => {
         match $attr {
-            $(stringify!($a) => $obj.$a = match $value {
-                Some(v) => v.extract()?,
-                None => None
+            $(stringify!($a) => $obj.$a = if $value.is_none() {
+                None
+            } else {
+                Some($value.extract()?)
             },)*
             _ => {}
         }

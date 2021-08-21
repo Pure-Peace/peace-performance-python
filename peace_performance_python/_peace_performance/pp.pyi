@@ -1,13 +1,14 @@
-from typing import Any, Dict, Optional, Tuple, Union
+from typing import Dict, Optional, Tuple, Union
+
 from .types import BaseGetter, ModeResult, OsuModeInt, OsuModeStr
 from .beatmap import Beatmap
 
 
 class Calculator(BaseGetter):
     '''
-    Calculator for storing pp calculation configurations (mode, mods, combo, 300, miss, acc, etc.)
+    Calculator (`Rust`) for storing pp calculation configurations (mode, mods, combo, 300, miss, acc, etc.)
 
-    `mode`: `Optional[int]` # gamemode convert
+    `mode`: `Optional[int]`
 
     `mods`: `Optional[int]`
 
@@ -38,7 +39,7 @@ class Calculator(BaseGetter):
     # or
     c = Calculator({'acc': 98.8, 'combo': 727})
     # then
-    result = c.calculate(beatmap)
+    result = c.calculate_raw(beatmap._raw)
     ```
     '''
     mode: Optional[int]
@@ -58,13 +59,13 @@ class Calculator(BaseGetter):
     @property
     def attrs_dict(self) -> Dict[str, Union[float, int, None]]: ...
 
-    def __init__(self) -> 'Calculator':
+    def __init__(self, data: Optional[Dict[str, Union[int, float, None]]] = None, **kwargs) -> 'Calculator':
         '''
         Create new Calculator
 
         ## Attrs:
 
-        `mode`: `Optional[int]` # gamemode convert
+        `mode`: `Optional[int]`
 
         `mods`: `Optional[int]`
 
@@ -89,13 +90,17 @@ class Calculator(BaseGetter):
         '''
         ...
 
+    def new_empty() -> 'Calculator':
+        '''Crate empty calculator'''
+        ...
+
     def reset(self) -> None:
         '''Set Calculator to the default state'''
         ...
 
-    def calculate(self, beatmap: Beatmap) -> 'CalcResult':
+    def calculate_raw(self, beatmap: Beatmap) -> 'CalcResult':
         '''
-        Calculate pp with a Beatmap.
+        Calculate pp with a Beatmap (`Rust raw`).
 
         ### Examples:
         ```
@@ -106,9 +111,17 @@ class Calculator(BaseGetter):
         # or
         c = Calculator({'acc': 98.8, 'combo': 727})
         # then
-        result = c.calculate(beatmap)
+        result = c.calculate_raw(beatmap._raw)
         ```
         '''
+        ...
+
+    def getattr(self, attr: str) -> Union[int, float, None]: ...
+
+    def setattr(self, attr: str, value: Union[int, float, None]) -> None: ...
+
+    def set_with_str(self, attr: str, value: Union[int, float, None]) -> None:
+        '''Set attr (rust native)'''
         ...
 
     def set_with_dict(self, data: Dict[str, Union[int, float, None]]) -> None:
@@ -195,7 +208,7 @@ class Calculator(BaseGetter):
 
 class RawStars(BaseGetter):
     '''
-    Raw PP Calculation results: `RawStars` (read only).
+    Raw PP Calculation results: `RawStars` (`Rust`) (read only).
 
     #### Depending on the mode (`osu`, `taiko`, `ctb`, `mania`), will get different results.
 
@@ -279,7 +292,7 @@ class RawStars(BaseGetter):
 
 class RawPP(BaseGetter):
     '''
-    Raw PP Calculation results: `RawPP` (read only).
+    Raw PP Calculation results: `RawPP` (`Rust`) (read only).
 
     ### Attrs (Optional<f32>):
 
@@ -308,7 +321,7 @@ class RawPP(BaseGetter):
 
 class CalcResult(BaseGetter):
     '''
-    PP Calculation results: `CalcResult` (read only).
+    PP Calculation results: `CalcResult` (`Rust`) (read only).
 
     ### Attrs:
 
@@ -342,5 +355,5 @@ class CalcResult(BaseGetter):
 
 
 def new_calculator() -> Calculator:
-    '''Create new native calculator'''
+    '''Create new native Calculator (`Rust`)'''
     ...

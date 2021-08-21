@@ -1,3 +1,4 @@
+#[cfg(feature = "rust_logger")]
 #[macro_use]
 extern crate log;
 

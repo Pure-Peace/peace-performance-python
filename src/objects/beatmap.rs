@@ -99,7 +99,8 @@ crate::pyo3_py_methods!(
         #[getter]
         #[inline(always)]
         pub fn as_string(&self) -> String {
-            format!("mode: {}, mode_str: {}, version: {}, n_circles: {}, n_sliders: {}, n_spinners: {}, ar: {}, od: {}, cs: {}, hp: {}, sv: {}, tick_rate: {}, stack_leniency: {:?}",
+            format!(
+                "mode: {}, mode_str: {}, version: {}, n_circles: {}, n_sliders: {}, n_spinners: {}, ar: {}, od: {}, cs: {},  hp: {}, sv: {}, tick_rate: {}, stack_leniency: {:?}, hit_objects: (...), timing_points: (...), difficulty_points: (...)",
                 self.0.mode as u8,
                 self.mode_str(),
                 self.0.version,

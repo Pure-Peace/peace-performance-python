@@ -5,7 +5,8 @@ use pyo3::{
     PyAny, PyObjectProtocol, PyResult, Python,
 };
 
-use crate::methods::common::{osu_mode_int_str, py_any_into_osu_mode};
+use crate::methods::common::py_any_into_osu_mode;
+use crate::python::functions::osu_mode_int_str;
 
 #[pyclass]
 #[derive(Default)]
@@ -92,9 +93,7 @@ crate::pyo3_py_methods!(RawStars, impl {
     #[inline(always)]
     pub fn as_string(&self) -> String {
         format!(
-            "stars: {:?}, max_combo: {:?}, ar: {:?},
-            n_fruits: {:?}, n_droplets: {:?}, n_tiny_droplets: {:?}, 
-            od: {:?}, speed_strain: {:?}, n_circles: {:?}, n_spinners: {:?}",
+            "stars: {:?}, max_combo: {:?}, ar: {:?}, n_fruits: {:?}, n_droplets: {:?}, n_tiny_droplets: {:?}, od: {:?}, speed_strain: {:?}, n_circles: {:?}, n_spinners: {:?}",
             self.stars,
             self.max_combo,
             self.ar,
@@ -146,8 +145,7 @@ crate::pyo3_py_methods!(RawPP, impl {
     #[inline(always)]
     pub fn as_string(&self) -> String {
         format!(
-            "aim: {:?}, spd: {:?}, str: {:?},
-            acc: {:?}, total: {:?}",
+            "aim: {:?}, spd: {:?}, str: {:?}, acc: {:?}, total: {:?}",
             self.aim, self.spd, self.str, self.acc, self.total
         )
     }
@@ -172,7 +170,7 @@ crate::pyo3_py_protocol!(CalcResult);
 crate::pyo3_py_methods!(
     CalcResult, {mode: u8, mods: u32, pp: f32}; fn {stars: f32}; impl {
         #[getter]
-        pub fn mode_str(&self) -> String {
+        pub fn mode_str(&self) -> Option<String> {
             osu_mode_int_str(self.0.mode)
         }
 
@@ -219,12 +217,14 @@ crate::pyo3_py_methods!(
         #[inline(always)]
         pub fn as_string(&self) -> String {
             format!(
-                "mode: {}, mode_str: {}, mods: {}, pp: {}, stars: {}, raw_pp: <RawPP (...)>, raw_stars: <RawStars (...)>",
+                "mode: {}, mode_str: {:?}, mods: {}, pp: {}, stars: {}, raw_pp: <RawPP {}>, raw_stars: <RawStars {}>",
                 self.0.mode,
                 osu_mode_int_str(self.0.mode),
                 self.0.mods,
                 self.0.pp,
                 self.0.stars(),
+                self.raw_pp().attrs(),
+                self.raw_stars().attrs()
             )
         }
 

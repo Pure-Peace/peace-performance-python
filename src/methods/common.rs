@@ -15,7 +15,7 @@ use crate::python::exceptions::ReadFileError;
 #[cfg(any(feature = "async_tokio", feature = "async_std"))]
 /// Async read file
 #[inline(always)]
-#[timed::timed(duration(printer = "trace!"))]
+#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
 pub async fn async_read_file(path: PathBuf) -> Result<AsyncFile, PyErr> {
     match AsyncFile::open(path).await {
         Ok(file) => Ok(file),
@@ -28,7 +28,7 @@ pub async fn async_read_file(path: PathBuf) -> Result<AsyncFile, PyErr> {
 
 /// Sync read file
 #[inline(always)]
-#[timed::timed(duration(printer = "trace!"))]
+#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
 pub fn sync_read_file(path: PathBuf) -> Result<SyncFile, PyErr> {
     match SyncFile::open(path) {
         Ok(file) => Ok(file),
@@ -47,19 +47,6 @@ pub fn osu_mode_str(mode: &GameMode) -> String {
         GameMode::TKO => "taiko",
         GameMode::CTB => "ctb",
         GameMode::MNA => "mania",
-    }
-    .into()
-}
-
-/// osu! mode int to string
-#[inline(always)]
-pub fn osu_mode_int_str(mode: u8) -> String {
-    match mode {
-        0 => "std",
-        1 => "taiko",
-        2 => "ctb",
-        3 => "mania",
-        _ => "unknown",
     }
     .into()
 }
