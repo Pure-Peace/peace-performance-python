@@ -19,7 +19,7 @@ except ImportError:
 
 setup(
     name="peace-performance-python",
-    version="1.1.0",
+    version="1.1.1",
     description="Rust binding for python. To calculate star ratings and performance points for all osu! gamemodes, and quickly parse Beatmap into python objects.",
     long_description=open("README.md", encoding="utf-8").read(),
     long_description_content_type="text/markdown",
@@ -52,6 +52,7 @@ setup(
     ],
     packages=["peace_performance_python", "peace_performance_python.objects",
               "peace_performance_python.functions"],
+    package_data={"peace_performance_python": ["*.pyi", "**/*.pyi"]},
     rust_extensions=[
         RustExtension(
             "peace_performance_python._peace_performance",
