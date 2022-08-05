@@ -11,18 +11,25 @@ requires = [
 [project]
 name = "peace-performance-python"
 version = "1.1.2"
+readme = "README.md"
 description = "Rust binding for python. To calculate star ratings and performance points for all osu! gamemodes, and quickly parse Beatmap into python objects."
-keywords = "rust peace osu pp beatmap parse rosu-pp peace-performance"
-author = "PurePeace"
-author_email = "940857703@qq.com"
-maintainer = "PurePeace"
-maintainer_email = "940857703@qq.com"
-python_requires = ">=3.6"
-url = "https://github.com/Pure-Peace/peace-performance-python"
-license = "MIT"
+keywords = [
+    "rust",
+    "peace",
+    "osu",
+    "pp",
+    "beatmap",
+    "parse",
+    "rosu-pp",
+    "peace-performance",
+]
+authors = [{ email = "abner666666@foxmail.com" }, { name = "Pure-Peace" }]
+maintainers = [{ email = "abner666666@foxmail.com" }, { name = "Pure-Peace" }]
+requires-python = ">=3.6"
+license = { file = "LISENSE" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
-    "Development Status :: 3 - Alpha",
+    "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
@@ -30,20 +37,17 @@ classifiers = [
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: Implementation :: CPython",
     "Programming Language :: Rust",
     "Operating System :: POSIX",
     "Operating System :: MacOS :: MacOS X",
     "Operating System :: Microsoft :: Windows",
 ]
-install_requires = ["typing_extensions"]
-packages = [
-    "peace_performance_python",
-    "peace_performance_python.objects",
-    "peace_performance_python.functions",
-]
-package_data = { "peace_performance_python" = ["*.pyi", "**/*.pyi"] }
+dependencies = ["typing_extensions"]
 
+[project.urls]
+repository = "https://github.com/Pure-Peace/peace-performance-python"
 
 [tool.pytest.ini_options]
 markers = ["benchmark", "std_pp", "taiko_pp", "fruits_pp", "mania_pp"]
