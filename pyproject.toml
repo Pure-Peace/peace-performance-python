@@ -1,6 +1,6 @@
 [build-system]
 requires = [
-    "maturin>=0.11,<0.12",
+    "maturin>=0.11,<0.13",
     "setuptools",
     "setuptools-rust",
     "toml",
@@ -26,7 +26,7 @@ keywords = [
 authors = [{ email = "abner666666@foxmail.com" }, { name = "Pure-Peace" }]
 maintainers = [{ email = "abner666666@foxmail.com" }, { name = "Pure-Peace" }]
 requires-python = ">=3.6"
-license = { file = "LISENSE" }
+license = { file = "LICENSE" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
     "Development Status :: 4 - Beta",
@@ -45,6 +45,16 @@ classifiers = [
     "Operating System :: Microsoft :: Windows",
 ]
 dependencies = ["typing_extensions"]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-cov[all]",
+    "setuptools_rust",
+    "maturin",
+    "pytest-benchmark",
+    "pytest-benchmark[histogram]",
+]
 
 [project.urls]
 repository = "https://github.com/Pure-Peace/peace-performance-python"

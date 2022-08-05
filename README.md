@@ -398,7 +398,13 @@ pip install dist/<name>.whl
 
 ## Run tests and benchmarks
 
-Once built, you can run the tests and benchmakrs using `pytest`
+Build native modules (`.pyd` or `.so`)
+
+```shell
+python setup.py develop
+```
+
+Then run
 
 ```shell
 pytest
