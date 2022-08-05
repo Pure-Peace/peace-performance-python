@@ -1,4 +1,4 @@
-use peace_performance::{GameMode, PpResult, StarResult};
+use rosu_pp::{GameMode};
 use pyo3::{
     prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
@@ -40,20 +40,20 @@ crate::pyo3_py_methods!(RawStars, impl {
     pub fn get_mode_attrs(&self, py_input: &PyAny) -> PyResult<Vec<&'static str>> {
         let mode = py_any_into_osu_mode(py_input)?;
         Ok(match mode {
-            GameMode::STD => vec!["stars", "ar", "od", "speed_strain", "aim_strain", "max_combo", "n_circles", "n_spinners"],
-            GameMode::TKO => vec!["stars"],
-            GameMode::CTB => vec!["stars", "max_combo", "ar", "n_fruits", "n_droplets", "n_tiny_droplets"],
-            GameMode::MNA => vec!["stars"],
+            GameMode::Osu => vec!["stars", "ar", "od", "speed_strain", "aim_strain", "max_combo", "n_circles", "n_spinners"],
+            GameMode::Taiko => vec!["stars"],
+            GameMode::Catch => vec!["stars", "max_combo", "ar", "n_fruits", "n_droplets", "n_tiny_droplets"],
+            GameMode::Mania => vec!["stars"],
         })
     }
 
     pub fn get_mode<'a>(&self, py: Python<'a>, py_input: &PyAny) -> PyResult<&'a PyDict> {
         let mode = py_any_into_osu_mode(py_input)?;
         Ok(match mode {
-            GameMode::STD => self.mode_osu(py),
-            GameMode::TKO => self.mode_taiko(py),
-            GameMode::CTB => self.mode_ctb(py),
-            GameMode::MNA => self.mode_mania(py),
+            GameMode::Osu => self.mode_osu(py),
+            GameMode::Taiko => self.mode_taiko(py),
+            GameMode::Catch => self.mode_ctb(py),
+            GameMode::Mania => self.mode_mania(py),
         }?)
     }
 
@@ -188,7 +188,7 @@ crate::pyo3_py_methods!(
         #[getter]
         pub fn raw_stars(&self) -> RawStars {
             match &self.0.attributes {
-                StarResult::Fruits(attr) => RawStars {
+                StarResult::Catch(attr) => RawStars {
                     stars: Some(attr.stars),
                     max_combo: Some(attr.max_combo),
                     ar: Some(attr.ar),

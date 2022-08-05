@@ -1,9 +1,9 @@
-use peace_performance::PpResult;
 use pyo3::{
     prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
     PyAny, PyCell, PyObjectProtocol, PyResult, Python,
 };
+use rosu_pp::PerformanceAttributes;
 
 use super::CalcResult;
 use crate::{methods::pp, objects::Beatmap, set_calculator};
@@ -58,7 +58,7 @@ pub struct Calculator {
     #[pyo3(get, set)]
     pub katu: Option<usize>,
     #[pyo3(get, set)]
-    pub acc: Option<f32>,
+    pub acc: Option<f64>,
     #[pyo3(get, set)]
     pub passed_obj: Option<usize>,
     #[pyo3(get, set)]
@@ -78,7 +78,7 @@ create_py_methods!(
         n100: Option<usize>,
         n300: Option<usize>,
         katu: Option<usize>,
-        acc: Option<f32>,
+        acc: Option<f64>,
         passed_obj: Option<usize>,
         combo: Option<usize>,
         miss: Option<usize>,
@@ -189,7 +189,7 @@ create_py_methods!(
 impl Calculator {
     #[inline(always)]
     #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-    pub fn calc(&self, beatmap: &Beatmap) -> PpResult {
+    pub fn calc(&self, beatmap: &Beatmap) -> PerformanceAttributes {
         let c = pp::mode_any_pp(self.mode.unwrap_or(4), &beatmap.0);
         let c = set_calculator!(self.mods, c);
         // Irrelevant for osu!mania
@@ -209,8 +209,8 @@ impl Calculator {
         let mut c = set_calculator!(self.score, c);
         // Irrelevant for osu!mania
         if let Some(acc) = self.acc {
-            c.set_accuracy(acc)
+            return pp::calc_with_any_pp(c.accuracy(acc))
         };
-        pp::calc_with_any_pp(&mut c)
+        pp::calc_with_any_pp(c)
     }
 }

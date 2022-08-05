@@ -1,17 +1,16 @@
 use std::ops::{Add, AddAssign, Div, Mul, Sub};
 
-use peace_performance::{
-    parse::{
-        DifficultyPoint as RawDifficultyPoint, HitObject as RawHitObject,
-        HitObjectKind as RawHitObjectKind, PathType, Pos2 as RawPos2,
-        TimingPoint as RawTimingPoint,
-    },
-    Beatmap as RawBeatmap,
-};
 use pyo3::{
     prelude::{pyclass, pymethods, pyproto},
     types::PyDict,
     PyObjectProtocol, PyResult, Python,
+};
+use rosu_pp::{
+    beatmap::{DifficultyPoint as RawDifficultyPoint, TimingPoint as RawTimingPoint},
+    parse::{
+        HitObject as RawHitObject, HitObjectKind as RawHitObjectKind, PathType, Pos2 as RawPos2,
+    },
+    Beatmap as RawBeatmap,
 };
 
 use crate::methods::common::osu_mode_str;
@@ -30,8 +29,7 @@ crate::pyo3_py_methods!(
         od: f32,
         cs: f32,
         hp: f32,
-        sv: f32,
-        tick_rate: f32
+        tick_rate: f64
     }, impl {
         #[getter]
         pub fn mode(&self) -> u8 {
@@ -41,6 +39,11 @@ crate::pyo3_py_methods!(
         #[getter]
         pub fn mode_str(&self) -> String {
             osu_mode_str(&self.0.mode)
+        }
+
+        #[getter]
+        pub fn sv(&self) -> f64 {
+            self.0.slider_mult
         }
 
         #[getter]
@@ -111,7 +114,7 @@ crate::pyo3_py_methods!(
                 self.0.od,
                 self.0.cs,
                 self.0.hp,
-                self.0.sv,
+                self.0.slider_mult,
                 self.0.tick_rate,
                 self.stack_leniency()
             )
@@ -121,22 +124,19 @@ crate::pyo3_py_methods!(
         #[inline(always)]
         pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
             let d = crate::pyo3_py_dict!(py, self.0; {
-                version, n_circles, n_sliders, n_spinners, ar, od, cs, hp, sv, tick_rate
-            }; fn self {mode_str, stack_leniency});
+                version, n_circles, n_sliders, n_spinners, ar, od, cs, hp, tick_rate
+            }; fn self {mode_str, stack_leniency, sv});
             d.set_item("mode", self.0.mode as u8)?;
             Ok(d)
         }
     }
 );
 
-#[cfg(any(feature = "osu", feature = "fruits"))]
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct DifficultyPoint(pub RawDifficultyPoint);
-#[cfg(any(feature = "osu", feature = "fruits"))]
 crate::pyo3_py_protocol!(DifficultyPoint);
-#[cfg(any(feature = "osu", feature = "fruits"))]
-crate::pyo3_py_methods!(DifficultyPoint, {time: f32, speed_multiplier: f32}, impl {
+crate::pyo3_py_methods!(DifficultyPoint, {time: f64, speed_multiplier: f64}, impl {
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
@@ -236,7 +236,7 @@ pub struct HitObjectKind {
     #[pyo3(get)]
     pub kind: String,
     #[pyo3(get)]
-    pub pixel_len: Option<f32>,
+    pub pixel_len: Option<f64>,
     #[pyo3(get)]
     pub repeats: Option<usize>,
     #[pyo3(get)]
@@ -244,7 +244,7 @@ pub struct HitObjectKind {
     #[pyo3(get)]
     pub path_type: Option<String>,
     #[pyo3(get)]
-    pub end_time: Option<f32>,
+    pub end_time: Option<f64>,
 }
 crate::pyo3_py_protocol!(HitObjectKind);
 crate::pyo3_py_methods!(HitObjectKind, impl {
@@ -277,8 +277,8 @@ crate::pyo3_py_methods!(HitObjectKind, impl {
 #[derive(Clone, Debug)]
 pub struct HitObject(pub RawHitObject);
 crate::pyo3_py_protocol!(HitObject);
-crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
-    end_time: f32,
+crate::pyo3_py_methods!(HitObject, {start_time: f64}; fn {
+    end_time: f64,
     is_circle: bool,
     is_slider: bool,
     is_spinner: bool
@@ -324,7 +324,7 @@ crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
                 feature = "fruits",
                 all(feature = "osu", not(feature = "no_sliders_no_leniency"))
             )))]
-            RawHitObjectKind::Slider { pixel_len, repeats } => HitObjectKind {
+            RawHitObjectKind::Slider { pixel_len, repeats, .. } => HitObjectKind {
                 kind: "slider".into(),
                 pixel_len: Some(*pixel_len),
                 repeats: Some(*repeats),
@@ -346,9 +346,8 @@ crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
-        format!("start_time: {}, sound: {}, end_time: {}, kind: {}, pos: ({}, {})",
+        format!("start_time: {}, end_time: {}, kind: {}, pos: ({}, {})",
             self.0.start_time,
-            self.0.sound,
             self.end_time(),
             self.kind_str(),
             self.0.pos.x,
@@ -359,7 +358,7 @@ crate::pyo3_py_methods!(HitObject, {start_time: f32, sound: u8}; fn {
     #[getter]
     #[inline(always)]
     pub fn as_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> {
-        let d = crate::pyo3_py_dict!(py, self.0; {start_time, sound}; fn self {
+        let d = crate::pyo3_py_dict!(py, self.0; {start_time}; fn self {
             end_time
         });
         d.set_item("kind", self.kind().as_dict(py)?)?;

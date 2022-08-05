@@ -1,4 +1,4 @@
-use peace_performance::GameMode;
+use rosu_pp::GameMode;
 use pyo3::{PyAny, PyErr};
 use std::path::PathBuf;
 
@@ -43,10 +43,10 @@ pub fn sync_read_file(path: PathBuf) -> Result<SyncFile, PyErr> {
 #[inline(always)]
 pub fn osu_mode_str(mode: &GameMode) -> String {
     match mode {
-        GameMode::STD => "std",
-        GameMode::TKO => "taiko",
-        GameMode::CTB => "ctb",
-        GameMode::MNA => "mania",
+        GameMode::Osu => "std",
+        GameMode::Taiko => "taiko",
+        GameMode::Catch => "ctb",
+        GameMode::Mania => "mania",
     }
     .into()
 }
@@ -54,10 +54,10 @@ pub fn osu_mode_str(mode: &GameMode) -> String {
 #[inline(always)]
 pub fn str_into_osu_mode(str: &str) -> Result<GameMode, PyErr> {
     Ok(match str {
-        "std" => GameMode::STD,
-        "taiko" => GameMode::TKO,
-        "ctb" => GameMode::CTB,
-        "mania" => GameMode::MNA,
+        "std" => GameMode::Osu,
+        "taiko" => GameMode::Taiko,
+        "ctb" => GameMode::Catch,
+        "mania" => GameMode::Mania,
         _ => return Err(crate::invalid_gamemode_err!()),
     })
 }
@@ -65,10 +65,10 @@ pub fn str_into_osu_mode(str: &str) -> Result<GameMode, PyErr> {
 #[inline(always)]
 pub fn int_into_osu_mode(int: u8) -> Result<GameMode, PyErr> {
     Ok(match int {
-        0 => GameMode::STD,
-        1 => GameMode::TKO,
-        2 => GameMode::CTB,
-        3 => GameMode::MNA,
+        0 => GameMode::Osu,
+        1 => GameMode::Taiko,
+        2 => GameMode::Catch,
+        3 => GameMode::Mania,
         _ => return Err(crate::invalid_gamemode_err!()),
     })
 }

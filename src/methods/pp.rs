@@ -1,9 +1,10 @@
-use peace_performance::{
-    AnyPP, Beatmap as RawBeatmap, FruitsPP, ManiaPP, OsuPP, PpResult, TaikoPP,
+use rosu_pp::{
+    AnyPP, Beatmap as RawBeatmap, CatchPP, ManiaPP, OsuPP, TaikoPP, PerformanceAttributes, DifficultyAttributes,
 };
 use pyo3::PyErr;
 use std::collections::HashMap;
 
+#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
 use std::fs::File as SyncFile;
 
 #[cfg(feature = "async_tokio")]
@@ -14,15 +15,62 @@ use async_std::fs::File as AsyncFile;
 
 use crate::python::exceptions::ParseBeatmapError;
 
+#[derive(Clone, Debug)]
+pub struct PpRaw {
+    pub aim: Option<f32>,
+    pub spd: Option<f32>,
+    pub str: Option<f32>,
+    pub acc: Option<f32>,
+    pub total: f32,
+}
+
+impl PpRaw {
+    #[inline]
+    pub fn new(
+        aim: Option<f32>,
+        spd: Option<f32>,
+        str: Option<f32>,
+        acc: Option<f32>,
+        total: f32,
+    ) -> Self {
+        Self {
+            aim,
+            spd,
+            str,
+            acc,
+            total,
+        }
+    }
+}
+
+/// Basic struct containing the result of a PP calculation.
+#[derive(Clone, Debug)]
+pub struct PpResult {
+    pub mode: u8,
+    pub mods: u32,
+    pub pp: f64,
+    pub raw: PerformanceAttributes,
+    pub attributes: DifficultyAttributes,
+}
+
+impl PpResult {
+    /// The final pp value.
+    #[inline]
+    pub fn pp(&self) -> f64 {
+        self.pp
+    }
+
+    /// The final star value.
+    #[inline]
+    pub fn stars(&self) -> f64 {
+        self.attributes.stars()
+    }
+}
+
 #[inline(always)]
 #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-pub fn calc_with_any_pp(any_pp: &mut AnyPP) -> PpResult {
-    match any_pp {
-        AnyPP::Fruits(f) => f.calculate(),
-        AnyPP::Mania(m) => m.calculate(),
-        AnyPP::Osu(o) => o.calculate(),
-        AnyPP::Taiko(t) => t.calculate(),
-    }
+pub fn calc_with_any_pp(any_pp: AnyPP) -> PpResult {
+    any_pp.
 }
 
 #[inline(always)]
@@ -31,8 +79,8 @@ pub fn calc_acc_list(
     beatmap: &RawBeatmap,
     mode: Option<u8>,
     mods: Option<u32>,
-    acc_list: Option<Vec<f32>>,
-) -> HashMap<String, f32> {
+    acc_list: Option<Vec<f64>>,
+) -> HashMap<String, f64> {
     let c = mode_any_pp(mode.unwrap_or(4), &beatmap);
     let mut c = match mods {
         Some(mods) => c.mods(mods),
@@ -52,7 +100,7 @@ pub fn mode_any_pp(mode: u8, beatmap: &RawBeatmap) -> AnyPP {
     match mode {
         0 => AnyPP::Osu(OsuPP::new(beatmap)),
         1 => AnyPP::Taiko(TaikoPP::new(beatmap)),
-        2 => AnyPP::Fruits(FruitsPP::new(beatmap)),
+        2 => AnyPP::Catch(CatchPP::new(beatmap)),
         3 => AnyPP::Mania(ManiaPP::new(beatmap)),
         _ => AnyPP::new(beatmap),
     }
@@ -91,9 +139,6 @@ macro_rules! parse_beatmap {
 
 #[cfg(any(feature = "async_tokio", feature = "async_std"))]
 parse_beatmap!(async parse);
-
-#[cfg(any(feature = "async_tokio", feature = "async_std"))]
-parse_beatmap!(parse_sync);
 
 #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
 pub async fn async_parse_beatmap(_file: SyncFile) -> Result<RawBeatmap, PyErr> {
