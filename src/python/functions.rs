@@ -35,9 +35,9 @@ crate::cfg_not_rust_logger! {
 
 crate::cfg_not_async! {
     #[pyfunction]
-    pub fn read_beatmap_sync(_py: Python, _path: PathBuf) -> PyResult<&PyAny> {
+    pub fn read_beatmap_sync(_py: Python, path: PathBuf) -> PyResult<Beatmap> {
         let file = common::sync_read_file(path)?;
-        RawBeatmap::parse(file).map_err(common::map_parse_err)?;
+        Ok(Beatmap(RawBeatmap::parse(file).map_err(common::map_parse_err)?))
     }
 
     #[pyfunction]
@@ -47,8 +47,7 @@ crate::cfg_not_async! {
 
     #[pyfunction]
     pub fn rust_sleep(_py: Python, _secs: u64) -> PyResult<&PyAny> {
-        common::block_on(common::sleep(secs));
-        Ok(Python::with_gil(|py| py.None()))
+        Err(crate::async_not_enabled_err!())
     }
 }
 
