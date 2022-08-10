@@ -1,4 +1,5 @@
 import pytest
+from peace_performance_python.objects.utils import Mods
 
 from peace_performance_python.prelude import Beatmap, Calculator
 
@@ -20,3 +21,6 @@ def test_hitorigoto() -> None:
 
     pp_95 = Calculator(acc=95).calculate(b).pp
     assert pp_95 < pp_ss
+
+    pp_hdhr = Calculator(mods=Mods.HARDROCK | Mods.HIDDEN).calculate(b).pp
+    assert pp_hdhr > pp_ss

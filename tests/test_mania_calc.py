@@ -1,4 +1,5 @@
 import pytest
+from peace_performance_python.objects.utils import Mods
 
 from peace_performance_python.prelude import Beatmap, Calculator
 
@@ -21,6 +22,9 @@ def test_blue_zenith() -> None:
 
     pp_95 = Calculator(score=950000).calculate(b).pp
     assert pp_95 < pp_ss
+    
+    pp_hdhr = Calculator(mods=Mods.HARDROCK | Mods.HIDDEN).calculate(b).pp
+    assert pp_hdhr > pp_ss
 
 
 @pytest.mark.mania_pp
@@ -31,3 +35,6 @@ def test_std_hitorigoto_convert_mania() -> None:
 
     pp_95 = Calculator(mode=3, score=950000).calculate(b).pp
     assert pp_95 < pp_ss
+    
+    pp_hdhr = Calculator(mods=Mods.HARDROCK | Mods.HIDDEN).calculate(b).pp
+    assert pp_hdhr > pp_ss

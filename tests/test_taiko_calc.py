@@ -1,4 +1,5 @@
 import pytest
+from peace_performance_python.objects.utils import Mods
 
 from peace_performance_python.prelude import Beatmap, Calculator
 
@@ -22,6 +23,9 @@ def test_the_big_black() -> None:
     pp_95 = Calculator(acc=95).calculate(b).pp
     assert pp_95 < pp_ss
 
+    pp_hdhr = Calculator(mods=Mods.HARDROCK | Mods.HIDDEN).calculate(b).pp
+    assert pp_hdhr > pp_ss
+
 
 @pytest.mark.taiko_pp
 def test_std_hitorigoto_convert_taiko() -> None:
@@ -31,3 +35,6 @@ def test_std_hitorigoto_convert_taiko() -> None:
 
     pp_95 = Calculator(mode=1, acc=95).calculate(b).pp
     assert pp_95 < pp_ss
+
+    pp_hdhr = Calculator(mods=Mods.HARDROCK | Mods.HIDDEN).calculate(b).pp
+    assert pp_hdhr > pp_ss
