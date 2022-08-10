@@ -74,6 +74,7 @@ macro_rules! __set_calculator {
 macro_rules! set_calculator {
     ($calculator:ident, $($target:ident.$attr:ident),*, {$($target1:ident.$attr1:ident: $func1:ident),*}) => ({
         $(let $calculator = $crate::__set_calculator!($target.$attr, $calculator);)*
+        $(let $calculator = $crate::__set_calculator!($target1.$attr1, $func1, $calculator);)*
         $calculator
     });
 }
