@@ -28,7 +28,7 @@ setup(
     author_email="940857703@qq.com",
     maintainer="PurePeace",
     maintainer_email="940857703@qq.com",
-    python_requires=">=3.6",
+    python_requires=">=3.7",
     url="https://github.com/Pure-Peace/peace-performance-python",
     license="MIT",
     classifiers=[
@@ -37,7 +37,6 @@ setup(
         "Intended Audience :: Developers",
         "Operating System :: OS Independent",
         "Programming Language :: Python :: 3",
-        "Programming Language :: Python :: 3.6",
         "Programming Language :: Python :: 3.7",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",

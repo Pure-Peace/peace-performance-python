@@ -25,7 +25,7 @@ keywords = [
 ]
 authors = [{ email = "abner666666@foxmail.com" }, { name = "Pure-Peace" }]
 maintainers = [{ email = "abner666666@foxmail.com" }, { name = "Pure-Peace" }]
-requires-python = ">=3.6"
+requires-python = ">=3.7"
 license = { file = "LICENSE" }
 classifiers = [
     "License :: OSI Approved :: MIT License",
@@ -33,7 +33,6 @@ classifiers = [
     "Intended Audience :: Developers",
     "Operating System :: OS Independent",
     "Programming Language :: Python :: 3",
-    "Programming Language :: Python :: 3.6",
     "Programming Language :: Python :: 3.7",
     "Programming Language :: Python :: 3.8",
     "Programming Language :: Python :: 3.9",
