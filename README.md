@@ -3,9 +3,9 @@
 *Fast, To calculate star ratings and performance points for all osu! gamemodes,*
 *And, quickly parse Beatmap into python objects.*
 
-#### PP Version: 21.07.27
+### !! Now with <https://github.com/MaxOhn/rosu-pp>
 
-**[peace-performance](https://github.com/Pure-Peace/peace-performance)** (Rust) binding for python based on [PyO3](https://github.com/PyO3/pyo3).
+**[rosu-pp](https://github.com/MaxOhn/rosu-pp)** (Rust) binding for python based on [PyO3](https://github.com/PyO3/pyo3).
 
 Cross-platform support.
 Support synchronous and asynchronous(tokio and async_std).
