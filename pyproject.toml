@@ -10,7 +10,7 @@ requires = [
 
 [project]
 name = "peace-performance-python"
-version = "1.1.2"
+version = "2.0.0"
 readme = "README.md"
 description = "Rust binding for python. To calculate star ratings and performance points for all osu! gamemodes, and quickly parse Beatmap into python objects."
 keywords = [
