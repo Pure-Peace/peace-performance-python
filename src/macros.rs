@@ -90,7 +90,7 @@ macro_rules! invalid_gamemode_err {
 }
 
 #[macro_export]
-macro_rules! set_calculator {
+macro_rules! __set_calculator {
     ($target:ident.$attr:ident, $calculator:ident) => {
         match $target.$attr {
             Some($attr) => $calculator.$attr($attr),
@@ -103,6 +103,14 @@ macro_rules! set_calculator {
             None => $calculator,
         }
     };
+}
+
+#[macro_export]
+macro_rules! set_calculator {
+    ($calculator:ident, $($target:ident.$attr:ident),*, {$($target1:ident.$attr1:ident: $func1:ident),*}) => ({
+        $(let $calculator = $crate::__set_calculator!($target.$attr, $calculator);)*
+        $calculator
+    });
 }
 
 #[macro_export]
@@ -153,4 +161,70 @@ macro_rules! set_with_py_str {
             _ => {}
         }
     };
+}
+
+#[macro_export]
+macro_rules! cfg_async_tokio {
+    ($($item:item)*) => {
+        $(
+            #[cfg(feature = "async_tokio")]
+            #[cfg_attr(docsrs, doc(cfg(feature = "async_tokio")))]
+            $item
+        )*
+    }
+}
+
+#[macro_export]
+macro_rules! cfg_async_std {
+    ($($item:item)*) => {
+        $(
+            #[cfg(feature = "async_std")]
+            #[cfg_attr(docsrs, doc(cfg(feature = "async_std")))]
+            $item
+        )*
+    }
+}
+
+#[macro_export]
+macro_rules! cfg_any_async {
+    ($($item:item)*) => {
+        $(
+            #[cfg(any(feature = "async_tokio", feature = "async_std"))]
+            #[cfg_attr(docsrs, doc(cfg(any(feature = "async_tokio", feature = "async_std"))))]
+            $item
+        )*
+    }
+}
+
+#[macro_export]
+macro_rules! cfg_not_async {
+    ($($item:item)*) => {
+        $(
+            #[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
+            #[cfg_attr(docsrs, doc(cfg(not(any(feature = "async_tokio", feature = "async_std")))))]
+            $item
+        )*
+    }
+}
+
+#[macro_export]
+macro_rules! cfg_rust_logger {
+    ($($item:item)*) => {
+        $(
+            #[cfg(feature = "rust_logger")]
+            #[cfg_attr(docsrs, doc(cfg(feature = "rust_logger")))]
+            $item
+        )*
+    }
+}
+
+#[macro_export]
+macro_rules! cfg_not_rust_logger {
+    ($($item:item)*) => {
+        $(
+            #[cfg(not(feature = "rust_logger"))]
+            #[cfg_attr(docsrs, doc(cfg(not(feature = "rust_logger"))))]
+            $item
+        )*
+    }
 }

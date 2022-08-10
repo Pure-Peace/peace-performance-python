@@ -1,43 +1,8 @@
-use rosu_pp::GameMode;
 use pyo3::{PyAny, PyErr};
+use rosu_pp::{GameMode, ParseError};
 use std::path::PathBuf;
 
-use std::fs::File as SyncFile;
-
-#[cfg(feature = "async_tokio")]
-use tokio::fs::File as AsyncFile;
-
-#[cfg(feature = "async_std")]
-use async_std::fs::File as AsyncFile;
-
-use crate::python::exceptions::ReadFileError;
-
-#[cfg(any(feature = "async_tokio", feature = "async_std"))]
-/// Async read file
-#[inline(always)]
-#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-pub async fn async_read_file(path: PathBuf) -> Result<AsyncFile, PyErr> {
-    match AsyncFile::open(path).await {
-        Ok(file) => Ok(file),
-        Err(err) => Err(ReadFileError::new_err(format!(
-            "Could not read file async: {}",
-            err
-        ))),
-    }
-}
-
-/// Sync read file
-#[inline(always)]
-#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-pub fn sync_read_file(path: PathBuf) -> Result<SyncFile, PyErr> {
-    match SyncFile::open(path) {
-        Ok(file) => Ok(file),
-        Err(err) => Err(ReadFileError::new_err(format!(
-            "Could not read file: {}",
-            err
-        ))),
-    }
-}
+use crate::python::exceptions::{ParseBeatmapError, ReadFileError};
 
 /// osu! mode to string
 #[inline(always)]
@@ -82,14 +47,69 @@ pub fn py_any_into_osu_mode(py_input: &PyAny) -> Result<GameMode, PyErr> {
     Err(crate::invalid_gamemode_err!())
 }
 
-#[cfg(any(feature = "async_tokio", feature = "async_std"))]
-/// Async sleep
-#[inline(always)]
-pub async fn sleep(secs: u64) {
-    tokio::time::sleep(std::time::Duration::from_secs(secs)).await;
+crate::cfg_any_async! {
+    use std::future::Future;
+
+    crate::cfg_async_std! {
+        use async_std::fs::File as AsyncFile;
+
+        pub fn block_on<F: Future>(future: F) -> F::Output {
+            async_std::task::block_on(future)
+        }
+    }
+
+    crate::cfg_async_tokio! {
+        use tokio::fs::File as AsyncFile;
+
+        pub fn block_on<F: Future>(future: F) -> F::Output {
+            use tokio::runtime::Runtime;
+            Runtime::new().unwrap().block_on(future)
+        }
+    }
+
+    /// Async read file
+    #[inline(always)]
+    #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
+    pub async fn async_read_file(path: PathBuf) -> Result<AsyncFile, PyErr> {
+        match AsyncFile::open(path).await {
+            Ok(file) => Ok(file),
+            Err(err) => Err(ReadFileError::new_err(format!(
+                "Could not read file async: {}",
+                err
+            ))),
+        }
+    }
+
+    /// Async sleep
+    #[inline(always)]
+    pub async fn sleep(secs: u64) {
+        tokio::time::sleep(std::time::Duration::from_secs(secs)).await;
+    }
+
+
 }
 
-#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
-pub async fn sleep(_secs: u64) -> Result<(), PyErr> {
-    Err(crate::async_not_enabled_err!())
+crate::cfg_not_async! {
+    use std::fs::File as SyncFile;
+
+    pub async fn sleep(_secs: u64) -> Result<(), PyErr> {
+        Err(crate::async_not_enabled_err!())
+    }
+
+    /// Sync read file
+    #[inline(always)]
+    #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
+    pub fn sync_read_file(path: PathBuf) -> Result<SyncFile, PyErr> {
+        match SyncFile::open(path) {
+            Ok(file) => Ok(file),
+            Err(err) => Err(ReadFileError::new_err(format!(
+                "Could not read file: {}",
+                err
+            ))),
+        }
+    }
+}
+
+pub fn map_parse_err(err: ParseError) -> PyErr {
+    ParseBeatmapError::new_err(format!("Could not async parse beatmap: {}", err))
 }

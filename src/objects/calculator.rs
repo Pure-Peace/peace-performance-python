@@ -6,7 +6,11 @@ use pyo3::{
 use rosu_pp::PerformanceAttributes;
 
 use super::CalcResult;
-use crate::{methods::pp, objects::Beatmap, set_calculator};
+use crate::{
+    methods::pp::{self, PpResult},
+    objects::Beatmap,
+    set_calculator,
+};
 
 macro_rules! create_py_methods {
     ($for:ident, fn get_set_del() {$($attr:ident: $type:ty),*}, impl {$($others:tt)*}) => {
@@ -189,28 +193,22 @@ create_py_methods!(
 impl Calculator {
     #[inline(always)]
     #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-    pub fn calc(&self, beatmap: &Beatmap) -> PerformanceAttributes {
-        let c = pp::mode_any_pp(self.mode.unwrap_or(4), &beatmap.0);
-        let c = set_calculator!(self.mods, c);
-        // Irrelevant for osu!mania
-        let c = set_calculator!(self.combo, c);
-        // Irrelevant for osu!mania and osu!taiko
-        let c = set_calculator!(self.n50, c);
-        // Irrelevant for osu!mania
-        let c = set_calculator!(self.n100, c);
-        // Irrelevant for osu!mania
-        let c = set_calculator!(self.n300, c);
-        // Only relevant for osu!ctb
-        let c = set_calculator!(self.katu, n_katu, c);
-        // Irrelevant for osu!mania
-        let c = set_calculator!(self.miss, misses, c);
-        let c = set_calculator!(self.passed_obj, passed_objects, c);
-        // Only relevant for osu!mania
-        let mut c = set_calculator!(self.score, c);
-        // Irrelevant for osu!mania
-        if let Some(acc) = self.acc {
-            return pp::calc_with_any_pp(c.accuracy(acc))
-        };
-        pp::calc_with_any_pp(c)
+    pub fn calc(&self, beatmap: &Beatmap) -> PpResult {
+        let c = pp::mode_any_pp(self.mode, &beatmap.0);
+
+        let c = set_calculator!(c, self.mods, self.combo, self.n50, self.n100, self.n300, {
+            self.katu: n_katu,
+            self.miss: misses,
+            self.passed_obj: passed_objects
+        });
+        let c = set_calculator!(c, self.score, { self.acc: accuracy });
+
+        PpResult {
+            mode: todo!(),
+            mods: todo!(),
+            pp: todo!(),
+            raw: todo!(),
+            attributes: todo!(),
+        }
     }
 }

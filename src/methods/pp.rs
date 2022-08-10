@@ -1,19 +1,7 @@
 use rosu_pp::{
-    AnyPP, Beatmap as RawBeatmap, CatchPP, ManiaPP, OsuPP, TaikoPP, PerformanceAttributes, DifficultyAttributes,
+    AnyPP, Beatmap as RawBeatmap, CatchPP, DifficultyAttributes, ManiaPP, OsuPP,
+    PerformanceAttributes, TaikoPP,
 };
-use pyo3::PyErr;
-use std::collections::HashMap;
-
-#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
-use std::fs::File as SyncFile;
-
-#[cfg(feature = "async_tokio")]
-use tokio::fs::File as AsyncFile;
-
-#[cfg(feature = "async_std")]
-use async_std::fs::File as AsyncFile;
-
-use crate::python::exceptions::ParseBeatmapError;
 
 #[derive(Clone, Debug)]
 pub struct PpRaw {
@@ -68,82 +56,15 @@ impl PpResult {
 }
 
 #[inline(always)]
-#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-pub fn calc_with_any_pp(any_pp: AnyPP) -> PpResult {
-    any_pp.
-}
-
-#[inline(always)]
-#[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-pub fn calc_acc_list(
-    beatmap: &RawBeatmap,
-    mode: Option<u8>,
-    mods: Option<u32>,
-    acc_list: Option<Vec<f64>>,
-) -> HashMap<String, f64> {
-    let c = mode_any_pp(mode.unwrap_or(4), &beatmap);
-    let mut c = match mods {
-        Some(mods) => c.mods(mods),
-        None => c,
-    };
-
-    let mut map = HashMap::new();
-    for acc in acc_list.unwrap_or(vec![100.0, 99.0, 98.0, 95.0]) {
-        c.set_accuracy(acc);
-        map.insert((acc as i32).to_string(), calc_with_any_pp(&mut c).pp());
-    }
-    map
-}
-
-#[inline(always)]
-pub fn mode_any_pp(mode: u8, beatmap: &RawBeatmap) -> AnyPP {
+pub fn mode_any_pp(mode: Option<u8>, beatmap: &RawBeatmap) -> AnyPP {
     match mode {
-        0 => AnyPP::Osu(OsuPP::new(beatmap)),
-        1 => AnyPP::Taiko(TaikoPP::new(beatmap)),
-        2 => AnyPP::Catch(CatchPP::new(beatmap)),
-        3 => AnyPP::Mania(ManiaPP::new(beatmap)),
-        _ => AnyPP::new(beatmap),
+        Some(m) => match m {
+            0 => AnyPP::Osu(OsuPP::new(beatmap)),
+            1 => AnyPP::Taiko(TaikoPP::new(beatmap)),
+            2 => AnyPP::Catch(CatchPP::new(beatmap)),
+            3 => AnyPP::Mania(ManiaPP::new(beatmap)),
+            _ => AnyPP::new(beatmap),
+        },
+        None => AnyPP::new(beatmap),
     }
 }
-
-macro_rules! parse_beatmap_body {
-    ($parse_method:ident, $file:ident) => {{
-        RawBeatmap::$parse_method($file)
-            .map_err(|err| ParseBeatmapError::new_err(format!("Could not parse beatmap: {}", err)))
-    }};
-
-    (async $parse_method:ident, $file:ident) => {{
-        RawBeatmap::$parse_method($file).await.map_err(|err| {
-            ParseBeatmapError::new_err(format!("Could not async parse beatmap: {}", err))
-        })
-    }};
-}
-
-macro_rules! parse_beatmap {
-    ($parse_method:ident) => {
-        #[inline(always)]
-        #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-        pub fn sync_parse_beatmap(file: SyncFile) -> Result<RawBeatmap, PyErr> {
-            parse_beatmap_body!($parse_method, file)
-        }
-    };
-
-    (async $parse_method:ident) => {
-        #[inline(always)]
-        #[cfg_attr(feature = "rust_logger", timed::timed(duration(printer = "trace!")))]
-        pub async fn async_parse_beatmap(file: AsyncFile) -> Result<RawBeatmap, PyErr> {
-            parse_beatmap_body!(async $parse_method, file)
-        }
-    };
-}
-
-#[cfg(any(feature = "async_tokio", feature = "async_std"))]
-parse_beatmap!(async parse);
-
-#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
-pub async fn async_parse_beatmap(_file: SyncFile) -> Result<RawBeatmap, PyErr> {
-    Err(crate::async_not_enabled_err!())
-}
-
-#[cfg(not(any(feature = "async_tokio", feature = "async_std")))]
-parse_beatmap!(parse);
