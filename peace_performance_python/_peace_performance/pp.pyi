@@ -221,11 +221,11 @@ class RawStars(BaseGetter):
 
     ### Attrs:
 
-    `stars`: `Optional<f32>`
+    `stars`: `Optional<f64>`
 
     `max_combo`: `Optional<usize>`
 
-    `ar`: `Optional<f32>`
+    `ar`: `Optional<f64>`
 
     `n_fruits`: `Optional<usize>`
 
@@ -233,11 +233,11 @@ class RawStars(BaseGetter):
 
     `n_tiny_droplets`: `Optional<usize>`
 
-    `od`: `Optional<f32>`
+    `od`: `Optional<f64>`
 
-    `speed_strain`: `Optional<f32>`
+    `speed_strain`: `Optional<f64>`
 
-    `aim_strain`: `Optional<f32>`
+    `aim_strain`: `Optional<f64>`
 
     `n_circles`: `Optional<usize>`
 
@@ -294,7 +294,7 @@ class RawPP(BaseGetter):
     '''
     Raw PP Calculation results: `RawPP` (`Rust`) (read only).
 
-    ### Attrs (Optional<f32>):
+    ### Attrs (Optional<f64>):
 
     `aim`: Aim pp
 
@@ -329,11 +329,11 @@ class CalcResult(BaseGetter):
 
     `mods`: `u32` (Detail here: `https://github.com/ppy/osu-api/wiki#mods`)
 
-    `pp`: `f32`
+    `pp`: `f64`
 
     `raw_pp`: `RawPP` object
 
-    `stars`: `f32`
+    `stars`: `f64`
 
     `raw_stars`: `RawStars` object
     '''

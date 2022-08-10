@@ -1,15 +1,13 @@
 use std::ops::{Add, AddAssign, Div, Mul, Sub};
 
 use pyo3::{
-    prelude::{pyclass, pymethods, pyproto},
+    prelude::{pyclass, pymethods},
     types::PyDict,
-    PyObjectProtocol, PyResult, Python,
+    PyResult, Python,
 };
 use rosu_pp::{
     beatmap::{DifficultyPoint as RawDifficultyPoint, TimingPoint as RawTimingPoint},
-    parse::{
-        HitObject as RawHitObject, HitObjectKind as RawHitObjectKind, PathType, Pos2 as RawPos2,
-    },
+    parse::{HitObject as RawHitObject, HitObjectKind as RawHitObjectKind, Pos2 as RawPos2},
     Beatmap as RawBeatmap,
 };
 
@@ -18,9 +16,8 @@ use crate::methods::common::osu_mode_str;
 #[pyclass]
 #[derive(Clone, Default, Debug)]
 pub struct Beatmap(pub RawBeatmap);
-crate::pyo3_py_protocol!(Beatmap);
-crate::pyo3_py_methods!(
-    Beatmap, {
+crate::py_impl!(
+    for Beatmap, @attrs {
         version: u8,
         n_circles: u32,
         n_sliders: u32,
@@ -30,7 +27,7 @@ crate::pyo3_py_methods!(
         cs: f32,
         hp: f32,
         tick_rate: f64
-    }, impl {
+    }; @getters {}; @methods {
         #[getter]
         pub fn mode(&self) -> u8 {
             self.0.mode as u8
@@ -135,8 +132,7 @@ crate::pyo3_py_methods!(
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct DifficultyPoint(pub RawDifficultyPoint);
-crate::pyo3_py_protocol!(DifficultyPoint);
-crate::pyo3_py_methods!(DifficultyPoint, {time: f64, speed_multiplier: f64}, impl {
+crate::py_impl!(for DifficultyPoint, @attrs {time: f64, speed_multiplier: f64}; @getters {}; @methods {
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
@@ -154,8 +150,7 @@ crate::pyo3_py_methods!(DifficultyPoint, {time: f64, speed_multiplier: f64}, imp
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct TimingPoint(pub RawTimingPoint);
-crate::pyo3_py_protocol!(TimingPoint);
-crate::pyo3_py_methods!(TimingPoint, {time: f32, beat_len: f32}, impl {
+crate::py_impl!(for TimingPoint, @attrs {time: f64, beat_len: f64}; @getters {}; @methods {
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
@@ -173,11 +168,10 @@ crate::pyo3_py_methods!(TimingPoint, {time: f32, beat_len: f32}, impl {
 #[pyclass]
 #[derive(Clone, Default, Debug)]
 pub struct Pos2(pub RawPos2);
-crate::pyo3_py_protocol!(Pos2);
-crate::pyo3_py_methods!(Pos2, {x: f32, y: f32}; fn {
+crate::py_impl!(for Pos2, @attrs {x: f32, y: f32}; @getters {
     length_squared: f32,
     length: f32
-}; impl {
+}; @methods {
     pub fn dot(&self, other: Self) -> f32 {
         self.0.dot(other.0)
     }
@@ -246,8 +240,7 @@ pub struct HitObjectKind {
     #[pyo3(get)]
     pub end_time: Option<f64>,
 }
-crate::pyo3_py_protocol!(HitObjectKind);
-crate::pyo3_py_methods!(HitObjectKind, impl {
+crate::py_impl!(for HitObjectKind, @attrs {}; @getters {}; @methods {
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
@@ -276,13 +269,12 @@ crate::pyo3_py_methods!(HitObjectKind, impl {
 #[pyclass]
 #[derive(Clone, Debug)]
 pub struct HitObject(pub RawHitObject);
-crate::pyo3_py_protocol!(HitObject);
-crate::pyo3_py_methods!(HitObject, {start_time: f64}; fn {
+crate::py_impl!(for HitObject, @attrs {start_time: f64}; @getters {
     end_time: f64,
     is_circle: bool,
     is_slider: bool,
     is_spinner: bool
-}; impl {
+}; @methods {
     #[getter]
     pub fn pos(&self) -> Pos2 {
         Pos2(self.0.pos)

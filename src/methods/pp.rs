@@ -1,25 +1,24 @@
 use rosu_pp::{
-    AnyPP, Beatmap as RawBeatmap, CatchPP, DifficultyAttributes, ManiaPP, OsuPP,
-    PerformanceAttributes, TaikoPP,
+    AnyPP, Beatmap as RawBeatmap, CatchPP, ManiaPP, OsuPP, PerformanceAttributes, TaikoPP,
 };
 
 #[derive(Clone, Debug)]
 pub struct PpRaw {
-    pub aim: Option<f32>,
-    pub spd: Option<f32>,
-    pub str: Option<f32>,
-    pub acc: Option<f32>,
-    pub total: f32,
+    pub aim: Option<f64>,
+    pub spd: Option<f64>,
+    pub str: Option<f64>,
+    pub acc: Option<f64>,
+    pub total: f64,
 }
 
 impl PpRaw {
     #[inline]
     pub fn new(
-        aim: Option<f32>,
-        spd: Option<f32>,
-        str: Option<f32>,
-        acc: Option<f32>,
-        total: f32,
+        aim: Option<f64>,
+        spd: Option<f64>,
+        str: Option<f64>,
+        acc: Option<f64>,
+        total: f64,
     ) -> Self {
         Self {
             aim,
@@ -37,8 +36,8 @@ pub struct PpResult {
     pub mode: u8,
     pub mods: u32,
     pub pp: f64,
-    pub raw: PerformanceAttributes,
-    pub attributes: DifficultyAttributes,
+    pub raw: PpRaw,
+    pub attributes: PerformanceAttributes,
 }
 
 impl PpResult {

@@ -1,60 +1,25 @@
 #[macro_export]
-macro_rules! pyo3_py_methods {
-    ($type:ident, impl {$($others:tt)*}) => {
-        #[pymethods] impl $type {
-            $($others)*
-            #[getter]pub fn attrs(&self) -> String { self.as_string() }
-            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
-        }
-    };
-    ($type:ident, {$($attr:ident: $returns:ident),*}, impl {$($others:tt)*}) => {
-        #[pymethods] impl $type {
-            $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})* $($others)*
-            #[getter]pub fn attrs(&self) -> String { self.as_string() }
-            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
-        }
-    };
-    ($type:ident, {$($attr:ident: $returns:ident),*}) => {
-        #[pymethods] impl $type {
-            $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
-            #[getter]pub fn attrs(&self) -> String { self.as_string() }
-            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
-       }
-    };
-    ($type:ident, {$($attr:ident: $returns:ident),*}; fn {$( $func:ident: $ret:ident),*}) => {
+macro_rules! py_impl_base {
+    ($type:ident, $($attr:ident)*; $($returns:ident)*; $($func:ident)*; $($ret:ident)*; $($others:tt)*) => {
         #[pymethods] impl $type {
             $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
             $(#[getter]pub fn $func(&self) -> $ret {self.0.$func()})*
-            #[getter]pub fn attrs(&self) -> String { self.as_string() }
-            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
-        }
-    };
-    ($type:ident, {$($attr:ident: $returns:ident),*}; fn {$( $func:ident: $ret:ident),*}; impl {$($others:tt)*}) => {
-        #[pymethods] impl $type {
-            $(#[getter]pub fn $attr(&self) -> $returns {self.0.$attr})*
-            $(#[getter]pub fn $func(&self) -> $ret {self.0.$func()})*
+            #[getter] pub fn attrs(&self) -> String { self.as_string() }
+            #[getter] pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
+            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"), self.attrs())) }
             $($others)*
-            #[getter]pub fn attrs(&self) -> String { self.as_string() }
-            #[getter]pub fn attrs_dict<'a>(&self, py: Python<'a>) -> PyResult<&'a PyDict> { self.as_dict(py) }
         }
     };
 }
 
+
 #[macro_export]
-macro_rules! pyo3_py_protocol {
-    ($obj:ident) => {
-        #[pyproto] impl PyObjectProtocol for $obj {
-            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"), self.attrs())) }
-        }
-    };
-    ($obj:ident, impl {$($others:item)*}) => {
-        use pyo3::PyObjectProtocol;
-        #[pyproto] impl PyObjectProtocol for $obj {
-            fn __repr__(&self) -> PyResult<String> { Ok(format!(concat!('<', stringify!($obj), " ({})>"), self.attrs())) }
-            $($others)*
-        }
+macro_rules! py_impl {
+    (for $type:ident, @attrs {$($attr:ident: $returns:ident),*}; @getters {$( $func:ident: $ret:ident),*}; @methods {$($others:tt)*}) => {
+            $crate::py_impl_base!($type, $($attr)*; $($returns)*; $($func)*; $($ret)*; $($others)*);
     };
 }
+
 
 #[macro_export]
 macro_rules! pyo3_py_dict {

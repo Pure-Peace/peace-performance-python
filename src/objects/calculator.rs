@@ -1,13 +1,13 @@
 use pyo3::{
-    prelude::{pyclass, pymethods, pyproto},
+    prelude::{pyclass, pymethods},
     types::PyDict,
-    PyAny, PyCell, PyObjectProtocol, PyResult, Python,
+    PyAny, PyCell, PyResult, Python,
 };
 use rosu_pp::PerformanceAttributes;
 
 use super::CalcResult;
 use crate::{
-    methods::pp::{self, PpResult},
+    methods::pp::{self, PpRaw, PpResult},
     objects::Beatmap,
     set_calculator,
 };
@@ -72,7 +72,6 @@ pub struct Calculator {
     #[pyo3(get, set)]
     pub score: Option<u32>,
 }
-crate::pyo3_py_protocol!(Calculator);
 create_py_methods!(
     Calculator,
     fn get_set_del() {
@@ -203,12 +202,36 @@ impl Calculator {
         });
         let c = set_calculator!(c, self.score, { self.acc: accuracy });
 
+        let attributes = c.calculate();
+        let (mode, raw) = match &attributes {
+            PerformanceAttributes::Osu(attr) => (
+                0,
+                PpRaw::new(
+                    Some(attr.pp_aim),
+                    Some(attr.pp_speed),
+                    None,
+                    Some(attr.pp_acc),
+                    attr.pp,
+                ),
+            ),
+            PerformanceAttributes::Taiko(attr) => (
+                1,
+                PpRaw::new(None, None, Some(attr.pp_strain), Some(attr.pp_acc), attr.pp),
+            ),
+            PerformanceAttributes::Catch(attr) => {
+                (2, PpRaw::new(Some(attr.pp), None, None, None, attr.pp))
+            }
+            PerformanceAttributes::Mania(attr) => (
+                3,
+                PpRaw::new(None, None, Some(attr.pp_strain), Some(attr.pp_acc), attr.pp),
+            ),
+        };
         PpResult {
-            mode: todo!(),
-            mods: todo!(),
-            pp: todo!(),
-            raw: todo!(),
-            attributes: todo!(),
+            mode,
+            mods: self.mods.unwrap_or(0),
+            pp: attributes.pp(),
+            raw,
+            attributes,
         }
     }
 }

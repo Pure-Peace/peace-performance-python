@@ -1,22 +1,22 @@
-use rosu_pp::{GameMode};
 use pyo3::{
-    prelude::{pyclass, pymethods, pyproto},
+    prelude::{pyclass, pymethods},
     types::PyDict,
-    PyAny, PyObjectProtocol, PyResult, Python,
+    PyAny, PyResult, Python,
 };
+use rosu_pp::GameMode;
 
-use crate::methods::common::py_any_into_osu_mode;
+use crate::methods::{common::py_any_into_osu_mode, pp::PpResult};
 use crate::python::functions::osu_mode_int_str;
 
 #[pyclass]
 #[derive(Default)]
 pub struct RawStars {
     #[pyo3(get)]
-    pub stars: Option<f32>,
+    pub stars: Option<f64>,
     #[pyo3(get)]
     pub max_combo: Option<usize>,
     #[pyo3(get)]
-    pub ar: Option<f32>,
+    pub ar: Option<f64>,
     #[pyo3(get)]
     pub n_fruits: Option<usize>,
     #[pyo3(get)]
@@ -24,18 +24,17 @@ pub struct RawStars {
     #[pyo3(get)]
     pub n_tiny_droplets: Option<usize>,
     #[pyo3(get)]
-    pub od: Option<f32>,
+    pub od: Option<f64>,
     #[pyo3(get)]
-    pub speed_strain: Option<f32>,
+    pub speed_strain: Option<f64>,
     #[pyo3(get)]
-    pub aim_strain: Option<f32>,
+    pub aim_strain: Option<f64>,
     #[pyo3(get)]
     pub n_circles: Option<usize>,
     #[pyo3(get)]
     pub n_spinners: Option<usize>,
 }
-crate::pyo3_py_protocol!(RawStars);
-crate::pyo3_py_methods!(RawStars, impl {
+crate::py_impl!(for RawStars, @attrs {}; @getters {}; @methods {
     #[inline(always)]
     pub fn get_mode_attrs(&self, py_input: &PyAny) -> PyResult<Vec<&'static str>> {
         let mode = py_any_into_osu_mode(py_input)?;
@@ -129,18 +128,17 @@ crate::pyo3_py_methods!(RawStars, impl {
 #[pyclass]
 pub struct RawPP {
     #[pyo3(get)]
-    pub aim: Option<f32>,
+    pub aim: Option<f64>,
     #[pyo3(get)]
-    pub spd: Option<f32>,
+    pub spd: Option<f64>,
     #[pyo3(get)]
-    pub str: Option<f32>,
+    pub str: Option<f64>,
     #[pyo3(get)]
-    pub acc: Option<f32>,
+    pub acc: Option<f64>,
     #[pyo3(get)]
-    pub total: f32,
+    pub total: f64,
 }
-crate::pyo3_py_protocol!(RawPP);
-crate::pyo3_py_methods!(RawPP, impl {
+crate::py_impl!(for RawPP, @attrs {}; @getters {}; @methods {
     #[getter]
     #[inline(always)]
     pub fn as_string(&self) -> String {
@@ -166,9 +164,8 @@ crate::pyo3_py_methods!(RawPP, impl {
 
 #[pyclass]
 pub struct CalcResult(pub PpResult);
-crate::pyo3_py_protocol!(CalcResult);
-crate::pyo3_py_methods!(
-    CalcResult, {mode: u8, mods: u32, pp: f32}; fn {stars: f32}; impl {
+crate::py_impl!(
+    for CalcResult, @attrs {mode: u8, mods: u32, pp: f64}; @getters {stars: f64}; @methods {
         #[getter]
         pub fn mode_str(&self) -> Option<String> {
             osu_mode_int_str(self.0.mode)
@@ -188,28 +185,28 @@ crate::pyo3_py_methods!(
         #[getter]
         pub fn raw_stars(&self) -> RawStars {
             match &self.0.attributes {
-                StarResult::Catch(attr) => RawStars {
-                    stars: Some(attr.stars),
-                    max_combo: Some(attr.max_combo),
-                    ar: Some(attr.ar),
-                    n_fruits: Some(attr.n_fruits),
-                    n_droplets: Some(attr.n_droplets),
-                    n_tiny_droplets: Some(attr.n_tiny_droplets),
+                rosu_pp::PerformanceAttributes::Catch(attr) => RawStars {
+                    stars: Some(attr.stars()),
+                    max_combo: Some(attr.max_combo()),
+                    ar: Some(attr.difficulty.ar),
+                    n_fruits: Some(attr.difficulty.n_fruits),
+                    n_droplets: Some(attr.difficulty.n_droplets),
+                    n_tiny_droplets: Some(attr.difficulty.n_tiny_droplets),
                     ..Default::default()
                 },
-                StarResult::Mania(attr) => RawStars { stars: Some(attr.stars), ..Default::default() },
-                StarResult::Osu(attr) => RawStars {
-                    stars: Some(attr.stars),
-                    ar: Some(attr.ar),
-                    od: Some(attr.od),
-                    speed_strain: Some(attr.speed_strain),
-                    aim_strain: Some(attr.aim_strain),
-                    max_combo: Some(attr.max_combo),
-                    n_circles: Some(attr.n_circles),
-                    n_spinners: Some(attr.n_spinners),
+                rosu_pp::PerformanceAttributes::Mania(attr) => RawStars { stars: Some(attr.stars()), ..Default::default() },
+                rosu_pp::PerformanceAttributes::Osu(attr) => RawStars {
+                    stars: Some(attr.stars()),
+                    ar: Some(attr.difficulty.ar),
+                    od: Some(attr.difficulty.od),
+                    speed_strain: Some(attr.difficulty.speed_strain),
+                    aim_strain: Some(attr.difficulty.aim_strain),
+                    max_combo: Some(attr.difficulty.max_combo),
+                    n_circles: Some(attr.difficulty.n_circles),
+                    n_spinners: Some(attr.difficulty.n_spinners),
                     ..Default::default()
                 },
-                StarResult::Taiko(attr) => RawStars { stars: Some(attr.stars), ..Default::default() },
+                rosu_pp::PerformanceAttributes::Taiko(attr) => RawStars { stars: Some(attr.stars()), ..Default::default() }
             }
         }
 
