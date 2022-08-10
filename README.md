@@ -41,10 +41,11 @@ Testing on my local machine, about 70,000 maps can be calculated properly.
 
 ```python
 from peace_performance_python.prelude import *
+from peace_performance_python.objects.utils import Mods
 
 # Beatmap can be cached and reused!
 beatmap = Beatmap('path_to_osu_file') 
-result = Calculator(acc=98.8, miss=3).calculate(beatmap)
+result = Calculator(acc=98.8, miss=3, mods=Mods.HARDROCK | Mods.HIDDEN).calculate(beatmap) # HDHR
 
 # Async support!
 beatmap = await Beatmap.create_async_rs('path_to_osu_file')
@@ -57,6 +58,8 @@ beatmap = await Beatmap.create_async_rs('path_to_osu_file')
 from peace_performance_python.prelude import *
 # or
 # from peace_performance_python.objects import Beatmap, Calculator
+
+from peace_performance_python.objects.utils import Mods
 
 from tests import async_run, join_beatmap, HITORIGOTO, UNFORGIVING
 
@@ -78,14 +81,17 @@ def calculate_2(beatmap: Beatmap) -> CalcResult:
     c = Calculator()
     c.set_acc(98.8)
     c.set_miss(3)
+    c.set_mods(Mods.HARDROCK | Mods.HIDDEN)
 
     # or
     c.acc = 98.8
     c.miss = 3
+    c.mods = Mods.HARDROCK | Mods.HIDDEN
 
     # or
     c.setattr('acc', 98.8)
     c.setattr('miss', 3)
+    c.setattr('mods', Mods.HARDROCK | Mods.HIDDEN)
     return calculate(beatmap, c)
 
 
